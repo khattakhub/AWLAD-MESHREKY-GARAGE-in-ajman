@@ -25,7 +25,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ icon, title, description, lin
   );
 
   return (
-    <div className="bg-white dark:bg-brand-card border border-gray-200 dark:border-brand-border rounded-lg p-6 flex flex-col h-full transition-all duration-300 hover:border-brand-blue hover:shadow-lg hover:shadow-brand-blue/10">
+    <div className="bg-white dark:bg-brand-card border border-gray-200 dark:border-brand-border rounded-lg p-6 flex flex-col h-full transition-all duration-300 hover:border-brand-blue hover:shadow-lg hover:shadow-brand-blue/10 hover:-translate-y-2">
       {link ? <Link to={link} className="flex flex-col h-full">{content}</Link> : content}
     </div>
   );

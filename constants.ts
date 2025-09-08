@@ -14,32 +14,32 @@ export const SERVICES = [
   {
     icon: React.createElement(WrenchIcon, { className: 'w-8 h-8 text-brand-blue' }),
     title: 'Engine Diagnostics & Repair',
-    description: 'Advanced diagnostics to pinpoint issues and provide comprehensive engine repairs, from minor fixes to major overhauls.',
+    description: 'Our certified technicians use state-of-the-art tools to accurately identify issues, handling everything from check engine lights to complete engine overhauls for all major vehicle brands.',
   },
   {
     icon: React.createElement(OilDropIcon, { className: 'w-8 h-8 text-brand-blue' }),
     title: 'Lube & Oil Change',
-    description: 'Keep your engine running smoothly with our premium oil change services, including filter replacement and fluid checks.',
+    description: 'Experience a superior oil change with manufacturer-approved fully synthetic oils and premium filters, essential for protecting your engine in the harsh UAE climate.',
   },
   {
     icon: React.createElement(BrakeIcon, { className: 'w-8 h-8 text-brand-blue' }),
     title: 'Brake System Services',
-    description: 'Complete brake inspection, pad and rotor replacement, and fluid services to ensure your safety on the road.',
+    description: 'We offer comprehensive brake services, including disc and pad replacement, fluid flushes, and advanced diagnostics for ABS and traction control systems to guarantee your safety.',
   },
   {
     icon: React.createElement(AcIcon, { className: 'w-8 h-8 text-brand-blue' }),
     title: 'A/C Repair & Service',
-    description: 'Stay cool with our expert A/C diagnostics, refrigerant recharging, and component repair for all vehicle types.',
+    description: 'Our A/C specialists perform electronic leak detection, compressor and condenser repair, and complete refrigerant recharging to restore ice-cold air circulation.',
   },
   {
     icon: React.createElement(TireIcon, { className: 'w-8 h-8 text-brand-blue' }),
     title: 'Tire Services & Alignment',
-    description: 'We offer tire rotation, balancing, and precision wheel alignment to maximize tire life and vehicle performance.',
+    description: 'Maximize your tire life and stability with our precision services, including tire mounting, balancing, and state-of-the-art 3D wheel alignment for perfect handling.',
   },
   {
     icon: React.createElement(SparkleIcon, { className: 'w-8 h-8 text-brand-blue' }),
     title: 'Professional Detailing',
-    description: 'Restore your vehicle\'s shine with our interior and exterior detailing packages, including polishing and deep cleaning.',
+    description: 'Rediscover your car\'s beauty with multi-stage paint correction, durable ceramic coating for ultimate protection, and deep interior steam cleaning and sanitization.',
   },
 ];
 
@@ -84,18 +84,18 @@ export const TESTIMONIALS = [
 
 export const BLOG_POSTS = [
     {
-      title: "5 Signs Your Brakes Need Immediate Attention",
-      excerpt: "Don't ignore the warning signs. Learn about the critical indicators that your vehicle's brake system requires professional servicing to ensure your safety...",
-      image: "https://picsum.photos/400/250?grayscale&blur=1&random=1",
+      title: "Why You Shouldn't Ignore Your Check Engine Light",
+      excerpt: "That glowing dashboard light is more than a nuisance; it's your car's way of asking for help. Learn the common causes in the UAE and why a quick diagnostic can save you thousands in repairs.",
+      image: "https://picsum.photos/400/250?grayscale&blur=1&random=10",
     },
     {
-      title: "The Importance of Regular Oil Changes for Engine Health",
-      excerpt: "An oil change is more than just routine maintenance; it's the lifeblood of your engine. Discover why this simple service is crucial for longevity...",
-      image: "https://picsum.photos/400/250?grayscale&blur=1&random=2",
+      title: "Guide to Car Care in Ajman's Extreme Climate",
+      excerpt: "The sun and sand in the UAE can be brutal on your vehicle. We share essential tips for protecting your paint, tires, and A/C system to keep your car in pristine condition year-round.",
+      image: "https://picsum.photos/400/250?grayscale&blur=1&random=11",
     },
     {
-      title: "How to Maximize Your Car's A/C Performance in the Ajman Heat",
-      excerpt: "Beat the heat with a properly functioning A/C. We share expert tips on maintaining your car's air conditioning system is running at peak...",
-      image: "https://picsum.photos/400/250?grayscale&blur=1&random=3",
+      title: "German vs. Japanese Cars: A Technician's Take",
+      excerpt: "Ever wondered about the real differences in maintenance? Our experienced technicians break down common repair trends and ownership costs for popular models we service daily.",
+      image: "https://picsum.photos/400/250?grayscale&blur=1&random=12",
     },
 ];

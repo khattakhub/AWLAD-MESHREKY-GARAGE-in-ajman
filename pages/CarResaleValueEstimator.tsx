@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import CarTagIcon from '../components/icons/CarTagIcon';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const CarResaleValueEstimator: React.FC = () => {
   const [make, setMake] = useState('');
@@ -97,19 +98,31 @@ const CarResaleValueEstimator: React.FC = () => {
           </div>
 
           <div className="mt-10">
-            <button onClick={calculateValue} className="w-full bg-brand-blue hover:bg-brand-blue-hover text-white font-bold py-3 px-8 rounded-lg text-lg transition duration-300">
+            <button
+              onClick={calculateValue}
+              className="w-full bg-brand-blue hover:bg-brand-blue-hover text-white font-bold py-3 px-8 rounded-lg text-lg transition duration-300"
+            >
               Estimate Value
             </button>
           </div>
 
-          {estimatedValue && (
-            <div className="mt-8 text-center bg-white dark:bg-brand-dark rounded-lg p-6">
-              <p className="text-gray-500 dark:text-gray-400 text-lg">Estimated Resale Value</p>
-              <p className="text-4xl font-extrabold text-gray-900 dark:text-white mt-2">
-                AED <span className="text-brand-blue">{estimatedValue}</span>
-              </p>
-            </div>
-          )}
+          <AnimatePresence>
+            {estimatedValue && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, height: 0 }}
+                animate={{ opacity: 1, scale: 1, height: 'auto' }}
+                exit={{ opacity: 0, scale: 0.95, height: 0 }}
+                transition={{ duration: 0.4 }}
+                className="mt-8 text-center bg-white dark:bg-brand-dark rounded-lg p-6 overflow-hidden"
+              >
+                <p className="text-gray-500 dark:text-gray-400 text-lg">Estimated Resale Value</p>
+                <p className="text-4xl font-extrabold text-gray-900 dark:text-white mt-2">
+                  AED <span className="text-brand-blue">{estimatedValue}</span>
+                </p>
+                <p className="text-xs text-gray-400 mt-4">*This is a rough estimate. Actual value may vary.</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>

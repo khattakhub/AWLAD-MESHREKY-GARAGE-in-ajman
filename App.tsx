@@ -12,6 +12,8 @@ import Blog from './pages/Blog';
 import FuelCostEstimator from './pages/FuelCostEstimator';
 import CarResaleValueEstimator from './pages/CarResaleValueEstimator';
 import { ThemeProvider } from './ThemeContext';
+import WhatsappButton from './components/WhatsappButton';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const ScrollToTop: React.FC = () => {
   const { pathname } = useLocation();
@@ -23,6 +25,25 @@ const ScrollToTop: React.FC = () => {
   return null;
 };
 
+const AnimatedRoutes: React.FC = () => {
+    const location = useLocation();
+    return (
+        <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
+                <Route path="/" element={<Home />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/tools" element={<Tools />} />
+                <Route path="/tools/car-loan-calculator" element={<CarLoanCalculator />} />
+                <Route path="/tools/fuel-cost-estimator" element={<FuelCostEstimator />} />
+                <Route path="/tools/car-resale-value-estimator" element={<CarResaleValueEstimator />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/booking" element={<Booking />} />
+            </Routes>
+        </AnimatePresence>
+    );
+}
+
 const App: React.FC = () => {
   return (
     <ThemeProvider>
@@ -30,20 +51,17 @@ const App: React.FC = () => {
         <ScrollToTop />
         <div className="bg-white dark:bg-brand-dark text-gray-700 dark:text-gray-300 min-h-screen font-sans transition-colors duration-300">
           <Header />
-          <main className="pt-16">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/tools" element={<Tools />} />
-              <Route path="/tools/car-loan-calculator" element={<CarLoanCalculator />} />
-              <Route path="/tools/fuel-cost-estimator" element={<FuelCostEstimator />} />
-              <Route path="/tools/car-resale-value-estimator" element={<CarResaleValueEstimator />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/booking" element={<Booking />} />
-            </Routes>
-          </main>
+          <motion.main
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="pt-16"
+          >
+            <AnimatedRoutes />
+          </motion.main>
           <Footer />
+          <WhatsappButton />
         </div>
       </HashRouter>
     </ThemeProvider>

@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import CalculatorIcon from '../components/icons/CalculatorIcon';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const CarLoanCalculator: React.FC = () => {
   const [loanAmount, setLoanAmount] = useState<number>(50000);
@@ -99,14 +100,22 @@ const CarLoanCalculator: React.FC = () => {
               Calculate
             </button>
           </div>
-          {monthlyPayment && (
-            <div className="mt-8 text-center bg-white dark:bg-brand-dark rounded-lg p-6">
-              <p className="text-gray-500 dark:text-gray-400 text-lg">Estimated Monthly Payment</p>
-              <p className="text-4xl font-extrabold text-gray-900 dark:text-white mt-2">
-                AED <span className="text-brand-blue">{monthlyPayment}</span>
-              </p>
-            </div>
-          )}
+          <AnimatePresence>
+            {monthlyPayment && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, height: 0 }}
+                animate={{ opacity: 1, scale: 1, height: 'auto' }}
+                exit={{ opacity: 0, scale: 0.95, height: 0 }}
+                transition={{ duration: 0.4 }}
+                className="mt-8 text-center bg-white dark:bg-brand-dark rounded-lg p-6 overflow-hidden"
+              >
+                <p className="text-gray-500 dark:text-gray-400 text-lg">Estimated Monthly Payment</p>
+                <p className="text-4xl font-extrabold text-gray-900 dark:text-white mt-2">
+                  AED <span className="text-brand-blue">{monthlyPayment}</span>
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>

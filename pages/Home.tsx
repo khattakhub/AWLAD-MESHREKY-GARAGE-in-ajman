@@ -5,15 +5,47 @@ import ToolCard from '../components/ToolCard';
 import TestimonialCard from '../components/TestimonialCard';
 import BlogPostCard from '../components/BlogPostCard';
 import { SERVICES, TOOLS, TESTIMONIALS, BLOG_POSTS } from '../constants';
+import { motion, Variants } from 'framer-motion';
 
-const Section: React.FC<{ title: string; subtitle: string; children: React.ReactNode; id: string; }> = ({ title, subtitle, children, id }) => (
-    <section id={id} className="py-20 sm:py-24">
+const cardContainerVariants: Variants = {
+  offscreen: {},
+  onscreen: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const cardVariants: Variants = {
+    offscreen: {
+        y: 50,
+        opacity: 0
+    },
+    onscreen: {
+        y: 0,
+        opacity: 1,
+        transition: {
+            type: "spring",
+            bounce: 0.4,
+            duration: 0.8
+        }
+    }
+};
+
+const Section: React.FC<{ title: string; subtitle: string; children: React.ReactNode; id: string; isGray?: boolean }> = ({ title, subtitle, children, id, isGray }) => (
+    <motion.section
+        id={id}
+        className={`py-20 sm:py-24 ${isGray ? 'bg-gray-50 dark:bg-brand-card/30' : ''}`}
+        initial="offscreen"
+        whileInView="onscreen"
+        viewport={{ once: true, amount: 0.2 }}
+    >
         <div className="container mx-auto px-6 text-center">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-3">{title}</h2>
-            <p className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-12">{subtitle}</p>
+            <motion.h2 variants={cardVariants} className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-3">{title}</motion.h2>
+            <motion.p variants={cardVariants} className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-12">{subtitle}</motion.p>
             {children}
         </div>
-    </section>
+    </motion.section>
 );
 
 const Home: React.FC = () => {
@@ -21,7 +53,12 @@ const Home: React.FC = () => {
         <div>
             {/* Hero Section */}
             <section className="relative text-center py-32 md:py-48 flex items-center justify-center bg-gray-50 dark:bg-transparent">
-                <div className="container mx-auto px-6 z-10">
+                <motion.div
+                    className="container mx-auto px-6 z-10"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8 }}
+                >
                     <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 dark:text-white uppercase tracking-wider mb-4 leading-tight">
                         Premium Auto Care in Ajman
                     </h1>
@@ -30,71 +67,96 @@ const Home: React.FC = () => {
                     </p>
                     <Link
                         to="/booking"
-                        className="inline-block bg-brand-blue hover:bg-brand-blue-hover text-white font-bold py-3 px-8 rounded-lg text-lg transition duration-300 transform hover:scale-105"
+                        className="bg-brand-blue hover:bg-brand-blue-hover text-white font-extrabold py-4 px-10 rounded-lg transition duration-300 text-lg inline-block"
                     >
-                        Book an Appointment &rarr;
+                        Book an Appointment
                     </Link>
-                </div>
+                </motion.div>
             </section>
 
             {/* Services Section */}
-            <Section id="services" title="Our Services" subtitle="From routine maintenance to complex repairs, we've got you covered.">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+            <Section
+                id="services"
+                title="Our Core Services"
+                subtitle="From routine maintenance to complex repairs, we offer a comprehensive range of services to keep your car running smoothly."
+            >
+                <motion.div
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left"
+                    variants={cardContainerVariants}
+                >
                     {SERVICES.slice(0, 3).map((service, index) => (
-                        <ServiceCard key={index} {...service} />
+                        <motion.div key={index} variants={cardVariants}>
+                            <ServiceCard {...service} />
+                        </motion.div>
                     ))}
-                </div>
-                <div className="mt-12">
-                    <Link to="/services" className="border border-gray-300 dark:border-brand-border text-gray-700 dark:text-gray-300 font-semibold py-2 px-6 rounded-lg hover:bg-gray-100 dark:hover:bg-brand-card transition">
-                        View All Services
+                </motion.div>
+                <motion.div variants={cardVariants} className="mt-12">
+                    <Link to="/services" className="text-brand-blue font-semibold hover:underline">
+                        View All Services &rarr;
                     </Link>
-                </div>
+                </motion.div>
             </Section>
 
-            {/* Automotive Tools Section */}
-            <section id="tools" className="py-20 sm:py-24 bg-gray-50 dark:bg-brand-dark">
-                <div className="container mx-auto px-6 text-center">
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-3">Automotive Tools</h2>
-                    <p className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-12">Empowering you with the right tools to make informed decisions.</p>
-                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
-                        {TOOLS.map((tool, index) => (
-                            <ToolCard key={index} {...tool} />
-                        ))}
-                    </div>
-                     <div className="mt-12">
-                        <Link to="/tools" className="border border-gray-300 dark:border-brand-border text-gray-700 dark:text-gray-300 font-semibold py-2 px-6 rounded-lg hover:bg-gray-200 dark:hover:bg-brand-card transition">
-                            Explore All Tools
-                        </Link>
-                    </div>
-                </div>
-            </section>
-
-             {/* Testimonials Section */}
-            <Section id="testimonials" title="What Our Clients Say" subtitle="We are committed to providing an exceptional experience.">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
-                    {TESTIMONIALS.map((testimonial, index) => (
-                        <TestimonialCard key={index} {...testimonial} />
+            {/* Tools Section */}
+            <Section
+                id="tools"
+                title="Helpful Automotive Tools"
+                subtitle="Calculate loans, estimate fuel costs, and more with our free online tools designed for car owners."
+                isGray={true}
+            >
+                <motion.div
+                    className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left max-w-5xl mx-auto"
+                    variants={cardContainerVariants}
+                >
+                    {TOOLS.map((tool, index) => (
+                        <motion.div key={index} variants={cardVariants}>
+                            <ToolCard {...tool} />
+                        </motion.div>
                     ))}
-                </div>
+                </motion.div>
+            </Section>
+            
+            {/* Testimonials Section */}
+            <Section
+                id="testimonials"
+                title="What Our Customers Say"
+                subtitle="We're proud of our reputation for quality service and customer satisfaction. Here's what some of our clients have to say."
+            >
+                <motion.div
+                    className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left"
+                    variants={cardContainerVariants}
+                >
+                    {TESTIMONIALS.map((testimonial, index) => (
+                        <motion.div key={index} variants={cardVariants}>
+                            <TestimonialCard {...testimonial} />
+                        </motion.div>
+                    ))}
+                </motion.div>
             </Section>
 
-             {/* Blog Section */}
-            <section id="blog" className="py-20 sm:py-24 bg-gray-50 dark:bg-brand-dark">
-                 <div className="container mx-auto px-6 text-center">
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-3">From Our Blog</h2>
-                    <p className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-12">Stay informed with the latest news, tips, and insights from our auto care experts.</p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
-                        {BLOG_POSTS.map((post, index) => (
-                            <BlogPostCard key={index} {...post} />
-                        ))}
-                    </div>
-                    <div className="mt-12">
-                        <Link to="/blog" className="border border-gray-300 dark:border-brand-border text-gray-700 dark:text-gray-300 font-semibold py-2 px-6 rounded-lg hover:bg-gray-200 dark:hover:bg-brand-card transition">
-                            Read All Blogs
-                        </Link>
-                    </div>
-                </div>
-            </section>
+            {/* Blog Section */}
+            <Section
+                id="blog"
+                title="From Our Blog"
+                subtitle="Get the latest car care tips, industry news, and expert advice from our seasoned technicians."
+                isGray={true}
+            >
+                <motion.div
+                    className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left"
+                    variants={cardContainerVariants}
+                >
+                    {BLOG_POSTS.map((post, index) => (
+                        <motion.div key={index} variants={cardVariants}>
+                            <BlogPostCard {...post} />
+                        </motion.div>
+                    ))}
+                </motion.div>
+                 <motion.div variants={cardVariants} className="mt-12">
+                    <Link to="/blog" className="text-brand-blue font-semibold hover:underline">
+                        Read More Articles &rarr;
+                    </Link>
+                </motion.div>
+            </Section>
         </div>
     );
 };

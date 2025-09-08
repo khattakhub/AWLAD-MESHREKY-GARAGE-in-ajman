@@ -2,6 +2,35 @@ import React from 'react';
 import ServiceCard from '../components/ServiceCard';
 import { SERVICES } from '../constants';
 import { Link } from 'react-router-dom';
+import { motion, Variants } from 'framer-motion';
+
+// FIX: Separated container and item variants to resolve framer-motion type error.
+// The container variant is responsible for orchestrating the staggering of child animations.
+const containerVariants: Variants = {
+  offscreen: {},
+  onscreen: {
+    transition: {
+      staggerChildren: 0.2
+    }
+  }
+};
+
+// The item variant defines the animation for each individual service card.
+const itemVariants: Variants = {
+  offscreen: {
+    y: 50,
+    opacity: 0
+  },
+  onscreen: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: "spring",
+      bounce: 0.4,
+      duration: 0.8,
+    }
+  }
+};
 
 const Services: React.FC = () => {
   return (
@@ -11,17 +40,24 @@ const Services: React.FC = () => {
         <p className="text-gray-500 dark:text-gray-400 max-w-3xl mx-auto mb-16">
           We provide a full range of services to keep your vehicle in peak condition, delivered by certified expert technicians.
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left"
+          variants={containerVariants}
+          initial="offscreen"
+          whileInView="onscreen"
+          viewport={{ once: true, amount: 0.1 }}
+        >
           {SERVICES.map((service, index) => (
-            <ServiceCard 
-              key={index} 
-              icon={service.icon}
-              title={service.title}
-              description={service.description}
-              link="/booking"
-            />
+             <motion.div key={index} variants={itemVariants}>
+              <ServiceCard 
+                icon={service.icon}
+                title={service.title}
+                description={service.description}
+                link="/booking"
+              />
+             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </div>
   );

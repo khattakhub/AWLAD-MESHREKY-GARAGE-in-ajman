@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import FuelIcon from '../components/icons/FuelIcon';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const FuelCostEstimator: React.FC = () => {
   const [distance, setDistance] = useState<number | string>(100);
@@ -84,14 +85,22 @@ const FuelCostEstimator: React.FC = () => {
               </button>
             </div>
 
-            {totalCost && (
-              <div className="mt-8 text-center bg-white dark:bg-brand-dark rounded-lg p-6">
-                <p className="text-gray-500 dark:text-gray-400 text-lg">Estimated Fuel Cost</p>
-                <p className="text-4xl font-extrabold text-gray-900 dark:text-white mt-2">
-                  AED <span className="text-brand-blue">{totalCost}</span>
-                </p>
-              </div>
-            )}
+            <AnimatePresence>
+                {totalCost && (
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95, height: 0 }}
+                    animate={{ opacity: 1, scale: 1, height: 'auto' }}
+                    exit={{ opacity: 0, scale: 0.95, height: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="mt-8 text-center bg-white dark:bg-brand-dark rounded-lg p-6 overflow-hidden"
+                >
+                    <p className="text-gray-500 dark:text-gray-400 text-lg">Estimated Fuel Cost</p>
+                    <p className="text-4xl font-extrabold text-gray-900 dark:text-white mt-2">
+                    AED <span className="text-brand-blue">{totalCost}</span>
+                    </p>
+                </motion.div>
+                )}
+            </AnimatePresence>
         </div>
       </div>
     </div>

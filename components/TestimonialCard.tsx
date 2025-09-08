@@ -8,7 +8,7 @@ interface TestimonialCardProps {
 
 const TestimonialCard: React.FC<TestimonialCardProps> = ({ quote, author, title }) => {
   return (
-    <div className="bg-gray-50 dark:bg-brand-card border border-gray-200 dark:border-brand-border rounded-lg p-6 h-full flex flex-col">
+    <div className="bg-gray-50 dark:bg-brand-card border border-gray-200 dark:border-brand-border rounded-lg p-6 h-full flex flex-col transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/10 hover:-translate-y-2">
       <p className="text-gray-600 dark:text-gray-300 italic mb-6">"{quote}"</p>
       <div className="mt-auto">
         <p className="font-bold text-gray-900 dark:text-white">{author}</p>
