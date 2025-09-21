@@ -4,8 +4,10 @@ import ServiceCard from '../components/ServiceCard';
 import ToolCard from '../components/ToolCard';
 import TestimonialCard from '../components/TestimonialCard';
 import BlogPostCard from '../components/BlogPostCard';
-import { SERVICES, TOOLS, TESTIMONIALS, BLOG_POSTS } from '../constants';
+import { getServices, getBlogPosts, getTestimonials } from '../data/store';
+import { TOOLS } from '../constants';
 import { motion, Variants } from 'framer-motion';
+import { iconMap } from '../components/icons';
 
 const cardContainerVariants: Variants = {
   offscreen: {},
@@ -49,6 +51,10 @@ const Section: React.FC<{ title: string; subtitle: string; children: React.React
 );
 
 const Home: React.FC = () => {
+    const services = getServices();
+    const blogPosts = getBlogPosts();
+    const testimonials = getTestimonials();
+
     return (
         <div>
             {/* Hero Section */}
@@ -84,9 +90,12 @@ const Home: React.FC = () => {
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left"
                     variants={cardContainerVariants}
                 >
-                    {SERVICES.slice(0, 3).map((service, index) => (
+                    {services.slice(0, 3).map((service, index) => (
                         <motion.div key={index} variants={cardVariants}>
-                            <ServiceCard {...service} />
+                            <ServiceCard 
+                                {...service} 
+                                icon={React.createElement(iconMap[service.iconName], { className: 'w-8 h-8 text-brand-blue' })}
+                            />
                         </motion.div>
                     ))}
                 </motion.div>
@@ -110,7 +119,10 @@ const Home: React.FC = () => {
                 >
                     {TOOLS.map((tool, index) => (
                         <motion.div key={index} variants={cardVariants}>
-                            <ToolCard {...tool} />
+                            <ToolCard 
+                                {...tool}
+                                icon={React.createElement(iconMap[tool.iconName], { className: 'w-8 h-8 text-brand-blue' })}
+                            />
                         </motion.div>
                     ))}
                 </motion.div>
@@ -126,7 +138,7 @@ const Home: React.FC = () => {
                     className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left"
                     variants={cardContainerVariants}
                 >
-                    {TESTIMONIALS.map((testimonial, index) => (
+                    {testimonials.map((testimonial, index) => (
                         <motion.div key={index} variants={cardVariants}>
                             <TestimonialCard {...testimonial} />
                         </motion.div>
@@ -145,7 +157,7 @@ const Home: React.FC = () => {
                     className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left"
                     variants={cardContainerVariants}
                 >
-                    {BLOG_POSTS.map((post, index) => (
+                    {blogPosts.slice(0, 3).map((post, index) => (
                         <motion.div key={index} variants={cardVariants}>
                             <BlogPostCard {...post} />
                         </motion.div>

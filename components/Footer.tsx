@@ -1,12 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import FacebookIcon from './icons/FacebookIcon';
 import InstagramIcon from './icons/InstagramIcon';
 import LinkedinIcon from './icons/LinkedinIcon';
 import TwitterIcon from './icons/TwitterIcon';
-import { SOCIAL_LINKS } from '../constants';
+// FIX: Replaced require() with an ES6 import for addSubscriber.
+import { getSocialLinks, addSubscriber } from '../data/store';
 
 const Footer: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+  const socialLinks = getSocialLinks();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !email.includes('@')) return;
+    
+    // In a real app, this would call an API.
+    // For this demo, we'll simulate it and save to localStorage.
+    addSubscriber({ email });
+
+    setEmail('');
+    setSubscribed(true);
+    setTimeout(() => setSubscribed(false), 3000);
+  };
+
   return (
     <footer className="bg-gray-50 dark:bg-brand-card border-t border-gray-200 dark:border-brand-border transition-colors duration-300">
       <div className="container mx-auto px-6 py-12">
@@ -43,17 +61,21 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Stay Updated</h4>
             <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">Subscribe to our newsletter for the latest deals and tips.</p>
-            <form className="flex">
+            <form className="flex" onSubmit={handleSubmit}>
               <input
                 type="email"
                 placeholder="Your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
                 className="bg-white dark:bg-brand-dark border border-gray-300 dark:border-brand-border rounded-l-md px-3 py-2 w-full text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue"
               />
               <button
                 type="submit"
-                className="bg-brand-blue hover:bg-brand-blue-hover text-white font-semibold px-4 rounded-r-md text-sm transition"
+                className="bg-brand-blue hover:bg-brand-blue-hover text-white font-semibold px-4 rounded-r-md text-sm transition disabled:opacity-50"
+                disabled={subscribed}
               >
-                Subscribe
+                {subscribed ? 'Thanks!' : 'Subscribe'}
               </button>
             </form>
           </div>
@@ -62,10 +84,10 @@ const Footer: React.FC = () => {
         <div className="mt-12 pt-8 border-t border-gray-200 dark:border-brand-border flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
           <p>&copy; {new Date().getFullYear()} AWLAD MESHREKY GARAGE. All Rights Reserved.</p>
           <div className="flex space-x-4 mt-4 md:mt-0">
-            <a href={SOCIAL_LINKS.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition"><FacebookIcon className="w-5 h-5" /></a>
-            <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition"><InstagramIcon className="w-5 h-5" /></a>
-            <a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition"><LinkedinIcon className="w-5 h-5" /></a>
-            <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition"><TwitterIcon className="w-5 h-5" /></a>
+            <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition"><FacebookIcon className="w-5 h-5" /></a>
+            <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition"><InstagramIcon className="w-5 h-5" /></a>
+            <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition"><LinkedinIcon className="w-5 h-5" /></a>
+            <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition"><TwitterIcon className="w-5 h-5" /></a>
           </div>
         </div>
       </div>

@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
-import { BLOG_POSTS } from '../../constants';
+import { getBlogPosts, saveBlogPosts, BlogPost } from '../../data/store';
 import PencilIcon from '../../components/icons/PencilIcon';
 import TrashIcon from '../../components/icons/TrashIcon';
 import { AnimatePresence, motion } from 'framer-motion';
-
-type BlogPost = {
-  title: string;
-  excerpt: string;
-  image: string; // URL to the image
-};
 
 const BlogModal: React.FC<{
   isOpen: boolean;
@@ -18,12 +12,12 @@ const BlogModal: React.FC<{
 }> = ({ isOpen, onClose, onSave, post }) => {
   const [title, setTitle] = useState(post?.title || '');
   const [excerpt, setExcerpt] = useState(post?.excerpt || '');
-  const [image, setImage] = useState(post?.image || '');
+  const [image, setImage] = useState(post?.image || 'https://picsum.photos/400/250');
 
   React.useEffect(() => {
     setTitle(post?.title || '');
     setExcerpt(post?.excerpt || '');
-    setImage(post?.image || '');
+    setImage(post?.image || 'https://picsum.photos/400/250');
   }, [post]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -71,7 +65,7 @@ const BlogModal: React.FC<{
 
 
 const AdminBlog: React.FC = () => {
-    const [posts, setPosts] = useState<BlogPost[]>(BLOG_POSTS);
+    const [posts, setPosts] = useState<BlogPost[]>(getBlogPosts());
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
 
@@ -87,20 +81,25 @@ const AdminBlog: React.FC = () => {
 
     const handleDelete = (postTitle: string) => {
         if (window.confirm(`Are you sure you want to delete "${postTitle}"?`)) {
-            setPosts(posts.filter(p => p.title !== postTitle));
+            const updatedPosts = posts.filter(p => p.title !== postTitle);
+            setPosts(updatedPosts);
+            saveBlogPosts(updatedPosts);
         }
     };
 
     const handleSave = (post: BlogPost) => {
+        let updatedPosts;
         if (editingPost) {
-            setPosts(posts.map(p => p.title === editingPost.title ? post : p));
+             updatedPosts = posts.map(p => p.title === editingPost.title ? post : p);
         } else {
-            if (posts.some(p => p.title === post.title)) {
+            if (posts.some(p => p.title.toLowerCase() === post.title.toLowerCase())) {
                 alert('A blog post with this title already exists. Please use a unique title.');
                 return;
             }
-            setPosts([post, ...posts]);
+            updatedPosts = [post, ...posts];
         }
+        setPosts(updatedPosts);
+        saveBlogPosts(updatedPosts);
     };
 
     return (

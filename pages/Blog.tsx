@@ -1,6 +1,6 @@
 import React from 'react';
 import BlogPostCard from '../components/BlogPostCard';
-import { BLOG_POSTS } from '../constants';
+import { getBlogPosts } from '../data/store';
 import { motion, Variants } from 'framer-motion';
 
 // FIX: Separated container and item variants to resolve framer-motion type error.
@@ -32,6 +32,8 @@ const itemVariants: Variants = {
 };
 
 const Blog: React.FC = () => {
+  const blogPosts = getBlogPosts();
+
   return (
     <div className="py-20 sm:py-24">
       <div className="container mx-auto px-6 text-center">
@@ -46,16 +48,10 @@ const Blog: React.FC = () => {
           whileInView="onscreen"
           viewport={{ once: true, amount: 0.1 }}
         >
-            {BLOG_POSTS.map((post, index) => (
+            {blogPosts.map((post, index) => (
                 <motion.div key={index} variants={itemVariants}>
                     <BlogPostCard {...post} />
                 </motion.div>
-            ))}
-            {/* You can duplicate or add more posts here for a fuller page */}
-             {BLOG_POSTS.map((post, index) => (
-                 <motion.div key={index+3} variants={itemVariants}>
-                    <BlogPostCard {...post} image={`${post.image}&sig=${index+3}`} />
-                 </motion.div>
             ))}
         </motion.div>
       </div>

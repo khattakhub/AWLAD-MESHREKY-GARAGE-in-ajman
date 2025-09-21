@@ -2,6 +2,7 @@ import React from 'react';
 import ToolCard from '../components/ToolCard';
 import { TOOLS } from '../constants';
 import { motion, Variants } from 'framer-motion';
+import { iconMap } from '../components/icons';
 
 // FIX: Separated container and item variants to resolve framer-motion type error.
 // The container variant is responsible for orchestrating the staggering of child animations.
@@ -49,7 +50,7 @@ const Tools: React.FC = () => {
           {TOOLS.map((tool, index) => (
             <motion.div key={index} variants={itemVariants}>
               <ToolCard 
-                icon={tool.icon}
+                icon={React.createElement(iconMap[tool.iconName], { className: 'w-8 h-8 text-brand-blue' })}
                 title={tool.title}
                 description={tool.description}
                 path={tool.path}

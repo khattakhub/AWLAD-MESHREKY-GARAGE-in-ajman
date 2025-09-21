@@ -1,8 +1,9 @@
 import React from 'react';
 import ServiceCard from '../components/ServiceCard';
-import { SERVICES } from '../constants';
+import { getServices } from '../data/store';
 import { Link } from 'react-router-dom';
 import { motion, Variants } from 'framer-motion';
+import { iconMap } from '../components/icons';
 
 // FIX: Separated container and item variants to resolve framer-motion type error.
 // The container variant is responsible for orchestrating the staggering of child animations.
@@ -33,6 +34,8 @@ const itemVariants: Variants = {
 };
 
 const Services: React.FC = () => {
+  const services = getServices();
+
   return (
     <div className="py-20 sm:py-24">
       <div className="container mx-auto px-6 text-center">
@@ -47,10 +50,10 @@ const Services: React.FC = () => {
           whileInView="onscreen"
           viewport={{ once: true, amount: 0.1 }}
         >
-          {SERVICES.map((service, index) => (
+          {services.map((service, index) => (
              <motion.div key={index} variants={itemVariants}>
               <ServiceCard 
-                icon={service.icon}
+                icon={React.createElement(iconMap[service.iconName], { className: 'w-8 h-8 text-brand-blue' })}
                 title={service.title}
                 description={service.description}
                 link="/booking"

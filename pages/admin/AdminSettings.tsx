@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { SOCIAL_LINKS, POLICIES } from '../../constants';
+import { getSocialLinks, saveSocialLinks, getPolicies, savePolicies } from '../../data/store';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const AdminSettings: React.FC = () => {
-  const [socialLinks, setSocialLinks] = useState(SOCIAL_LINKS);
-  const [policies, setPolicies] = useState(POLICIES);
+  const [socialLinks, setSocialLinks] = useState(getSocialLinks());
+  const [policies, setPolicies] = useState(getPolicies());
   const [showSocialSuccess, setShowSocialSuccess] = useState(false);
   const [showPolicySuccess, setShowPolicySuccess] = useState(false);
 
@@ -18,14 +18,14 @@ const AdminSettings: React.FC = () => {
 
   const handleSocialSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically make an API call to save the data.
-    // For this demo, we just show a success message.
+    saveSocialLinks(socialLinks);
     setShowSocialSuccess(true);
     setTimeout(() => setShowSocialSuccess(false), 3000);
   };
   
   const handlePolicySubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    savePolicies(policies);
     setShowPolicySuccess(true);
     setTimeout(() => setShowPolicySuccess(false), 3000);
   };

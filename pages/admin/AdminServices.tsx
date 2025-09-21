@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
-import { SERVICES } from '../../constants';
+import { getServices, saveServices, Service } from '../../data/store';
+import { iconMap, iconNames } from '../../components/icons';
 import PencilIcon from '../../components/icons/PencilIcon';
 import TrashIcon from '../../components/icons/TrashIcon';
 import { AnimatePresence, motion } from 'framer-motion';
-
-type Service = {
-  title: string;
-  description: string;
-};
 
 const ServiceModal: React.FC<{
   isOpen: boolean;
@@ -17,15 +13,17 @@ const ServiceModal: React.FC<{
 }> = ({ isOpen, onClose, onSave, service }) => {
   const [title, setTitle] = useState(service?.title || '');
   const [description, setDescription] = useState(service?.description || '');
+  const [iconName, setIconName] = useState(service?.iconName || 'wrench');
 
   React.useEffect(() => {
     setTitle(service?.title || '');
     setDescription(service?.description || '');
+    setIconName(service?.iconName || 'wrench');
   }, [service]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ title, description });
+    onSave({ title, description, iconName });
     onClose();
   };
 
@@ -47,6 +45,12 @@ const ServiceModal: React.FC<{
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
               <input type="text" value={title} onChange={e => setTitle(e.target.value)} required className="w-full bg-white dark:bg-brand-dark border border-gray-300 dark:border-brand-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue" />
             </div>
+             <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Icon</label>
+                <select value={iconName} onChange={e => setIconName(e.target.value)} className="w-full bg-white dark:bg-brand-dark border border-gray-300 dark:border-brand-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue appearance-none">
+                    {iconNames.map(name => <option key={name} value={name}>{name}</option>)}
+                </select>
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
               <textarea value={description} onChange={e => setDescription(e.target.value)} required rows={4} className="w-full bg-white dark:bg-brand-dark border border-gray-300 dark:border-brand-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue"></textarea>
@@ -64,7 +68,7 @@ const ServiceModal: React.FC<{
 
 
 const AdminServices: React.FC = () => {
-    const [services, setServices] = useState(SERVICES.map(s => ({ title: s.title, description: s.description })));
+    const [services, setServices] = useState<Service[]>(getServices());
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingService, setEditingService] = useState<Service | null>(null);
 
@@ -80,16 +84,26 @@ const AdminServices: React.FC = () => {
 
     const handleDelete = (serviceTitle: string) => {
         if (window.confirm(`Are you sure you want to delete "${serviceTitle}"?`)) {
-            setServices(services.filter(s => s.title !== serviceTitle));
+            const updatedServices = services.filter(s => s.title !== serviceTitle);
+            setServices(updatedServices);
+            saveServices(updatedServices);
         }
     };
 
     const handleSave = (service: Service) => {
+        let updatedServices;
         if (editingService) {
-            setServices(services.map(s => s.title === editingService.title ? service : s));
+            // Use original title from editingService for matching, in case title was changed
+            updatedServices = services.map(s => s.title === editingService.title ? service : s);
         } else {
-            setServices([...services, service]);
+            if (services.some(s => s.title.toLowerCase() === service.title.toLowerCase())) {
+                alert('A service with this title already exists.');
+                return;
+            }
+            updatedServices = [...services, service];
         }
+        setServices(updatedServices);
+        saveServices(updatedServices);
     };
 
     return (
@@ -103,6 +117,7 @@ const AdminServices: React.FC = () => {
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-brand-card/30 dark:text-gray-300">
                     <tr>
+                        <th scope="col" className="px-6 py-3">Icon</th>
                         <th scope="col" className="px-6 py-3">Title</th>
                         <th scope="col" className="px-6 py-3">Description</th>
                         <th scope="col" className="px-6 py-3 text-right">Actions</th>
@@ -111,6 +126,9 @@ const AdminServices: React.FC = () => {
                     <tbody>
                     {services.map((service, index) => (
                         <tr key={index} className="bg-white dark:bg-brand-card border-b dark:border-brand-border">
+                        <td className="px-6 py-4">
+                            <span className="text-brand-blue">{React.createElement(iconMap[service.iconName], { className: 'w-6 h-6' })}</span>
+                        </td>
                         <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">{service.title}</td>
                         <td className="px-6 py-4 max-w-md">{service.description}</td>
                         <td className="px-6 py-4 text-right whitespace-nowrap">
