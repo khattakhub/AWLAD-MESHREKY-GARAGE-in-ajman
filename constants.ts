@@ -1,4 +1,3 @@
-
 import React from 'react';
 import WrenchIcon from './components/icons/WrenchIcon';
 import OilDropIcon from './components/icons/OilDropIcon';
@@ -99,3 +98,19 @@ export const BLOG_POSTS = [
       image: "https://picsum.photos/400/250?grayscale&blur=1&random=12",
     },
 ];
+
+export const SOCIAL_LINKS = {
+  facebook: 'https://facebook.com/awladmeshreky',
+  instagram: 'https://instagram.com/awladmeshreky',
+  linkedin: 'https://linkedin.com/company/awladmeshreky',
+  twitter: 'https://twitter.com/awladmeshreky',
+};
+
+export const POLICIES = {
+  terms: `Welcome to Awlad Meshreky Garage. These terms and conditions outline the rules and regulations for the use of our website and services.
+By accessing this website, we assume you accept these terms and conditions. Do not continue to use Awlad Meshreky Garage if you do not agree to all of the terms and conditions stated on this page.`,
+  privacy: `Your privacy is important to us. It is Awlad Meshreky Garage's policy to respect your privacy regarding any information we may collect from you across our website.
+We only ask for personal information when we truly need it to provide a service to you. We collect it by fair and lawful means, with your knowledge and consent.`,
+  refund: `Our policy lasts 30 days. If 30 days have gone by since your service, unfortunately, we can’t offer you a refund or exchange.
+To be eligible for a return, your item must be unused and in the same condition that you received it. It must also be in the original packaging.`,
+};

@@ -4,6 +4,7 @@ import FacebookIcon from './icons/FacebookIcon';
 import InstagramIcon from './icons/InstagramIcon';
 import LinkedinIcon from './icons/LinkedinIcon';
 import TwitterIcon from './icons/TwitterIcon';
+import { SOCIAL_LINKS } from '../constants';
 
 const Footer: React.FC = () => {
   return (
@@ -32,9 +33,9 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Legal</h4>
             <ul className="space-y-3">
-              <li><a href="#" className="text-gray-500 dark:text-gray-400 hover:text-brand-blue text-sm transition">Terms of Service</a></li>
-              <li><a href="#" className="text-gray-500 dark:text-gray-400 hover:text-brand-blue text-sm transition">Privacy Policy</a></li>
-              <li><a href="#" className="text-gray-500 dark:text-gray-400 hover:text-brand-blue text-sm transition">Refund Policy</a></li>
+              <li><Link to="/terms" className="text-gray-500 dark:text-gray-400 hover:text-brand-blue text-sm transition">Terms of Service</Link></li>
+              <li><Link to="/privacy" className="text-gray-500 dark:text-gray-400 hover:text-brand-blue text-sm transition">Privacy Policy</Link></li>
+              <li><Link to="/refund" className="text-gray-500 dark:text-gray-400 hover:text-brand-blue text-sm transition">Refund Policy</Link></li>
             </ul>
           </div>
 
@@ -61,10 +62,10 @@ const Footer: React.FC = () => {
         <div className="mt-12 pt-8 border-t border-gray-200 dark:border-brand-border flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
           <p>&copy; {new Date().getFullYear()} AWLAD MESHREKY GARAGE. All Rights Reserved.</p>
           <div className="flex space-x-4 mt-4 md:mt-0">
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition"><FacebookIcon className="w-5 h-5" /></a>
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition"><InstagramIcon className="w-5 h-5" /></a>
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition"><LinkedinIcon className="w-5 h-5" /></a>
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition"><TwitterIcon className="w-5 h-5" /></a>
+            <a href={SOCIAL_LINKS.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition"><FacebookIcon className="w-5 h-5" /></a>
+            <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition"><InstagramIcon className="w-5 h-5" /></a>
+            <a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition"><LinkedinIcon className="w-5 h-5" /></a>
+            <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition"><TwitterIcon className="w-5 h-5" /></a>
           </div>
         </div>
       </div>

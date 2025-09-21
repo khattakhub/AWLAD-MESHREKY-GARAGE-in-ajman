@@ -22,6 +22,11 @@ import AdminAppointments from './pages/admin/AdminAppointments';
 import AdminSubscribers from './pages/admin/AdminSubscribers';
 import AdminServices from './pages/admin/AdminServices';
 import AdminBlog from './pages/admin/AdminBlog';
+import AdminSettings from './pages/admin/AdminSettings';
+
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
+import Refund from './pages/Refund';
 
 
 const ScrollToTop: React.FC = () => {
@@ -68,6 +73,9 @@ const AppContent: React.FC = () => {
                             <Route path="/blog" element={<PageWrapper><Blog /></PageWrapper>} />
                             <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
                             <Route path="/booking" element={<PageWrapper><Booking /></PageWrapper>} />
+                            <Route path="/terms" element={<PageWrapper><Terms /></PageWrapper>} />
+                            <Route path="/privacy" element={<PageWrapper><Privacy /></PageWrapper>} />
+                            <Route path="/refund" element={<PageWrapper><Refund /></PageWrapper>} />
 
                             {/* Admin Routes */}
                             <Route path="/admin/login" element={<AdminLogin />} />
@@ -78,6 +86,7 @@ const AppContent: React.FC = () => {
                                 <Route path="subscribers" element={<AdminSubscribers />} />
                                 <Route path="services" element={<AdminServices />} />
                                 <Route path="blog" element={<AdminBlog />} />
+                                <Route path="settings" element={<AdminSettings />} />
                             </Route>
                         </Routes>
                     </AnimatePresence>

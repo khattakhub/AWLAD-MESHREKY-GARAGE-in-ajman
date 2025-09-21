@@ -6,6 +6,7 @@ import UsersIcon from '../icons/UsersIcon';
 import WrenchIcon from '../icons/WrenchIcon';
 import LogoutIcon from '../icons/LogoutIcon';
 import DocumentIcon from '../icons/DocumentIcon';
+import SettingsIcon from '../icons/SettingsIcon';
 
 const AdminSidebar: React.FC = () => {
   const navigate = useNavigate();
@@ -46,6 +47,10 @@ const AdminSidebar: React.FC = () => {
           <NavLink to="/admin/services" className={({ isActive }) => `${linkClasses} ${isActive ? activeLinkClasses : 'hover:bg-gray-100 dark:hover:bg-brand-border'}`}>
             <WrenchIcon className="w-5 h-5 mr-3" />
             <span className="font-medium">Manage Services</span>
+          </NavLink>
+          <NavLink to="/admin/settings" className={({ isActive }) => `${linkClasses} ${isActive ? activeLinkClasses : 'hover:bg-gray-100 dark:hover:bg-brand-border'}`}>
+            <SettingsIcon className="w-5 h-5 mr-3" />
+            <span className="font-medium">Settings</span>
           </NavLink>
         </nav>
       </div>
