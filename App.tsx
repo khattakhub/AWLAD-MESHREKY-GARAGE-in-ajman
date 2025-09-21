@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -15,6 +15,15 @@ import { ThemeProvider } from './ThemeContext';
 import WhatsappButton from './components/WhatsappButton';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminLayout from './pages/admin/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminAppointments from './pages/admin/AdminAppointments';
+import AdminSubscribers from './pages/admin/AdminSubscribers';
+import AdminServices from './pages/admin/AdminServices';
+import AdminBlog from './pages/admin/AdminBlog';
+
+
 const ScrollToTop: React.FC = () => {
   const { pathname } = useLocation();
 
@@ -25,22 +34,58 @@ const ScrollToTop: React.FC = () => {
   return null;
 };
 
-const AnimatedRoutes: React.FC = () => {
-    const location = useLocation();
+const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return (
-        <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
-                <Route path="/" element={<Home />} />
-                <Route path="/services" element={<Services />} />
-                <Route path="/tools" element={<Tools />} />
-                <Route path="/tools/car-loan-calculator" element={<CarLoanCalculator />} />
-                <Route path="/tools/fuel-cost-estimator" element={<FuelCostEstimator />} />
-                <Route path="/tools/car-resale-value-estimator" element={<CarResaleValueEstimator />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/booking" element={<Booking />} />
-            </Routes>
-        </AnimatePresence>
+        <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.3 }}
+        >
+            {children}
+        </motion.div>
+    );
+};
+
+const AppContent: React.FC = () => {
+    const location = useLocation();
+    const isAdminRoute = location.pathname.startsWith('/admin');
+
+    return (
+        <>
+            <ScrollToTop />
+            <div className="bg-white dark:bg-brand-dark text-gray-700 dark:text-gray-300 min-h-screen font-sans transition-colors duration-300">
+                {!isAdminRoute && <Header />}
+                <main className={!isAdminRoute ? 'pt-16' : ''}>
+                    <AnimatePresence mode="wait">
+                        <Routes location={location} key={location.pathname}>
+                            <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
+                            <Route path="/services" element={<PageWrapper><Services /></PageWrapper>} />
+                            <Route path="/tools" element={<PageWrapper><Tools /></PageWrapper>} />
+                            <Route path="/tools/car-loan-calculator" element={<PageWrapper><CarLoanCalculator /></PageWrapper>} />
+                            <Route path="/tools/fuel-cost-estimator" element={<PageWrapper><FuelCostEstimator /></PageWrapper>} />
+                            <Route path="/tools/car-resale-value-estimator" element={<PageWrapper><CarResaleValueEstimator /></PageWrapper>} />
+                            <Route path="/blog" element={<PageWrapper><Blog /></PageWrapper>} />
+                            <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
+                            <Route path="/booking" element={<PageWrapper><Booking /></PageWrapper>} />
+
+                            {/* Admin Routes */}
+                            <Route path="/admin/login" element={<AdminLogin />} />
+                            <Route path="/admin" element={<AdminLayout />}>
+                                <Route index element={<Navigate to="/admin/dashboard" replace />} />
+                                <Route path="dashboard" element={<AdminDashboard />} />
+                                <Route path="appointments" element={<AdminAppointments />} />
+                                <Route path="subscribers" element={<AdminSubscribers />} />
+                                <Route path="services" element={<AdminServices />} />
+                                <Route path="blog" element={<AdminBlog />} />
+                            </Route>
+                        </Routes>
+                    </AnimatePresence>
+                </main>
+                {!isAdminRoute && <Footer />}
+                {!isAdminRoute && <WhatsappButton />}
+            </div>
+        </>
     );
 }
 
@@ -48,21 +93,7 @@ const App: React.FC = () => {
   return (
     <ThemeProvider>
       <HashRouter>
-        <ScrollToTop />
-        <div className="bg-white dark:bg-brand-dark text-gray-700 dark:text-gray-300 min-h-screen font-sans transition-colors duration-300">
-          <Header />
-          <motion.main
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="pt-16"
-          >
-            <AnimatedRoutes />
-          </motion.main>
-          <Footer />
-          <WhatsappButton />
-        </div>
+        <AppContent />
       </HashRouter>
     </ThemeProvider>
   );
