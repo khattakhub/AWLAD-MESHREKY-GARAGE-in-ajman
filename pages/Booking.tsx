@@ -22,6 +22,7 @@ const Booking: React.FC = () => {
   const [time, setTime] = useState('');
   const [message, setMessage] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     setService(getSelectedService());
@@ -37,14 +38,15 @@ const Booking: React.FC = () => {
     setMessage('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName || !phoneNumber || !service || !date || !time) {
       alert('Please fill out all required fields.');
       return;
     }
 
-    addAppointment({
+    setIsSubmitting(true);
+    await addAppointment({
       fullName,
       phoneNumber,
       email,
@@ -54,6 +56,7 @@ const Booking: React.FC = () => {
       message,
     });
     
+    setIsSubmitting(false);
     resetForm();
     setShowSuccess(true);
     window.scrollTo(0, 0);
@@ -120,8 +123,8 @@ const Booking: React.FC = () => {
                 <textarea id="message" rows={4} value={message} onChange={e => setMessage(e.target.value)} placeholder="Tell us about your car or the issue..." className="w-full bg-white dark:bg-brand-dark border border-gray-300 dark:border-brand-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue"></textarea>
               </div>
               <div className="md:col-span-2">
-                <button type="submit" className="w-full bg-brand-blue hover:bg-brand-blue-hover text-white font-bold py-3 px-8 rounded-lg text-md transition duration-300">
-                  Send Request
+                <button type="submit" className="w-full bg-brand-blue hover:bg-brand-blue-hover text-white font-bold py-3 px-8 rounded-lg text-md transition duration-300 disabled:opacity-50" disabled={isSubmitting}>
+                  {isSubmitting ? 'Sending Request...' : 'Send Request'}
                 </button>
               </div>
             </form>

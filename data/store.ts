@@ -6,6 +6,8 @@ import {
     SOCIAL_LINKS as INITIAL_SOCIAL_LINKS
 } from '../constants';
 import { MOCK_APPOINTMENTS, MOCK_SUBSCRIBERS } from '../pages/admin/mockData';
+import { db } from './firebase';
+import { collection, getDocs, addDoc, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
 
 // Types
 export type Service = {
@@ -29,7 +31,7 @@ export type Testimonial = {
 };
 
 export type Appointment = {
-    id: number;
+    id: string;
     fullName: string;
     phoneNumber: string;
     email?: string;
@@ -37,6 +39,7 @@ export type Appointment = {
     date: string;
     time: string;
     message?: string;
+    status: 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
 };
 
 export type Subscriber = {
@@ -160,18 +163,42 @@ export const saveBlogPosts = (posts: BlogPost[]): void => saveToStore('blogPosts
 export const getTestimonials = (): Testimonial[] => INITIAL_TESTIMONIALS;
 
 // Appointments
-export const getAppointments = (): Appointment[] => getFromStore('appointments', []);
-export const addAppointment = (appointment: Omit<Appointment, 'id'>): void => {
-    const appointments = getAppointments();
-    const newAppointment: Appointment = {
-        ...appointment,
-        id: appointments.length > 0 ? Math.max(...appointments.map(a => a.id)) + 1 : 1,
-    };
-    saveToStore('appointments', [...appointments, newAppointment]);
+const appointmentsCollection = collection(db, 'appointments');
+
+export const getAppointments = async (): Promise<Appointment[]> => {
+    try {
+        const q = query(appointmentsCollection, orderBy('date', 'desc'), orderBy('time', 'desc'));
+        const querySnapshot = await getDocs(q);
+        const appointments = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        } as Appointment));
+        return appointments;
+    } catch (error) {
+        console.error("Error fetching appointments from Firestore: ", error);
+        return [];
+    }
 };
-export const deleteAppointment = (id: number): void => {
-    const appointments = getAppointments();
-    saveToStore('appointments', appointments.filter(a => a.id !== id));
+
+export const addAppointment = async (appointment: Omit<Appointment, 'id' | 'status'>): Promise<void> => {
+    try {
+        const appointmentData = {
+            ...appointment,
+            status: 'Pending' as const
+        };
+        await addDoc(appointmentsCollection, appointmentData);
+    } catch (error) {
+        console.error("Error adding appointment to Firestore: ", error);
+    }
+};
+
+export const deleteAppointment = async (id: string): Promise<void> => {
+    try {
+        const appointmentDoc = doc(db, 'appointments', id);
+        await deleteDoc(appointmentDoc);
+    } catch (error) {
+        console.error("Error deleting appointment from Firestore: ", error);
+    }
 };
 
 

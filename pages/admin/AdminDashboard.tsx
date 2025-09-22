@@ -26,19 +26,23 @@ const AdminDashboard: React.FC = () => {
     });
 
     useEffect(() => {
-        setStats({
-            appointments: getAppointments().length,
-            subscribers: getSubscribers().length,
-            services: getServices().length,
-            blogPosts: getBlogPosts().length,
-        });
+        const fetchStats = async () => {
+            const appointmentsData = await getAppointments();
+            setStats({
+                appointments: appointmentsData.length,
+                subscribers: getSubscribers().length,
+                services: getServices().length,
+                blogPosts: getBlogPosts().length,
+            });
+        };
+        fetchStats();
     }, []);
 
     return (
         <div>
             <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">Dashboard</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatCard title="Pending Appointments" value={stats.appointments} icon={<CalendarIcon className="w-6 h-6" />} />
+                <StatCard title="Total Appointments" value={stats.appointments} icon={<CalendarIcon className="w-6 h-6" />} />
                 <StatCard title="Email Subscribers" value={stats.subscribers} icon={<UsersIcon className="w-6 h-6" />} />
                 <StatCard title="Total Services Offered" value={stats.services} icon={<WrenchIcon className="w-6 h-6" />} />
                 <StatCard title="Published Blog Posts" value={stats.blogPosts} icon={<DocumentIcon className="w-6 h-6" />} />
@@ -48,7 +52,7 @@ const AdminDashboard: React.FC = () => {
                  <p className="text-gray-600 dark:text-gray-300">
                     This is your control panel. You can view appointment requests, see your newsletter subscribers, manage blog posts, and manage the services listed on your website.
                     <br/><br/>
-                    Use the navigation on the left to get started. All data is now saved in your browser's local storage.
+                    Appointment data is now managed using Firebase Firestore. Other data is saved in your browser's local storage. Use the navigation on the left to get started.
                  </p>
             </div>
         </div>

@@ -4,15 +4,23 @@ import TrashIcon from '../../components/icons/TrashIcon';
 
 const AdminAppointments: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchAppointments = async () => {
+    setLoading(true);
+    const appts = await getAppointments();
+    setAppointments(appts);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    setAppointments(getAppointments());
+    fetchAppointments();
   }, []);
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this appointment request?')) {
-      deleteAppointment(id);
-      setAppointments(getAppointments());
+      await deleteAppointment(id);
+      fetchAppointments();
     }
   };
 
@@ -28,14 +36,19 @@ const AdminAppointments: React.FC = () => {
                 <th scope="col" className="px-6 py-3">Phone</th>
                 <th scope="col" className="px-6 py-3">Service</th>
                 <th scope="col" className="px-6 py-3">Date & Time</th>
+                <th scope="col" className="px-6 py-3">Status</th>
                 <th scope="col" className="px-6 py-3">Message</th>
                 <th scope="col" className="px-6 py-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {appointments.length === 0 ? (
+              {loading ? (
                 <tr>
-                  <td colSpan={6} className="text-center py-10 text-gray-500 dark:text-gray-400">No appointment requests yet.</td>
+                  <td colSpan={7} className="text-center py-10 text-gray-500 dark:text-gray-400">Loading appointments...</td>
+                </tr>
+              ) : appointments.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="text-center py-10 text-gray-500 dark:text-gray-400">No appointment requests yet.</td>
                 </tr>
               ) : (
                 appointments.map((appt) => (
@@ -44,7 +57,16 @@ const AdminAppointments: React.FC = () => {
                     <td className="px-6 py-4">{appt.phoneNumber}</td>
                     <td className="px-6 py-4">{appt.service}</td>
                     <td className="px-6 py-4">{appt.date} @ {appt.time}</td>
-                    <td className="px-6 py-4 max-w-xs truncate">{appt.message}</td>
+                    <td className="px-6 py-4">
+                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                            appt.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300' :
+                            appt.status === 'Confirmed' ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300' :
+                            'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                        }`}>
+                            {appt.status}
+                        </span>
+                    </td>
+                    <td className="px-6 py-4 max-w-xs truncate" title={appt.message}>{appt.message}</td>
                     <td className="px-6 py-4 text-right">
                       <button onClick={() => handleDelete(appt.id)} className="text-red-500 hover:text-red-700 p-2">
                         <TrashIcon className="w-4 h-4" />
