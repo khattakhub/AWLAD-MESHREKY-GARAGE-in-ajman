@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import ServiceCard from '../components/ServiceCard';
 import ToolCard from '../components/ToolCard';
 import TestimonialCard from '../components/TestimonialCard';
-import BlogPostCard from '../components/BlogPostCard';
-import { getServices, getBlogPosts, getTestimonials } from '../data/store';
+import { getServices, getTestimonials } from '../data/store';
 import { TOOLS } from '../constants';
 import { motion, Variants } from 'framer-motion';
 import { iconMap } from '../components/icons';
@@ -52,7 +51,6 @@ const Section: React.FC<{ title: string; subtitle: string; children: React.React
 
 const Home: React.FC = () => {
     const services = getServices();
-    const blogPosts = getBlogPosts();
     const testimonials = getTestimonials();
 
     return (
@@ -144,30 +142,6 @@ const Home: React.FC = () => {
                             <TestimonialCard {...testimonial} />
                         </motion.div>
                     ))}
-                </motion.div>
-            </Section>
-
-            {/* Blog Section */}
-            <Section
-                id="blog"
-                title="From Our Blog"
-                subtitle="Get the latest car care tips, industry news, and expert advice from our seasoned technicians."
-                isGray={true}
-            >
-                <motion.div
-                    className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left"
-                    variants={cardContainerVariants}
-                >
-                    {blogPosts.slice(0, 3).map((post, index) => (
-                        <motion.div key={index} variants={cardVariants}>
-                            <BlogPostCard {...post} />
-                        </motion.div>
-                    ))}
-                </motion.div>
-                 <motion.div variants={cardVariants} className="mt-12">
-                    <Link to="/blog" className="text-brand-blue font-semibold hover:underline">
-                        Read More Articles &rarr;
-                    </Link>
                 </motion.div>
             </Section>
         </div>

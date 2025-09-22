@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import FacebookIcon from './icons/FacebookIcon';
 import InstagramIcon from './icons/InstagramIcon';
-import LinkedinIcon from './icons/LinkedinIcon';
-import TwitterIcon from './icons/TwitterIcon';
 // FIX: Replaced require() with an ES6 import for addSubscriber.
 import { getSocialLinks, addSubscriber } from '../data/store';
 
@@ -86,8 +84,6 @@ const Footer: React.FC = () => {
           <div className="flex space-x-4 mt-4 md:mt-0">
             <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition"><FacebookIcon className="w-5 h-5" /></a>
             <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition"><InstagramIcon className="w-5 h-5" /></a>
-            <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition"><LinkedinIcon className="w-5 h-5" /></a>
-            <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition"><TwitterIcon className="w-5 h-5" /></a>
           </div>
         </div>
       </div>
