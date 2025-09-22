@@ -38,6 +38,7 @@ const Header: React.FC = () => {
       <NavLink to="/tools" className={mobile ? mobileNavLinkClasses : navLinkClasses}>Tools</NavLink>
       <NavLink to="/blog" className={mobile ? mobileNavLinkClasses : navLinkClasses}>Blog</NavLink>
       <NavLink to="/contact" className={mobile ? mobileNavLinkClasses : navLinkClasses}>Contact</NavLink>
+      <NavLink to="/admin" className={mobile ? mobileNavLinkClasses : navLinkClasses}>Admin</NavLink>
     </>
   );
 
