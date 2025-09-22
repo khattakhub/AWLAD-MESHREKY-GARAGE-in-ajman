@@ -29,6 +29,7 @@ import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Refund from './pages/Refund';
 import Loader from './components/Loader';
+import MobileBottomNav from './components/MobileBottomNav';
 
 
 const ScrollToTop: React.FC = () => {
@@ -63,7 +64,7 @@ const AppContent: React.FC = () => {
             <ScrollToTop />
             <div className="bg-white dark:bg-brand-dark text-gray-700 dark:text-gray-300 min-h-screen font-sans transition-colors duration-300">
                 {!isAdminRoute && <Header />}
-                <main className={!isAdminRoute ? 'pt-16' : ''}>
+                <main className={`${!isAdminRoute ? 'pt-16' : ''} pb-16 md:pb-0`}>
                     <AnimatePresence mode="wait">
                         <Routes location={location} key={location.pathname}>
                             <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
@@ -96,6 +97,7 @@ const AppContent: React.FC = () => {
                 </main>
                 {!isAdminRoute && <Footer />}
                 {!isAdminRoute && <WhatsappButton />}
+                {!isAdminRoute && <MobileBottomNav />}
             </div>
         </>
     );

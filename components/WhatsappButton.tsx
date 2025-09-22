@@ -8,7 +8,7 @@ const WhatsappButton: React.FC = () => {
       href="https://wa.me/971508361799"
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 bg-whatsapp-green text-white rounded-full shadow-lg z-50 flex items-center justify-center w-16 h-16 cursor-pointer"
+      className="fixed bottom-24 md:bottom-6 right-6 bg-whatsapp-green text-white rounded-full shadow-lg z-50 flex items-center justify-center w-16 h-16 cursor-pointer"
       aria-label="Chat on WhatsApp"
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
