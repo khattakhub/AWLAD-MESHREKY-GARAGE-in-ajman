@@ -37,7 +37,7 @@ const cardVariants: Variants = {
 const Section: React.FC<{ title: string; subtitle: string; children: React.ReactNode; id: string; isGray?: boolean }> = ({ title, subtitle, children, id, isGray }) => (
     <motion.section
         id={id}
-        className={`py-20 sm:py-24 ${isGray ? 'bg-gray-50 dark:bg-brand-card/30' : ''}`}
+        className={`py-16 sm:py-20 ${isGray ? 'bg-gray-50 dark:bg-brand-card/30' : ''}`}
         initial="offscreen"
         whileInView="onscreen"
         viewport={{ once: true, amount: 0.2 }}
@@ -58,14 +58,14 @@ const Home: React.FC = () => {
     return (
         <div>
             {/* Hero Section */}
-            <section className="relative text-center py-24 sm:py-32 md:py-40 flex items-center justify-center bg-gray-50 dark:bg-transparent">
+            <section className="relative text-center py-20 sm:py-28 md:py-32 flex items-center justify-center bg-gray-50 dark:bg-transparent">
                 <motion.div
                     className="container mx-auto px-6 z-10"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                 >
-                    <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 dark:text-white uppercase tracking-wider mb-4 leading-tight">
+                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 dark:text-white uppercase tracking-wider mb-4 leading-tight">
                         Premium Auto Care in Ajman
                     </h1>
                     <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">

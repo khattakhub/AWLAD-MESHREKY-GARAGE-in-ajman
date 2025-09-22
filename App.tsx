@@ -61,7 +61,7 @@ const AppContent: React.FC = () => {
             <ScrollToTop />
             <div className="bg-white dark:bg-brand-dark text-gray-700 dark:text-gray-300 min-h-screen font-sans transition-colors duration-300">
                 {!isAdminRoute && <Header />}
-                <main className={!isAdminRoute ? 'pt-20' : ''}>
+                <main className={!isAdminRoute ? 'pt-16' : ''}>
                     <AnimatePresence mode="wait">
                         <Routes location={location} key={location.pathname}>
                             <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />

@@ -43,7 +43,7 @@ const Header: React.FC = () => {
     <>
       <header className="fixed top-0 left-0 right-0 bg-white/80 dark:bg-brand-dark/80 backdrop-blur-sm z-50 border-b border-gray-200 dark:border-brand-border transition-colors duration-300">
         <div className="container mx-auto px-6">
-          <nav className="flex justify-between items-center h-20">
+          <nav className="flex justify-between items-center h-16">
             <Link to="/" className="text-xl font-bold tracking-wider text-gray-900 dark:text-white">
               AWLAD MESHREKY
             </Link>

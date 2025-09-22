@@ -18,16 +18,16 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ icon, title, description, lin
       <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">{description}</p>
       {link && (
         <div className="mt-auto pt-4">
-          <span className="text-brand-blue font-semibold text-sm hover:underline">
+          <div className="inline-block bg-transparent border border-brand-blue text-brand-blue font-semibold text-sm py-2 px-4 rounded-lg group-hover:bg-brand-blue group-hover:text-white transition-colors duration-300">
             Book Now &rarr;
-          </span>
+          </div>
         </div>
       )}
     </>
   );
 
   return (
-    <div className="bg-white dark:bg-brand-card border border-gray-200 dark:border-brand-border rounded-lg p-6 flex flex-col h-full transition-all duration-300 hover:border-brand-blue hover:shadow-lg hover:shadow-brand-blue/10 hover:-translate-y-2">
+    <div className="group bg-white dark:bg-brand-card border border-gray-200 dark:border-brand-border rounded-lg p-6 flex flex-col h-full transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/10 hover:-translate-y-2 border-l-4 border-l-brand-blue">
       {link ? <Link to={bookingUrl} className="flex flex-col h-full">{content}</Link> : content}
     </div>
   );

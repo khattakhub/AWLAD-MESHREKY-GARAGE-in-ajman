@@ -38,7 +38,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
 
   return (
     <aside className="flex-shrink-0 w-64 h-full bg-white dark:bg-brand-card border-r dark:border-brand-border flex flex-col">
-      <div className="flex items-center justify-center h-16 md:h-20 border-b dark:border-brand-border flex-shrink-0 px-4">
+      <div className="flex items-center justify-center h-16 border-b dark:border-brand-border flex-shrink-0 px-4">
          <Link to="/admin" onClick={onLinkClick} className="text-xl font-bold tracking-wider text-gray-900 dark:text-white">
             ADMIN PANEL
           </Link>
