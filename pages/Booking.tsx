@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getServices, addAppointment } from '../data/store';
-import { AnimatePresence, motion } from 'framer-motion';
+// FIX: Switched to a namespace import for framer-motion to resolve type errors with motion props.
+import * as FM from 'framer-motion';
 
 const Booking: React.FC = () => {
   const services = getServices();
@@ -67,9 +69,11 @@ const Booking: React.FC = () => {
             <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">Fill out the form below to schedule your visit. We'll confirm your appointment shortly.</p>
           </div>
 
-          <AnimatePresence>
+          {/* FIX: Replaced `AnimatePresence` with `FM.AnimatePresence` to use the namespaced import. */}
+          <FM.AnimatePresence>
             {showSuccess && (
-              <motion.div
+              // FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import.
+              <FM.motion.div
                 className="bg-green-100 dark:bg-green-900/50 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-300 px-4 py-3 rounded-lg relative mb-6"
                 role="alert"
                 initial={{ opacity: 0, y: -20 }}
@@ -78,9 +82,9 @@ const Booking: React.FC = () => {
               >
                 <strong className="font-bold">Success!</strong>
                 <span className="block sm:inline"> Your appointment request has been sent. We will contact you shortly to confirm.</span>
-              </motion.div>
+              </FM.motion.div>
             )}
-          </AnimatePresence>
+          </FM.AnimatePresence>
 
           <div className="bg-gray-50 dark:bg-brand-card border border-gray-200 dark:border-brand-border rounded-lg p-8">
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">

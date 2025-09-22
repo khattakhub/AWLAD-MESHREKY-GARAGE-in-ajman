@@ -1,7 +1,9 @@
+
 import React, { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import FuelIcon from '../components/icons/FuelIcon';
-import { motion, AnimatePresence } from 'framer-motion';
+// FIX: Switched to a namespace import for framer-motion to resolve type errors with motion props.
+import * as FM from 'framer-motion';
 
 const FuelCostEstimator: React.FC = () => {
   const [distance, setDistance] = useState<number | string>(100);
@@ -85,9 +87,11 @@ const FuelCostEstimator: React.FC = () => {
               </button>
             </div>
 
-            <AnimatePresence>
+            {/* FIX: Replaced `AnimatePresence` with `FM.AnimatePresence` to use the namespaced import. */}
+            <FM.AnimatePresence>
                 {totalCost && (
-                <motion.div
+                // FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import.
+                <FM.motion.div
                     initial={{ opacity: 0, scale: 0.95, height: 0 }}
                     animate={{ opacity: 1, scale: 1, height: 'auto' }}
                     exit={{ opacity: 0, scale: 0.95, height: 0 }}
@@ -98,9 +102,9 @@ const FuelCostEstimator: React.FC = () => {
                     <p className="text-4xl font-extrabold text-gray-900 dark:text-white mt-2">
                     AED <span className="text-brand-blue">{totalCost}</span>
                     </p>
-                </motion.div>
+                </FM.motion.div>
                 )}
-            </AnimatePresence>
+            </FM.AnimatePresence>
         </div>
       </div>
     </div>

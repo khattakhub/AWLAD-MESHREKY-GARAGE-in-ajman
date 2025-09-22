@@ -1,8 +1,10 @@
+
 import React, { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import MenuIcon from '../../components/icons/MenuIcon';
-import { AnimatePresence, motion } from 'framer-motion';
+// FIX: Switched to a namespace import for framer-motion to resolve type errors with motion props.
+import * as FM from 'framer-motion';
 
 const AdminLayout: React.FC = () => {
   const navigate = useNavigate();
@@ -27,10 +29,12 @@ const AdminLayout: React.FC = () => {
       </div>
 
       {/* Mobile Sidebar */}
-      <AnimatePresence>
+      {/* FIX: Replaced `AnimatePresence` with `FM.AnimatePresence` to use the namespaced import. */}
+      <FM.AnimatePresence>
         {isSidebarOpen && (
           <>
-            <motion.div
+            {/* FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import. */}
+            <FM.motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -38,7 +42,8 @@ const AdminLayout: React.FC = () => {
               className="fixed inset-0 bg-black/50 z-40 md:hidden"
               onClick={() => setSidebarOpen(false)}
             />
-            <motion.div
+            {/* FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import. */}
+            <FM.motion.div
               className="fixed inset-y-0 left-0 z-50 md:hidden"
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
@@ -46,10 +51,10 @@ const AdminLayout: React.FC = () => {
               transition={{ type: "tween", ease: "easeInOut", duration: 0.3 }}
             >
               <AdminSidebar onLinkClick={() => setSidebarOpen(false)} />
-            </motion.div>
+            </FM.motion.div>
           </>
         )}
-      </AnimatePresence>
+      </FM.AnimatePresence>
       
       <div className="flex-grow flex flex-col">
         {/* Mobile Header */}

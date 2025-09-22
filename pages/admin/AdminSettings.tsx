@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
     getSocialLinks, saveSocialLinks, 
@@ -5,7 +6,8 @@ import {
     getHeroData, saveHeroData,
     getWhyChooseUsData, saveWhyChooseUsData
 } from '../../data/store';
-import { AnimatePresence, motion } from 'framer-motion';
+// FIX: Switched to a namespace import for framer-motion to resolve type errors with motion props.
+import * as FM from 'framer-motion';
 
 const AdminSettings: React.FC = () => {
   const [socialLinks, setSocialLinks] = useState(getSocialLinks());
@@ -32,6 +34,19 @@ const AdminSettings: React.FC = () => {
 
   const handleWhyChooseUsChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setWhyChooseUsData({ ...whyChooseUsData, [e.target.name]: e.target.value });
+  };
+
+  const handleWhyChooseUsImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            if (typeof reader.result === 'string') {
+                setWhyChooseUsData({ ...whyChooseUsData, imageUrl: reader.result });
+            }
+        };
+        reader.readAsDataURL(file);
+    }
   };
 
   const handleFeatureChange = (index: number, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -70,14 +85,15 @@ const AdminSettings: React.FC = () => {
   };
 
   const SuccessMessage: React.FC = () => (
-    <motion.div
+    // FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import.
+    <FM.motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
         className="text-sm text-green-600 dark:text-green-400"
     >
         Settings saved successfully!
-    </motion.div>
+    </FM.motion.div>
   );
 
   return (
@@ -120,9 +136,10 @@ const AdminSettings: React.FC = () => {
               </div>
             </div>
             <div className="flex justify-end items-center gap-4">
-              <AnimatePresence>
+              {/* FIX: Replaced `AnimatePresence` with `FM.AnimatePresence` to use the namespaced import. */}
+              <FM.AnimatePresence>
                   {showHeroSuccess && <SuccessMessage />}
-              </AnimatePresence>
+              </FM.AnimatePresence>
               <button type="submit" className="bg-brand-blue hover:bg-brand-blue-hover text-white font-semibold py-2 px-5 rounded-lg transition duration-300 text-sm">Save Hero Section</button>
             </div>
         </form>
@@ -141,8 +158,9 @@ const AdminSettings: React.FC = () => {
               <input type="text" name="subtitle" id="why-subtitle" value={whyChooseUsData.subtitle} onChange={handleWhyChooseUsChange} className="w-full bg-white dark:bg-brand-dark border border-gray-300 dark:border-brand-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue" />
             </div>
             <div>
-              <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Image URL</label>
-              <input type="text" name="imageUrl" id="imageUrl" value={whyChooseUsData.imageUrl} onChange={handleWhyChooseUsChange} className="w-full bg-white dark:bg-brand-dark border border-gray-300 dark:border-brand-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue" />
+              <label htmlFor="whyChooseUsImage" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Image</label>
+              <input type="file" id="whyChooseUsImage" accept="image/*" onChange={handleWhyChooseUsImageChange} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-brand-blue/10 file:text-brand-blue hover:file:bg-brand-blue/20 dark:file:bg-brand-blue/20 dark:file:text-white" />
+              {whyChooseUsData.imageUrl && <img src={whyChooseUsData.imageUrl} alt="Preview" className="mt-2 w-48 h-auto object-cover rounded-md border dark:border-brand-border" />}
             </div>
             {whyChooseUsData.features.map((feature, index) => (
                 <div key={index} className="p-4 border dark:border-brand-border rounded-md space-y-2">
@@ -158,9 +176,10 @@ const AdminSettings: React.FC = () => {
                 </div>
             ))}
             <div className="flex justify-end items-center gap-4">
-              <AnimatePresence>
+              {/* FIX: Replaced `AnimatePresence` with `FM.AnimatePresence` to use the namespaced import. */}
+              <FM.AnimatePresence>
                   {showWhyChooseUsSuccess && <SuccessMessage />}
-              </AnimatePresence>
+              </FM.AnimatePresence>
               <button type="submit" className="bg-brand-blue hover:bg-brand-blue-hover text-white font-semibold py-2 px-5 rounded-lg transition duration-300 text-sm">Save "Why Choose Us"</button>
             </div>
         </form>
@@ -188,9 +207,10 @@ const AdminSettings: React.FC = () => {
             <input type="url" name="twitter" id="twitter" value={socialLinks.twitter} onChange={handleSocialChange} className="w-full bg-white dark:bg-brand-dark border border-gray-300 dark:border-brand-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue" />
           </div>
           <div className="flex justify-end items-center gap-4">
-            <AnimatePresence>
+            {/* FIX: Replaced `AnimatePresence` with `FM.AnimatePresence` to use the namespaced import. */}
+            <FM.AnimatePresence>
                 {showSocialSuccess && <SuccessMessage />}
-            </AnimatePresence>
+            </FM.AnimatePresence>
             <button type="submit" className="bg-brand-blue hover:bg-brand-blue-hover text-white font-semibold py-2 px-5 rounded-lg transition duration-300 text-sm">Save Social Links</button>
           </div>
         </form>
@@ -213,9 +233,10 @@ const AdminSettings: React.FC = () => {
               <textarea name="refund" id="refund" value={policies.refund} onChange={handlePolicyChange} rows={6} className="w-full bg-white dark:bg-brand-dark border border-gray-300 dark:border-brand-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue"></textarea>
             </div>
             <div className="flex justify-end items-center gap-4">
-                <AnimatePresence>
+                {/* FIX: Replaced `AnimatePresence` with `FM.AnimatePresence` to use the namespaced import. */}
+                <FM.AnimatePresence>
                     {showPolicySuccess && <SuccessMessage />}
-                </AnimatePresence>
+                </FM.AnimatePresence>
               <button type="submit" className="bg-brand-blue hover:bg-brand-blue-hover text-white font-semibold py-2 px-5 rounded-lg transition duration-300 text-sm">Save Policies</button>
             </div>
         </form>

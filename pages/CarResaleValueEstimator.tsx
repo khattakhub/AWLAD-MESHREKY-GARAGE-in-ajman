@@ -1,7 +1,9 @@
+
 import React, { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import CarTagIcon from '../components/icons/CarTagIcon';
-import { motion, AnimatePresence } from 'framer-motion';
+// FIX: Switched to a namespace import for framer-motion to resolve type errors with motion props.
+import * as FM from 'framer-motion';
 
 const CarResaleValueEstimator: React.FC = () => {
   const [make, setMake] = useState('');
@@ -106,9 +108,11 @@ const CarResaleValueEstimator: React.FC = () => {
             </button>
           </div>
 
-          <AnimatePresence>
+          {/* FIX: Replaced `AnimatePresence` with `FM.AnimatePresence` to use the namespaced import. */}
+          <FM.AnimatePresence>
             {estimatedValue && (
-              <motion.div
+              // FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import.
+              <FM.motion.div
                 initial={{ opacity: 0, scale: 0.95, height: 0 }}
                 animate={{ opacity: 1, scale: 1, height: 'auto' }}
                 exit={{ opacity: 0, scale: 0.95, height: 0 }}
@@ -120,9 +124,9 @@ const CarResaleValueEstimator: React.FC = () => {
                   AED <span className="text-brand-blue">{estimatedValue}</span>
                 </p>
                 <p className="text-xs text-gray-400 mt-4">*This is a rough estimate. Actual value may vary.</p>
-              </motion.div>
+              </FM.motion.div>
             )}
-          </AnimatePresence>
+          </FM.AnimatePresence>
         </div>
       </div>
     </div>

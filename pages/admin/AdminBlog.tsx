@@ -1,8 +1,10 @@
+
 import React, { useState } from 'react';
 import { getBlogPosts, saveBlogPosts, BlogPost } from '../../data/store';
 import PencilIcon from '../../components/icons/PencilIcon';
 import TrashIcon from '../../components/icons/TrashIcon';
-import { AnimatePresence, motion } from 'framer-motion';
+// FIX: Switched to a namespace import for framer-motion to resolve type errors with motion props.
+import * as FM from 'framer-motion';
 import RichTextEditor from '../../components/admin/RichTextEditor';
 
 type BlogPostData = Omit<BlogPost, 'slug'>;
@@ -50,7 +52,8 @@ const BlogModal: React.FC<{
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
-      <motion.div 
+      {/* FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import. */}
+      <FM.motion.div 
         className="bg-white dark:bg-brand-card border dark:border-brand-border rounded-lg shadow-xl w-full max-w-2xl p-6"
         onClick={e => e.stopPropagation()}
         initial={{ y: -30, opacity: 0 }}
@@ -83,7 +86,7 @@ const BlogModal: React.FC<{
             <button type="submit" className="bg-brand-blue hover:bg-brand-blue-hover text-white font-semibold py-2 px-4 rounded-lg transition duration-300 text-sm">Save Post</button>
           </div>
         </form>
-      </motion.div>
+      </FM.motion.div>
     </div>
   );
 };
@@ -171,9 +174,10 @@ const AdminBlog: React.FC = () => {
                 </table>
                 </div>
             </div>
-            <AnimatePresence>
+            {/* FIX: Replaced `AnimatePresence` with `FM.AnimatePresence` to use the namespaced import. */}
+            <FM.AnimatePresence>
                 {isModalOpen && <BlogModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={handleSave} post={editingPost} />}
-            </AnimatePresence>
+            </FM.AnimatePresence>
         </div>
     );
 };

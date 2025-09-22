@@ -1,14 +1,13 @@
+
 import React from 'react';
 import ToolCard from '../components/ToolCard';
 import { TOOLS } from '../constants';
-// FIX: Removed `Variants` from import to fix type resolution error.
-import { motion } from 'framer-motion';
+// FIX: Switched to a namespace import for framer-motion to resolve type errors with motion props.
+import * as FM from 'framer-motion';
 import { iconMap } from '../components/icons';
 
-// FIX: Separated container and item variants to resolve framer-motion type error.
-// The container variant is responsible for orchestrating the staggering of child animations.
-// FIX: Removed `: Variants` annotation to allow TypeScript to infer the type.
-const containerVariants = {
+// FIX: Re-added explicit Variants type to improve type safety and resolve inference issues.
+const containerVariants: FM.Variants = {
   offscreen: {},
   onscreen: {
     transition: {
@@ -17,9 +16,8 @@ const containerVariants = {
   }
 };
 
-// The item variant defines the animation for each individual tool card.
-// FIX: Removed `: Variants` annotation to allow TypeScript to infer the type.
-const itemVariants = {
+// FIX: Re-added explicit Variants type to improve type safety and resolve inference issues.
+const itemVariants: FM.Variants = {
   offscreen: {
     y: 50,
     opacity: 0
@@ -43,7 +41,8 @@ const Tools: React.FC = () => {
         <p className="text-gray-500 dark:text-gray-400 max-w-3xl mx-auto mb-16">
           Empowering you with the right tools to make informed decisions about your vehicle.
         </p>
-        <motion.div
+        {/* FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import. */}
+        <FM.motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left max-w-5xl mx-auto"
           variants={containerVariants}
           initial="offscreen"
@@ -51,16 +50,17 @@ const Tools: React.FC = () => {
           viewport={{ once: true, amount: 0.1 }}
         >
           {TOOLS.map((tool, index) => (
-            <motion.div key={index} variants={itemVariants}>
+            // FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import.
+            <FM.motion.div key={index} variants={itemVariants}>
               <ToolCard 
                 icon={React.createElement(iconMap[tool.iconName], { className: 'w-8 h-8 text-brand-blue' })}
                 title={tool.title}
                 description={tool.description}
                 path={tool.path}
               />
-            </motion.div>
+            </FM.motion.div>
           ))}
-        </motion.div>
+        </FM.motion.div>
       </div>
     </div>
   );

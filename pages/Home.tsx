@@ -1,13 +1,14 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import TestimonialCard from '../components/TestimonialCard';
 import { getTestimonials, getHeroData, getWhyChooseUsData } from '../data/store';
-// FIX: Removed `Variants` from import to fix type resolution error.
-import { motion } from 'framer-motion';
+// FIX: Switched to a namespace import for framer-motion to resolve type errors with motion props.
+import * as FM from 'framer-motion';
 import CheckCircleIcon from '../components/icons/CheckCircleIcon';
 
-// FIX: Removed `: Variants` annotation to allow TypeScript to infer the type.
-const cardContainerVariants = {
+// FIX: Re-added explicit Variants type to improve type safety and resolve inference issues.
+const cardContainerVariants: FM.Variants = {
   offscreen: {},
   onscreen: {
     transition: {
@@ -16,8 +17,8 @@ const cardContainerVariants = {
   }
 };
 
-// FIX: Removed `: Variants` annotation to allow TypeScript to infer the type.
-const cardVariants = {
+// FIX: Re-added explicit Variants type to improve type safety and resolve inference issues.
+const cardVariants: FM.Variants = {
     offscreen: {
         y: 50,
         opacity: 0
@@ -34,7 +35,8 @@ const cardVariants = {
 };
 
 const Section: React.FC<{ title: string; subtitle: string; children: React.ReactNode; id: string; isGray?: boolean }> = ({ title, subtitle, children, id, isGray }) => (
-    <motion.section
+    // FIX: Replaced `motion.section` with `FM.motion.section` to use the namespaced import.
+    <FM.motion.section
         id={id}
         className={`py-16 sm:py-20 ${isGray ? 'bg-gray-50 dark:bg-brand-card/30' : ''}`}
         initial="offscreen"
@@ -42,11 +44,13 @@ const Section: React.FC<{ title: string; subtitle: string; children: React.React
         viewport={{ once: true, amount: 0.2 }}
     >
         <div className="container mx-auto px-6 text-center">
-            <motion.h2 variants={cardVariants} className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-3">{title}</motion.h2>
-            <motion.p variants={cardVariants} className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-12">{subtitle}</motion.p>
+            {/* FIX: Replaced `motion.h2` with `FM.motion.h2` to use the namespaced import. */}
+            <FM.motion.h2 variants={cardVariants} className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-3">{title}</FM.motion.h2>
+            {/* FIX: Replaced `motion.p` with `FM.motion.p` to use the namespaced import. */}
+            <FM.motion.p variants={cardVariants} className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-12">{subtitle}</FM.motion.p>
             {children}
         </div>
-    </motion.section>
+    </FM.motion.section>
 );
 
 const Home: React.FC = () => {
@@ -59,7 +63,8 @@ const Home: React.FC = () => {
             {/* Hero Section */}
             <section className="relative text-center py-24 sm:py-32 flex items-center justify-center overflow-hidden bg-white dark:bg-brand-dark">
                  <div className="absolute inset-0 opacity-10 dark:opacity-[0.07]" style={{backgroundImage: 'linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(to right, #e5e7eb 1px, transparent 1px)', backgroundSize: '2rem 2rem'}}></div>
-                <motion.div
+                {/* FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import. */}
+                <FM.motion.div
                     className="container mx-auto px-6 z-10"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -85,7 +90,7 @@ const Home: React.FC = () => {
                             {heroData.secondaryButtonText}
                         </Link>
                     </div>
-                </motion.div>
+                </FM.motion.div>
             </section>
 
             {/* Why Choose Us Section */}
@@ -96,12 +101,15 @@ const Home: React.FC = () => {
                 isGray={true}
             >
                 <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 text-left items-center">
-                    <motion.div variants={cardVariants}>
+                    {/* FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import. */}
+                    <FM.motion.div variants={cardVariants}>
                         <img src={whyChooseUsData.imageUrl} alt="Mechanic working on a car" className="rounded-lg shadow-lg w-full h-auto object-cover"/>
-                    </motion.div>
-                    <motion.div variants={cardContainerVariants} className="space-y-8">
+                    </FM.motion.div>
+                    {/* FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import. */}
+                    <FM.motion.div variants={cardContainerVariants} className="space-y-8">
                         {whyChooseUsData.features.map((feature, index) => (
-                             <motion.div key={index} variants={cardVariants} className="flex items-start">
+                             // FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import.
+                             <FM.motion.div key={index} variants={cardVariants} className="flex items-start">
                                 <div className="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-brand-blue/10 text-brand-blue">
                                     <CheckCircleIcon className="w-7 h-7" />
                                 </div>
@@ -109,9 +117,9 @@ const Home: React.FC = () => {
                                     <h4 className="text-lg font-bold text-gray-900 dark:text-white">{feature.title}</h4>
                                     <p className="mt-1 text-gray-500 dark:text-gray-400">{feature.description}</p>
                                 </div>
-                            </motion.div>
+                            </FM.motion.div>
                         ))}
-                    </motion.div>
+                    </FM.motion.div>
                 </div>
             </Section>
 
@@ -121,16 +129,18 @@ const Home: React.FC = () => {
                 title="What Our Customers Say"
                 subtitle="We're proud of our reputation for quality service and customer satisfaction. Here's what some of our clients have to say."
             >
-                <motion.div
+                {/* FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import. */}
+                <FM.motion.div
                     className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left"
                     variants={cardContainerVariants}
                 >
                     {testimonials.map((testimonial, index) => (
-                        <motion.div key={index} variants={cardVariants}>
+                        // FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import.
+                        <FM.motion.div key={index} variants={cardVariants}>
                             <TestimonialCard {...testimonial} />
-                        </motion.div>
+                        </FM.motion.div>
                     ))}
-                </motion.div>
+                </FM.motion.div>
             </Section>
         </div>
     );

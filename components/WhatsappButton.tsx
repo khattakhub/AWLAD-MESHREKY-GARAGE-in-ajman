@@ -1,10 +1,13 @@
+
 import React from 'react';
-import { motion } from 'framer-motion';
+// FIX: Switched to a namespace import for framer-motion to resolve type errors with motion props.
+import * as FM from 'framer-motion';
 import WhatsappIcon from './icons/WhatsappIcon';
 
 const WhatsappButton: React.FC = () => {
   return (
-    <motion.a
+    // FIX: Replaced `motion.a` with `FM.motion.a` to use the namespaced import.
+    <FM.motion.a
       href="https://wa.me/971508361799"
       target="_blank"
       rel="noopener noreferrer"
@@ -18,7 +21,7 @@ const WhatsappButton: React.FC = () => {
       }}
     >
       <WhatsappIcon className="w-8 h-8" />
-    </motion.a>
+    </FM.motion.a>
   );
 };
 

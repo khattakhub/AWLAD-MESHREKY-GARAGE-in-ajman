@@ -1,13 +1,12 @@
+
 import React from 'react';
 import BlogPostCard from '../components/BlogPostCard';
 import { getBlogPosts } from '../data/store';
-// FIX: Removed `Variants` from import to fix type resolution error.
-import { motion } from 'framer-motion';
+// FIX: Switched to a namespace import for framer-motion to resolve type errors with motion props.
+import * as FM from 'framer-motion';
 
-// FIX: Separated container and item variants to resolve framer-motion type error.
-// The container variant is responsible for orchestrating the staggering of child animations.
-// FIX: Removed `: Variants` annotation to allow TypeScript to infer the type.
-const containerVariants = {
+// FIX: Re-added explicit Variants type to improve type safety and resolve inference issues.
+const containerVariants: FM.Variants = {
   offscreen: {},
   onscreen: {
     transition: {
@@ -16,9 +15,8 @@ const containerVariants = {
   }
 };
 
-// The item variant defines the animation for each individual blog post card.
-// FIX: Removed `: Variants` annotation to allow TypeScript to infer the type.
-const itemVariants = {
+// FIX: Re-added explicit Variants type to improve type safety and resolve inference issues.
+const itemVariants: FM.Variants = {
   offscreen: {
     y: 50,
     opacity: 0
@@ -44,7 +42,8 @@ const Blog: React.FC = () => {
         <p className="text-gray-500 dark:text-gray-400 max-w-3xl mx-auto mb-16">
           Stay informed with the latest news, tips, and insights from our auto care experts.
         </p>
-        <motion.div
+        {/* FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import. */}
+        <FM.motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left"
           variants={containerVariants}
           initial="offscreen"
@@ -52,11 +51,12 @@ const Blog: React.FC = () => {
           viewport={{ once: true, amount: 0.1 }}
         >
             {blogPosts.map((post) => (
-                <motion.div key={post.slug} variants={itemVariants}>
+                // FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import.
+                <FM.motion.div key={post.slug} variants={itemVariants}>
                     <BlogPostCard {...post} />
-                </motion.div>
+                </FM.motion.div>
             ))}
-        </motion.div>
+        </FM.motion.div>
       </div>
     </div>
   );

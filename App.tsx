@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Header from './components/Header';
@@ -14,7 +15,8 @@ import FuelCostEstimator from './pages/FuelCostEstimator';
 import CarResaleValueEstimator from './pages/CarResaleValueEstimator';
 import { ThemeProvider } from './ThemeContext';
 import WhatsappButton from './components/WhatsappButton';
-import { motion, AnimatePresence } from 'framer-motion';
+// FIX: Switched to a namespace import for framer-motion to resolve type errors with motion props.
+import * as FM from 'framer-motion';
 
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminLayout from './pages/admin/AdminLayout';
@@ -44,14 +46,15 @@ const ScrollToTop: React.FC = () => {
 
 const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return (
-        <motion.div
+        // FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import.
+        <FM.motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.3 }}
         >
             {children}
-        </motion.div>
+        </FM.motion.div>
     );
 };
 
@@ -65,7 +68,8 @@ const AppContent: React.FC = () => {
             <div className="bg-white dark:bg-brand-dark text-gray-700 dark:text-gray-300 min-h-screen font-sans transition-colors duration-300">
                 {!isAdminRoute && <Header />}
                 <main className={`${!isAdminRoute ? 'pt-16' : ''} pb-16 md:pb-0`}>
-                    <AnimatePresence mode="wait">
+                    {/* FIX: Replaced `AnimatePresence` with `FM.AnimatePresence` to use the namespaced import. */}
+                    <FM.AnimatePresence mode="wait">
                         <Routes location={location} key={location.pathname}>
                             <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
                             <Route path="/services" element={<PageWrapper><Services /></PageWrapper>} />
@@ -93,7 +97,7 @@ const AppContent: React.FC = () => {
                                 <Route path="settings" element={<AdminSettings />} />
                             </Route>
                         </Routes>
-                    </AnimatePresence>
+                    </FM.AnimatePresence>
                 </main>
                 {!isAdminRoute && location.pathname === '/' && <Footer />}
                 {!isAdminRoute && <WhatsappButton />}
@@ -115,18 +119,20 @@ const App: React.FC = () => {
   return (
     <ThemeProvider>
       <HashRouter>
-        <AnimatePresence>
+        {/* FIX: Replaced `AnimatePresence` with `FM.AnimatePresence` to use the namespaced import. */}
+        <FM.AnimatePresence>
           {isLoading && (
-            <motion.div
+            // FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import.
+            <FM.motion.div
               key="loader"
               initial={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
             >
               <Loader />
-            </motion.div>
+            </FM.motion.div>
           )}
-        </AnimatePresence>
+        </FM.AnimatePresence>
         {!isLoading && <AppContent />}
       </HashRouter>
     </ThemeProvider>

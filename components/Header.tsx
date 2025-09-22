@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import MoonIcon from './icons/MoonIcon';
@@ -5,7 +6,8 @@ import SunIcon from './icons/SunIcon';
 import MenuIcon from './icons/MenuIcon';
 import CloseIcon from './icons/CloseIcon';
 import { useTheme } from '../ThemeContext';
-import { motion, AnimatePresence } from 'framer-motion';
+// FIX: Switched to a namespace import for framer-motion to resolve type errors with motion props.
+import * as FM from 'framer-motion';
 
 const Header: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
@@ -56,8 +58,10 @@ const Header: React.FC = () => {
                 aria-label="Toggle theme" 
                 className="relative w-10 h-10 flex items-center justify-center rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-brand-card transition-colors"
               >
-                <AnimatePresence initial={false} mode="wait">
-                  <motion.div
+                {/* FIX: Replaced `AnimatePresence` with `FM.AnimatePresence` to use the namespaced import. */}
+                <FM.AnimatePresence initial={false} mode="wait">
+                  {/* FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import. */}
+                  <FM.motion.div
                     key={theme}
                     initial={{ opacity: 0, rotate: -180, scale: 0.5 }}
                     animate={{ opacity: 1, rotate: 0, scale: 1 }}
@@ -66,8 +70,8 @@ const Header: React.FC = () => {
                     className="absolute"
                   >
                     {theme === 'light' ? <MoonIcon className="w-6 h-6" /> : <SunIcon className="w-6 h-6" />}
-                  </motion.div>
-                </AnimatePresence>
+                  </FM.motion.div>
+                </FM.AnimatePresence>
               </button>
               <Link to="/booking" className="hidden md:inline-block bg-brand-blue hover:bg-brand-blue-hover text-white font-semibold py-2 px-5 rounded-lg transition duration-300 text-sm">
                 Book Appointment
@@ -86,10 +90,12 @@ const Header: React.FC = () => {
         </div>
       </header>
 
-      <AnimatePresence>
+      {/* FIX: Replaced `AnimatePresence` with `FM.AnimatePresence` to use the namespaced import. */}
+      <FM.AnimatePresence>
         {isMenuOpen && (
           <>
-            <motion.div
+            {/* FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import. */}
+            <FM.motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -97,7 +103,8 @@ const Header: React.FC = () => {
               className="fixed inset-0 bg-black/60 z-40"
               onClick={() => setIsMenuOpen(false)}
             />
-            <motion.div
+            {/* FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import. */}
+            <FM.motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
@@ -118,10 +125,10 @@ const Header: React.FC = () => {
               <Link to="/booking" className="mt-auto bg-brand-blue hover:bg-brand-blue-hover text-white font-extrabold py-3 w-full text-center rounded-lg transition duration-300 text-base">
                   Book Appointment
               </Link>
-            </motion.div>
+            </FM.motion.div>
           </>
         )}
-      </AnimatePresence>
+      </FM.AnimatePresence>
     </>
   );
 };
