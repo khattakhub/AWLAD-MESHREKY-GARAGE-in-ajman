@@ -1,17 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { getServices, addAppointment } from '../data/store';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const Booking: React.FC = () => {
   const services = getServices();
+  const location = useLocation();
+
+  const getSelectedService = () => {
+    const params = new URLSearchParams(location.search);
+    return params.get('service') || '';
+  };
+
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
-  const [service, setService] = useState('');
+  const [service, setService] = useState(getSelectedService());
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [message, setMessage] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
+
+  useEffect(() => {
+    setService(getSelectedService());
+  }, [location.search]);
 
   const resetForm = () => {
     setFullName('');

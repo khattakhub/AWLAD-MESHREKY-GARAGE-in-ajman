@@ -9,6 +9,8 @@ interface ServiceCardProps {
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ icon, title, description, link }) => {
+  const bookingUrl = link ? `${link}?service=${encodeURIComponent(title)}` : '';
+
   const content = (
     <>
       <div className="mb-4">{icon}</div>
@@ -26,7 +28,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ icon, title, description, lin
 
   return (
     <div className="bg-white dark:bg-brand-card border border-gray-200 dark:border-brand-border rounded-lg p-6 flex flex-col h-full transition-all duration-300 hover:border-brand-blue hover:shadow-lg hover:shadow-brand-blue/10 hover:-translate-y-2">
-      {link ? <Link to={link} className="flex flex-col h-full">{content}</Link> : content}
+      {link ? <Link to={bookingUrl} className="flex flex-col h-full">{content}</Link> : content}
     </div>
   );
 };
