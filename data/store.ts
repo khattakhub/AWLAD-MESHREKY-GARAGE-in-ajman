@@ -58,6 +58,58 @@ export type SocialLinks = {
     twitter: string;
 };
 
+export type HeroData = {
+    heading: string;
+    subheading: string;
+    primaryButtonText: string;
+    primaryButtonLink: string;
+    secondaryButtonText: string;
+    secondaryButtonLink: string;
+};
+
+export type WhyChooseUsFeature = {
+  title: string;
+  description: string;
+};
+
+export type WhyChooseUsData = {
+  title: string;
+  subtitle: string;
+  imageUrl: string;
+  features: WhyChooseUsFeature[];
+};
+
+
+// Initial Data for Home Page
+const INITIAL_HERO_DATA: HeroData = {
+    heading: "Premium Auto Care in Ajman",
+    subheading: "Your trusted partner for all automotive repairs and maintenance. Quality service, expert technicians, and unbeatable prices.",
+    primaryButtonText: "Book an Appointment",
+    primaryButtonLink: "/booking",
+    secondaryButtonText: "Our Services",
+    secondaryButtonLink: "/services"
+};
+
+const INITIAL_WHY_CHOOSE_US_DATA: WhyChooseUsData = {
+    title: "Why Choose Awlad Meshreky",
+    subtitle: "We are committed to providing the highest level of service and quality workmanship for your vehicle.",
+    imageUrl: "https://picsum.photos/600/400?grayscale&random=20",
+    features: [
+        {
+            title: "Certified & Experienced Technicians",
+            description: "Our team consists of highly trained and certified professionals with years of experience on all major car brands."
+        },
+        {
+            title: "State-of-the-Art Equipment",
+            description: "We use the latest diagnostic and repair tools to ensure your vehicle is serviced to manufacturer standards."
+        },
+        {
+            title: "Transparent Pricing",
+            description: "We provide clear, upfront estimates before any work begins. No hidden fees, no surprises."
+        }
+    ]
+};
+
 
 // Generic store functions
 const getFromStore = <T,>(key: string, initialData: T): T => {
@@ -151,3 +203,11 @@ export const savePolicies = (policies: Policies): void => saveToStore('policies'
 // Social Links
 export const getSocialLinks = (): SocialLinks => getFromStore('socialLinks', INITIAL_SOCIAL_LINKS);
 export const saveSocialLinks = (links: SocialLinks): void => saveToStore('socialLinks', links);
+
+// Home Page - Hero
+export const getHeroData = (): HeroData => getFromStore('heroData', INITIAL_HERO_DATA);
+export const saveHeroData = (data: HeroData): void => saveToStore('heroData', data);
+
+// Home Page - Why Choose Us
+export const getWhyChooseUsData = (): WhyChooseUsData => getFromStore('whyChooseUsData', INITIAL_WHY_CHOOSE_US_DATA);
+export const saveWhyChooseUsData = (data: WhyChooseUsData): void => saveToStore('whyChooseUsData', data);

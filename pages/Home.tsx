@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import TestimonialCard from '../components/TestimonialCard';
-import { getTestimonials } from '../data/store';
-import { motion, Variants } from 'framer-motion';
+import { getTestimonials, getHeroData, getWhyChooseUsData } from '../data/store';
+// FIX: Removed `Variants` from import to fix type resolution error.
+import { motion } from 'framer-motion';
 import CheckCircleIcon from '../components/icons/CheckCircleIcon';
 
-const cardContainerVariants: Variants = {
+// FIX: Removed `: Variants` annotation to allow TypeScript to infer the type.
+const cardContainerVariants = {
   offscreen: {},
   onscreen: {
     transition: {
@@ -14,7 +16,8 @@ const cardContainerVariants: Variants = {
   }
 };
 
-const cardVariants: Variants = {
+// FIX: Removed `: Variants` annotation to allow TypeScript to infer the type.
+const cardVariants = {
     offscreen: {
         y: 50,
         opacity: 0
@@ -48,6 +51,8 @@ const Section: React.FC<{ title: string; subtitle: string; children: React.React
 
 const Home: React.FC = () => {
     const testimonials = getTestimonials();
+    const heroData = getHeroData();
+    const whyChooseUsData = getWhyChooseUsData();
 
     return (
         <div>
@@ -61,23 +66,23 @@ const Home: React.FC = () => {
                     transition={{ duration: 0.8, ease: "easeOut" }}
                 >
                     <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 dark:text-white uppercase tracking-tighter mb-4 leading-tight">
-                        Premium Auto Care in Ajman
+                        {heroData.heading}
                     </h1>
                     <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-10">
-                        Your trusted partner for all automotive repairs and maintenance. Quality service, expert technicians, and unbeatable prices.
+                        {heroData.subheading}
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                         <Link
-                            to="/booking"
+                            to={heroData.primaryButtonLink}
                             className="bg-brand-blue hover:bg-brand-blue-hover text-white font-bold py-3 px-8 rounded-lg transition-transform duration-300 text-base inline-block w-full sm:w-auto transform hover:scale-105"
                         >
-                            Book an Appointment
+                            {heroData.primaryButtonText}
                         </Link>
                         <Link
-                            to="/services"
+                            to={heroData.secondaryButtonLink}
                             className="bg-transparent hover:bg-gray-100 dark:hover:bg-brand-border text-gray-700 dark:text-gray-200 font-bold py-3 px-8 rounded-lg transition-colors duration-300 text-base inline-block border-2 border-gray-300 dark:border-brand-border w-full sm:w-auto"
                         >
-                            Our Services
+                            {heroData.secondaryButtonText}
                         </Link>
                     </div>
                 </motion.div>
@@ -86,42 +91,26 @@ const Home: React.FC = () => {
             {/* Why Choose Us Section */}
             <Section
                 id="why-us"
-                title="Why Choose Awlad Meshreky"
-                subtitle="We are committed to providing the highest level of service and quality workmanship for your vehicle."
+                title={whyChooseUsData.title}
+                subtitle={whyChooseUsData.subtitle}
                 isGray={true}
             >
                 <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 text-left items-center">
                     <motion.div variants={cardVariants}>
-                        <img src="https://picsum.photos/600/400?grayscale&random=20" alt="Mechanic working on a car" className="rounded-lg shadow-lg w-full h-auto object-cover"/>
+                        <img src={whyChooseUsData.imageUrl} alt="Mechanic working on a car" className="rounded-lg shadow-lg w-full h-auto object-cover"/>
                     </motion.div>
                     <motion.div variants={cardContainerVariants} className="space-y-8">
-                        <motion.div variants={cardVariants} className="flex items-start">
-                            <div className="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-brand-blue/10 text-brand-blue">
-                                <CheckCircleIcon className="w-7 h-7" />
-                            </div>
-                            <div className="ml-4">
-                                <h4 className="text-lg font-bold text-gray-900 dark:text-white">Certified & Experienced Technicians</h4>
-                                <p className="mt-1 text-gray-500 dark:text-gray-400">Our team consists of highly trained and certified professionals with years of experience on all major car brands.</p>
-                            </div>
-                        </motion.div>
-                        <motion.div variants={cardVariants} className="flex items-start">
-                            <div className="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-brand-blue/10 text-brand-blue">
-                                <CheckCircleIcon className="w-7 h-7" />
-                            </div>
-                            <div className="ml-4">
-                                <h4 className="text-lg font-bold text-gray-900 dark:text-white">State-of-the-Art Equipment</h4>
-                                <p className="mt-1 text-gray-500 dark:text-gray-400">We use the latest diagnostic and repair tools to ensure your vehicle is serviced to manufacturer standards.</p>
-                            </div>
-                        </motion.div>
-                        <motion.div variants={cardVariants} className="flex items-start">
-                            <div className="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-brand-blue/10 text-brand-blue">
-                                <CheckCircleIcon className="w-7 h-7" />
-                            </div>
-                            <div className="ml-4">
-                                <h4 className="text-lg font-bold text-gray-900 dark:text-white">Transparent Pricing</h4>
-                                <p className="mt-1 text-gray-500 dark:text-gray-400">We provide clear, upfront estimates before any work begins. No hidden fees, no surprises.</p>
-                            </div>
-                        </motion.div>
+                        {whyChooseUsData.features.map((feature, index) => (
+                             <motion.div key={index} variants={cardVariants} className="flex items-start">
+                                <div className="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-brand-blue/10 text-brand-blue">
+                                    <CheckCircleIcon className="w-7 h-7" />
+                                </div>
+                                <div className="ml-4">
+                                    <h4 className="text-lg font-bold text-gray-900 dark:text-white">{feature.title}</h4>
+                                    <p className="mt-1 text-gray-500 dark:text-gray-400">{feature.description}</p>
+                                </div>
+                            </motion.div>
+                        ))}
                     </motion.div>
                 </div>
             </Section>

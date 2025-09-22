@@ -1,12 +1,14 @@
 import React from 'react';
 import ToolCard from '../components/ToolCard';
 import { TOOLS } from '../constants';
-import { motion, Variants } from 'framer-motion';
+// FIX: Removed `Variants` from import to fix type resolution error.
+import { motion } from 'framer-motion';
 import { iconMap } from '../components/icons';
 
 // FIX: Separated container and item variants to resolve framer-motion type error.
 // The container variant is responsible for orchestrating the staggering of child animations.
-const containerVariants: Variants = {
+// FIX: Removed `: Variants` annotation to allow TypeScript to infer the type.
+const containerVariants = {
   offscreen: {},
   onscreen: {
     transition: {
@@ -16,7 +18,8 @@ const containerVariants: Variants = {
 };
 
 // The item variant defines the animation for each individual tool card.
-const itemVariants: Variants = {
+// FIX: Removed `: Variants` annotation to allow TypeScript to infer the type.
+const itemVariants = {
   offscreen: {
     y: 50,
     opacity: 0
