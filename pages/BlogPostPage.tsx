@@ -30,9 +30,10 @@ const BlogPostPage: React.FC = () => {
         
         <img src={post.image} alt={post.title} className="w-full h-64 md:h-96 object-cover rounded-lg mb-12 border dark:border-brand-border" />
         
-        <div className="prose prose-lg dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 leading-relaxed space-y-6 whitespace-pre-wrap">
-          {post.content}
-        </div>
+        <div 
+            className="prose prose-lg dark:prose-invert max-w-none"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+        />
       </div>
     </div>
   );

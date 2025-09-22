@@ -3,6 +3,7 @@ import { getBlogPosts, saveBlogPosts, BlogPost } from '../../data/store';
 import PencilIcon from '../../components/icons/PencilIcon';
 import TrashIcon from '../../components/icons/TrashIcon';
 import { AnimatePresence, motion } from 'framer-motion';
+import RichTextEditor from '../../components/admin/RichTextEditor';
 
 type BlogPostData = Omit<BlogPost, 'slug'>;
 
@@ -74,7 +75,7 @@ const BlogModal: React.FC<{
             </div>
              <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Content</label>
-              <textarea value={content} onChange={e => setContent(e.target.value)} required rows={10} className="w-full bg-white dark:bg-brand-dark border border-gray-300 dark:border-brand-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue"></textarea>
+              <RichTextEditor value={content} onChange={setContent} />
             </div>
           </div>
           <div className="mt-6 flex justify-end space-x-3 border-t dark:border-brand-border pt-4">

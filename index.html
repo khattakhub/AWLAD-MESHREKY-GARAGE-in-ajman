@@ -5,7 +5,10 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Awlad Meshreky Auto Care</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Quill Rich Text Editor CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <script>
       tailwind.config = {
         darkMode: 'class',
@@ -34,6 +37,50 @@
       html {
         scroll-behavior: smooth;
       }
+      /* Custom styles for Quill Dark Mode */
+      .dark .ql-toolbar {
+        border-color: #30363D;
+      }
+      .dark .ql-container {
+        border-color: #30363D;
+      }
+      .dark .ql-snow .ql-stroke,
+      .dark .ql-snow .ql-fill {
+        stroke: #d1d5db; /* gray-300 */
+      }
+      .dark .ql-snow .ql-picker-label {
+        color: #d1d5db; /* gray-300 */
+      }
+      .dark .ql-snow .ql-picker-options {
+          background-color: #161B22; /* brand-card */
+          border-color: #30363D;
+          color: #d1d5db;
+      }
+      .dark .ql-snow .ql-picker-item:hover,
+      .dark .ql-snow .ql-picker-item.ql-selected {
+          background-color: #30363D;
+          color: #fff;
+      }
+      .dark .ql-snow .ql-tooltip {
+        background-color: #161B22;
+        border-color: #30363D;
+        color: #d1d5db;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      }
+      .dark .ql-snow .ql-tooltip input {
+        background-color: #0D1117;
+        border-color: #30363D;
+        color: #d1d5db;
+      }
+      .dark .ql-snow .ql-tooltip a.ql-action::after {
+        color: #2F81F7;
+      }
+      .dark .ql-editor {
+        color: #d1d5db; /* gray-300 */
+      }
+      .dark .ql-editor.ql-blank::before {
+        color: rgba(209, 213, 219, 0.6);
+      }
     </style>
   <script type="importmap">
 {
@@ -49,6 +96,8 @@
 </head>
   <body>
     <div id="root"></div>
+    <!-- Quill Rich Text Editor JS -->
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>
