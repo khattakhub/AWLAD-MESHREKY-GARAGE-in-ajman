@@ -28,7 +28,7 @@ const Header: React.FC = () => {
   }, [isMenuOpen]);
   
   const navLinkClasses = ({ isActive }: { isActive: boolean }) => `transition ${isActive ? 'text-brand-blue' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`;
-  const mobileNavLinkClasses = ({ isActive }: { isActive: boolean }) => `text-2xl font-semibold py-3 transition ${isActive ? 'text-brand-blue' : 'text-gray-300 hover:text-white'}`;
+  const mobileNavLinkClasses = ({ isActive }: { isActive: boolean }) => `text-2xl font-semibold py-2 transition ${isActive ? 'text-brand-blue' : 'text-gray-300 hover:text-white'}`;
 
   const NavLinks = ({ mobile = false }: { mobile?: boolean }) => (
     <>
@@ -58,7 +58,11 @@ const Header: React.FC = () => {
                 Book Appointment
               </Link>
               <div className="md:hidden">
-                 <button onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu" className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition">
+                 <button 
+                    onClick={() => setIsMenuOpen(!isMenuOpen)} 
+                    aria-label="Toggle menu" 
+                    className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition p-2 -mr-2 rounded-full hover:bg-gray-100 dark:hover:bg-brand-card"
+                 >
                    <MenuIcon className="w-6 h-6" />
                  </button>
               </div>
@@ -69,22 +73,38 @@ const Header: React.FC = () => {
 
       <AnimatePresence>
         {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-brand-dark/90 backdrop-blur-sm z-40 flex flex-col items-center justify-center p-6"
-          >
-            <button onClick={() => setIsMenuOpen(false)} aria-label="Close menu" className="absolute top-7 right-6 text-gray-400 hover:text-white transition">
-                <CloseIcon className="w-7 h-7" />
-            </button>
-            <nav className="flex flex-col items-center space-y-6 text-center">
-              <NavLinks mobile />
-            </nav>
-            <Link to="/booking" className="mt-12 bg-brand-blue hover:bg-brand-blue-hover text-white font-extrabold py-3 px-10 rounded-lg transition duration-300 text-base">
-                Book Appointment
-            </Link>
-          </motion.div>
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/60 z-40"
+              onClick={() => setIsMenuOpen(false)}
+            />
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="fixed top-0 right-0 h-full w-full max-w-sm bg-brand-dark shadow-lg z-50 flex flex-col p-6"
+            >
+                <div className="flex justify-between items-center mb-12">
+                    <Link to="/" className="text-xl font-bold tracking-wider text-white">
+                        AWLAD MESHREKY
+                    </Link>
+                    <button onClick={() => setIsMenuOpen(false)} aria-label="Close menu" className="text-gray-400 hover:text-white transition p-2 -mr-2">
+                        <CloseIcon className="w-7 h-7" />
+                    </button>
+                </div>
+              <nav className="flex flex-col space-y-6">
+                <NavLinks mobile />
+              </nav>
+              <Link to="/booking" className="mt-auto bg-brand-blue hover:bg-brand-blue-hover text-white font-extrabold py-3 w-full text-center rounded-lg transition duration-300 text-base">
+                  Book Appointment
+              </Link>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>
