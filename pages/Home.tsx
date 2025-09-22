@@ -1,12 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import ServiceCard from '../components/ServiceCard';
-import ToolCard from '../components/ToolCard';
 import TestimonialCard from '../components/TestimonialCard';
-import { getServices, getTestimonials } from '../data/store';
-import { TOOLS } from '../constants';
+import { getTestimonials } from '../data/store';
 import { motion, Variants } from 'framer-motion';
-import { iconMap } from '../components/icons';
 import CheckCircleIcon from '../components/icons/CheckCircleIcon';
 
 const cardContainerVariants: Variants = {
@@ -51,14 +47,13 @@ const Section: React.FC<{ title: string; subtitle: string; children: React.React
 );
 
 const Home: React.FC = () => {
-    const services = getServices();
     const testimonials = getTestimonials();
 
     return (
         <div>
             {/* Hero Section */}
             <section className="relative text-center py-24 sm:py-32 flex items-center justify-center overflow-hidden bg-white dark:bg-brand-dark">
-                 <div className="absolute inset-0 opacity-5 dark:opacity-10" style={{backgroundImage: 'radial-gradient(#4b5563 1px, transparent 1px)', backgroundSize: '2rem 2rem'}}></div>
+                 <div className="absolute inset-0 opacity-10 dark:opacity-[0.07]" style={{backgroundImage: 'linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(to right, #e5e7eb 1px, transparent 1px)', backgroundSize: '2rem 2rem'}}></div>
                 <motion.div
                     className="container mx-auto px-6 z-10"
                     initial={{ opacity: 0, y: 20 }}
@@ -80,40 +75,13 @@ const Home: React.FC = () => {
                         </Link>
                         <Link
                             to="/services"
-                            className="bg-white dark:bg-brand-card hover:bg-gray-100 dark:hover:bg-brand-border text-gray-700 dark:text-gray-200 font-bold py-3 px-8 rounded-lg transition-colors duration-300 text-base inline-block border border-gray-300 dark:border-brand-border w-full sm:w-auto"
+                            className="bg-transparent hover:bg-gray-100 dark:hover:bg-brand-border text-gray-700 dark:text-gray-200 font-bold py-3 px-8 rounded-lg transition-colors duration-300 text-base inline-block border-2 border-gray-300 dark:border-brand-border w-full sm:w-auto"
                         >
                             Our Services
                         </Link>
                     </div>
                 </motion.div>
             </section>
-
-            {/* Services Section */}
-            <Section
-                id="services"
-                title="Our Core Services"
-                subtitle="From routine maintenance to complex repairs, we offer a comprehensive range of services to keep your car running smoothly."
-            >
-                <motion.div
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left"
-                    variants={cardContainerVariants}
-                >
-                    {services.slice(0, 3).map((service, index) => (
-                        <motion.div key={index} variants={cardVariants}>
-                            <ServiceCard 
-                                {...service} 
-                                icon={React.createElement(iconMap[service.iconName], { className: 'w-8 h-8 text-brand-blue' })}
-                                link="/booking"
-                            />
-                        </motion.div>
-                    ))}
-                </motion.div>
-                <motion.div variants={cardVariants} className="mt-12">
-                    <Link to="/services" className="text-brand-blue font-semibold hover:underline">
-                        View All Services &rarr;
-                    </Link>
-                </motion.div>
-            </Section>
 
             {/* Why Choose Us Section */}
             <Section
@@ -158,33 +126,11 @@ const Home: React.FC = () => {
                 </div>
             </Section>
 
-            {/* Tools Section */}
-            <Section
-                id="tools"
-                title="Helpful Automotive Tools"
-                subtitle="Calculate loans, estimate fuel costs, and more with our free online tools designed for car owners."
-            >
-                <motion.div
-                    className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left max-w-5xl mx-auto"
-                    variants={cardContainerVariants}
-                >
-                    {TOOLS.map((tool, index) => (
-                        <motion.div key={index} variants={cardVariants}>
-                            <ToolCard 
-                                {...tool}
-                                icon={React.createElement(iconMap[tool.iconName], { className: 'w-8 h-8 text-brand-blue' })}
-                            />
-                        </motion.div>
-                    ))}
-                </motion.div>
-            </Section>
-            
             {/* Testimonials Section */}
             <Section
                 id="testimonials"
                 title="What Our Customers Say"
                 subtitle="We're proud of our reputation for quality service and customer satisfaction. Here's what some of our clients have to say."
-                isGray={true}
             >
                 <motion.div
                     className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left"

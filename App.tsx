@@ -58,7 +58,6 @@ const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 const AppContent: React.FC = () => {
     const location = useLocation();
     const isAdminRoute = location.pathname.startsWith('/admin');
-    const isHomePage = location.pathname === '/';
 
     return (
         <>
@@ -96,7 +95,7 @@ const AppContent: React.FC = () => {
                         </Routes>
                     </AnimatePresence>
                 </main>
-                {!isAdminRoute && isHomePage && <Footer />}
+                {!isAdminRoute && location.pathname === '/' && <Footer />}
                 {!isAdminRoute && <WhatsappButton />}
                 {!isAdminRoute && <MobileBottomNav />}
             </div>

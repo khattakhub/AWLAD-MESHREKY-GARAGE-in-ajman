@@ -59,10 +59,10 @@ const Header: React.FC = () => {
                 <AnimatePresence initial={false} mode="wait">
                   <motion.div
                     key={theme}
-                    initial={{ y: -20, opacity: 0, scale: 0.8, rotate: -90 }}
-                    animate={{ y: 0, opacity: 1, scale: 1, rotate: 0 }}
-                    exit={{ y: 20, opacity: 0, scale: 0.8, rotate: 90 }}
-                    transition={{ duration: 0.25 }}
+                    initial={{ opacity: 0, rotate: -180, scale: 0.5 }}
+                    animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                    exit={{ opacity: 0, rotate: 180, scale: 0.5 }}
+                    transition={{ type: 'spring', stiffness: 200, damping: 20 }}
                     className="absolute"
                   >
                     {theme === 'light' ? <MoonIcon className="w-6 h-6" /> : <SunIcon className="w-6 h-6" />}
