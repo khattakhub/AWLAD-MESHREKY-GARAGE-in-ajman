@@ -17,7 +17,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ icon, title, description, lin
       {link && (
         <div className="mt-auto pt-4">
           <span className="text-brand-blue font-semibold text-sm hover:underline">
-            Learn More &rarr;
+            Book Now &rarr;
           </span>
         </div>
       )}

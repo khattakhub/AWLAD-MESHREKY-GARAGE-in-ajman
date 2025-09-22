@@ -1,10 +1,13 @@
-import React, { useEffect } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom';
 import AdminSidebar from '../../components/admin/AdminSidebar';
+import MenuIcon from '../../components/icons/MenuIcon';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const AdminLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const isAuthenticated = sessionStorage.getItem('isAdminAuthenticated');
@@ -13,12 +16,56 @@ const AdminLayout: React.FC = () => {
     }
   }, [location.pathname, navigate]);
 
+  useEffect(() => {
+      setSidebarOpen(false); // Close sidebar on route change
+  }, [location.pathname]);
+
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-brand-dark text-gray-800 dark:text-gray-200">
-      <AdminSidebar />
-      <main className="flex-grow p-6 sm:p-8 md:p-10">
-        <Outlet />
-      </main>
+      <div className="hidden md:flex">
+        <AdminSidebar />
+      </div>
+
+      {/* Mobile Sidebar */}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 bg-black/50 z-40 md:hidden"
+              onClick={() => setSidebarOpen(false)}
+            />
+            <motion.div
+              className="fixed inset-y-0 left-0 z-50 md:hidden"
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "tween", ease: "easeInOut", duration: 0.3 }}
+            >
+              <AdminSidebar onLinkClick={() => setSidebarOpen(false)} />
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+      
+      <div className="flex-grow flex flex-col">
+        {/* Mobile Header */}
+        <header className="md:hidden flex items-center justify-between h-16 bg-white dark:bg-brand-card border-b dark:border-brand-border px-6 sticky top-0 z-30">
+          <Link to="/admin" className="text-lg font-bold tracking-wider text-gray-900 dark:text-white">
+            ADMIN
+          </Link>
+          <button onClick={() => setSidebarOpen(true)} className="text-gray-500 dark:text-gray-400">
+            <MenuIcon className="w-6 h-6" />
+          </button>
+        </header>
+
+        <main className="flex-grow p-6 sm:p-8 md:p-10">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 };
