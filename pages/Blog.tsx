@@ -48,8 +48,8 @@ const Blog: React.FC = () => {
           whileInView="onscreen"
           viewport={{ once: true, amount: 0.1 }}
         >
-            {blogPosts.map((post, index) => (
-                <motion.div key={index} variants={itemVariants}>
+            {blogPosts.map((post) => (
+                <motion.div key={post.slug} variants={itemVariants}>
                     <BlogPostCard {...post} />
                 </motion.div>
             ))}

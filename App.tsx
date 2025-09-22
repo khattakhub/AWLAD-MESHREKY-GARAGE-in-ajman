@@ -9,6 +9,7 @@ import CarLoanCalculator from './pages/CarLoanCalculator';
 import Contact from './pages/Contact';
 import Booking from './pages/Booking';
 import Blog from './pages/Blog';
+import BlogPostPage from './pages/BlogPostPage';
 import FuelCostEstimator from './pages/FuelCostEstimator';
 import CarResaleValueEstimator from './pages/CarResaleValueEstimator';
 import { ThemeProvider } from './ThemeContext';
@@ -72,6 +73,7 @@ const AppContent: React.FC = () => {
                             <Route path="/tools/fuel-cost-estimator" element={<PageWrapper><FuelCostEstimator /></PageWrapper>} />
                             <Route path="/tools/car-resale-value-estimator" element={<PageWrapper><CarResaleValueEstimator /></PageWrapper>} />
                             <Route path="/blog" element={<PageWrapper><Blog /></PageWrapper>} />
+                            <Route path="/blog/:slug" element={<PageWrapper><BlogPostPage /></PageWrapper>} />
                             <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
                             <Route path="/booking" element={<PageWrapper><Booking /></PageWrapper>} />
                             <Route path="/terms" element={<PageWrapper><Terms /></PageWrapper>} />

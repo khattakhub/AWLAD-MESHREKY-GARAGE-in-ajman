@@ -15,9 +15,11 @@ export type Service = {
 };
 
 export type BlogPost = {
+  slug: string;
   title: string;
   excerpt: string;
   image: string;
+  content: string;
 };
 
 export type Testimonial = {
