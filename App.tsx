@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -27,6 +27,7 @@ import AdminSettings from './pages/admin/AdminSettings';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Refund from './pages/Refund';
+import Loader from './components/Loader';
 
 
 const ScrollToTop: React.FC = () => {
@@ -99,10 +100,30 @@ const AppContent: React.FC = () => {
 }
 
 const App: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading time for a better user experience on fast connections
+    const timer = setTimeout(() => setIsLoading(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <ThemeProvider>
       <HashRouter>
-        <AppContent />
+        <AnimatePresence>
+          {isLoading && (
+            <motion.div
+              key="loader"
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Loader />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        {!isLoading && <AppContent />}
       </HashRouter>
     </ThemeProvider>
   );
