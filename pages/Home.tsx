@@ -7,6 +7,7 @@ import { getServices, getTestimonials } from '../data/store';
 import { TOOLS } from '../constants';
 import { motion, Variants } from 'framer-motion';
 import { iconMap } from '../components/icons';
+import CheckCircleIcon from '../components/icons/CheckCircleIcon';
 
 const cardContainerVariants: Variants = {
   offscreen: {},
@@ -56,25 +57,34 @@ const Home: React.FC = () => {
     return (
         <div>
             {/* Hero Section */}
-            <section className="relative text-center py-20 sm:py-28 md:py-32 flex items-center justify-center bg-gray-50 dark:bg-transparent">
+            <section className="relative text-center py-24 sm:py-32 flex items-center justify-center overflow-hidden bg-white dark:bg-brand-dark">
+                 <div className="absolute inset-0 opacity-5 dark:opacity-10" style={{backgroundImage: 'radial-gradient(#4b5563 1px, transparent 1px)', backgroundSize: '2rem 2rem'}}></div>
                 <motion.div
                     className="container mx-auto px-6 z-10"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
                 >
-                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 dark:text-white uppercase tracking-wider mb-4 leading-tight">
+                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 dark:text-white uppercase tracking-tighter mb-4 leading-tight">
                         Premium Auto Care in Ajman
                     </h1>
-                    <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
+                    <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-10">
                         Your trusted partner for all automotive repairs and maintenance. Quality service, expert technicians, and unbeatable prices.
                     </p>
-                    <Link
-                        to="/booking"
-                        className="bg-brand-blue hover:bg-brand-blue-hover text-white font-extrabold py-4 px-10 rounded-lg transition duration-300 text-lg inline-block"
-                    >
-                        Book an Appointment
-                    </Link>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <Link
+                            to="/booking"
+                            className="bg-brand-blue hover:bg-brand-blue-hover text-white font-bold py-3 px-8 rounded-lg transition-transform duration-300 text-base inline-block w-full sm:w-auto transform hover:scale-105"
+                        >
+                            Book an Appointment
+                        </Link>
+                        <Link
+                            to="/services"
+                            className="bg-white dark:bg-brand-card hover:bg-gray-100 dark:hover:bg-brand-border text-gray-700 dark:text-gray-200 font-bold py-3 px-8 rounded-lg transition-colors duration-300 text-base inline-block border border-gray-300 dark:border-brand-border w-full sm:w-auto"
+                        >
+                            Our Services
+                        </Link>
+                    </div>
                 </motion.div>
             </section>
 
@@ -105,12 +115,54 @@ const Home: React.FC = () => {
                 </motion.div>
             </Section>
 
+            {/* Why Choose Us Section */}
+            <Section
+                id="why-us"
+                title="Why Choose Awlad Meshreky"
+                subtitle="We are committed to providing the highest level of service and quality workmanship for your vehicle."
+                isGray={true}
+            >
+                <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 text-left items-center">
+                    <motion.div variants={cardVariants}>
+                        <img src="https://picsum.photos/600/400?grayscale&random=20" alt="Mechanic working on a car" className="rounded-lg shadow-lg w-full h-auto object-cover"/>
+                    </motion.div>
+                    <motion.div variants={cardContainerVariants} className="space-y-8">
+                        <motion.div variants={cardVariants} className="flex items-start">
+                            <div className="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-brand-blue/10 text-brand-blue">
+                                <CheckCircleIcon className="w-7 h-7" />
+                            </div>
+                            <div className="ml-4">
+                                <h4 className="text-lg font-bold text-gray-900 dark:text-white">Certified & Experienced Technicians</h4>
+                                <p className="mt-1 text-gray-500 dark:text-gray-400">Our team consists of highly trained and certified professionals with years of experience on all major car brands.</p>
+                            </div>
+                        </motion.div>
+                        <motion.div variants={cardVariants} className="flex items-start">
+                            <div className="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-brand-blue/10 text-brand-blue">
+                                <CheckCircleIcon className="w-7 h-7" />
+                            </div>
+                            <div className="ml-4">
+                                <h4 className="text-lg font-bold text-gray-900 dark:text-white">State-of-the-Art Equipment</h4>
+                                <p className="mt-1 text-gray-500 dark:text-gray-400">We use the latest diagnostic and repair tools to ensure your vehicle is serviced to manufacturer standards.</p>
+                            </div>
+                        </motion.div>
+                        <motion.div variants={cardVariants} className="flex items-start">
+                            <div className="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-brand-blue/10 text-brand-blue">
+                                <CheckCircleIcon className="w-7 h-7" />
+                            </div>
+                            <div className="ml-4">
+                                <h4 className="text-lg font-bold text-gray-900 dark:text-white">Transparent Pricing</h4>
+                                <p className="mt-1 text-gray-500 dark:text-gray-400">We provide clear, upfront estimates before any work begins. No hidden fees, no surprises.</p>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                </div>
+            </Section>
+
             {/* Tools Section */}
             <Section
                 id="tools"
                 title="Helpful Automotive Tools"
                 subtitle="Calculate loans, estimate fuel costs, and more with our free online tools designed for car owners."
-                isGray={true}
             >
                 <motion.div
                     className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left max-w-5xl mx-auto"
@@ -132,6 +184,7 @@ const Home: React.FC = () => {
                 id="testimonials"
                 title="What Our Customers Say"
                 subtitle="We're proud of our reputation for quality service and customer satisfaction. Here's what some of our clients have to say."
+                isGray={true}
             >
                 <motion.div
                     className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left"

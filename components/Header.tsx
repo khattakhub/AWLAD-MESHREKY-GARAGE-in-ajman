@@ -50,9 +50,24 @@ const Header: React.FC = () => {
             <div className="hidden md:flex items-center space-x-8 text-sm font-medium">
               <NavLinks />
             </div>
-            <div className="flex items-center space-x-4">
-              <button onClick={toggleTheme} aria-label="Toggle theme" className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition">
-                {theme === 'light' ? <MoonIcon className="w-5 h-5" /> : <SunIcon className="w-5 h-5" />}
+            <div className="flex items-center space-x-2">
+               <button 
+                onClick={toggleTheme} 
+                aria-label="Toggle theme" 
+                className="relative w-10 h-10 flex items-center justify-center rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-brand-card transition-colors"
+              >
+                <AnimatePresence initial={false} mode="wait">
+                  <motion.div
+                    key={theme}
+                    initial={{ y: -20, opacity: 0, scale: 0.8, rotate: -90 }}
+                    animate={{ y: 0, opacity: 1, scale: 1, rotate: 0 }}
+                    exit={{ y: 20, opacity: 0, scale: 0.8, rotate: 90 }}
+                    transition={{ duration: 0.25 }}
+                    className="absolute"
+                  >
+                    {theme === 'light' ? <MoonIcon className="w-6 h-6" /> : <SunIcon className="w-6 h-6" />}
+                  </motion.div>
+                </AnimatePresence>
               </button>
               <Link to="/booking" className="hidden md:inline-block bg-brand-blue hover:bg-brand-blue-hover text-white font-semibold py-2 px-5 rounded-lg transition duration-300 text-sm">
                 Book Appointment
@@ -61,7 +76,7 @@ const Header: React.FC = () => {
                  <button 
                     onClick={() => setIsMenuOpen(!isMenuOpen)} 
                     aria-label="Toggle menu" 
-                    className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition p-2 -mr-2 rounded-full hover:bg-gray-100 dark:hover:bg-brand-card"
+                    className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition p-2 rounded-full hover:bg-gray-100 dark:hover:bg-brand-card"
                  >
                    <MenuIcon className="w-6 h-6" />
                  </button>
