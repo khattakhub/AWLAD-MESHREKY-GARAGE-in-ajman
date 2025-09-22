@@ -66,12 +66,18 @@ const getFromStore = <T,>(key: string, initialData: T): T => {
         if (item) {
             return JSON.parse(item);
         } else {
-            window.localStorage.setItem(key, JSON.stringify(initialData));
-            return initialData;
+            // FIX: Create a deep copy of the initial data before storing and returning it.
+            // This prevents a critical bug where modifying the initial data in one part of the app
+            // (e.g., editing a blog post) would mutate the original constant, causing
+            // unintended side effects across the entire application.
+            const deepCopy = JSON.parse(JSON.stringify(initialData));
+            window.localStorage.setItem(key, JSON.stringify(deepCopy));
+            return deepCopy;
         }
     } catch (error) {
         console.error(`Error reading from localStorage key “${key}”:`, error);
-        return initialData;
+        // Also return a deep copy in case of an error to prevent mutation.
+        return JSON.parse(JSON.stringify(initialData));
     }
 };
 
