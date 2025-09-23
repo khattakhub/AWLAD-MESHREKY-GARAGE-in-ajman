@@ -5,7 +5,19 @@ import {
     POLICIES as INITIAL_POLICIES,
     SOCIAL_LINKS as INITIAL_SOCIAL_LINKS
 } from '../constants';
-import { MOCK_APPOINTMENTS as INITIAL_APPOINTMENTS } from '../pages/admin/mockData';
+import { db } from './firebase';
+import { 
+    collection, 
+    getDocs, 
+    addDoc, 
+    deleteDoc, 
+    doc, 
+    updateDoc,
+    query,
+    orderBy,
+    Timestamp
+} from 'firebase/firestore';
+
 
 // Types
 export type Service = {
@@ -162,59 +174,35 @@ export const saveBlogPosts = (posts: BlogPost[]): void => saveToStore('blogPosts
 // Testimonials (read-only from constants for now)
 export const getTestimonials = (): Testimonial[] => INITIAL_TESTIMONIALS;
 
-// Appointments (Local Storage Implementation)
-const getAppointmentsFromStore = (): Appointment[] => getFromStore('appointments_mock', INITIAL_APPOINTMENTS);
-const saveAppointmentsToStore = (appointments: Appointment[]): void => saveToStore('appointments_mock', appointments);
+// Appointments (Firebase Implementation)
+const appointmentsCollectionRef = collection(db, 'appointments');
 
 export const getAppointments = async (): Promise<Appointment[]> => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const appointments = getAppointmentsFromStore();
-            appointments.sort((a, b) => {
-                const dateComparison = b.date.localeCompare(a.date);
-                if (dateComparison !== 0) return dateComparison;
-                return b.time.localeCompare(a.time);
-            });
-            resolve(appointments);
-        }, 500); // Simulate network delay
-    });
+    const q = query(appointmentsCollectionRef, orderBy('date', 'desc'), orderBy('time', 'desc'));
+    const querySnapshot = await getDocs(q);
+    const appointments = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    } as Appointment));
+    return appointments;
 };
 
 export const addAppointment = async (appointment: Omit<Appointment, 'id' | 'status'>): Promise<void> => {
-     return new Promise((resolve) => {
-        setTimeout(() => {
-            const appointments = getAppointmentsFromStore();
-            const newAppointment: Appointment = {
-                ...appointment,
-                id: new Date().getTime().toString(),
-                status: 'Pending' as const,
-            };
-            saveAppointmentsToStore([newAppointment, ...appointments]);
-            resolve();
-        }, 500);
+    await addDoc(appointmentsCollectionRef, {
+        ...appointment,
+        status: 'Pending',
+        createdAt: Timestamp.now()
     });
 };
 
 export const deleteAppointment = async (id: string): Promise<void> => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            let appointments = getAppointmentsFromStore();
-            appointments = appointments.filter(appt => appt.id !== id);
-            saveAppointmentsToStore(appointments);
-            resolve();
-        }, 500);
-    });
+    const appointmentDoc = doc(db, 'appointments', id);
+    await deleteDoc(appointmentDoc);
 };
 
 export const updateAppointmentStatus = async (id: string, status: Appointment['status']): Promise<void> => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            let appointments = getAppointmentsFromStore();
-            appointments = appointments.map(appt => appt.id === id ? { ...appt, status } : appt);
-            saveAppointmentsToStore(appointments);
-            resolve();
-        }, 500);
-    });
+    const appointmentDoc = doc(db, 'appointments', id);
+    await updateDoc(appointmentDoc, { status });
 };
 
 
