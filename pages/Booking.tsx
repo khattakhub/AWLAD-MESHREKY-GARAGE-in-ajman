@@ -22,6 +22,7 @@ const Booking: React.FC = () => {
   const [time, setTime] = useState('');
   const [message, setMessage] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -46,21 +47,30 @@ const Booking: React.FC = () => {
     }
 
     setIsSubmitting(true);
-    await addAppointment({
-      fullName,
-      phoneNumber,
-      email,
-      service,
-      date,
-      time,
-      message,
-    });
+    setShowError(false);
     
-    setIsSubmitting(false);
-    resetForm();
-    setShowSuccess(true);
-    window.scrollTo(0, 0);
-    setTimeout(() => setShowSuccess(false), 5000);
+    try {
+        await addAppointment({
+            fullName,
+            phoneNumber,
+            email,
+            service,
+            date,
+            time,
+            message,
+        });
+        
+        resetForm();
+        setShowSuccess(true);
+        window.scrollTo(0, 0);
+        setTimeout(() => setShowSuccess(false), 5000);
+    } catch(err) {
+        setShowError(true);
+        setTimeout(() => setShowError(false), 5000);
+        console.error(err);
+    } finally {
+        setIsSubmitting(false);
+    }
   };
 
   return (
@@ -74,6 +84,18 @@ const Booking: React.FC = () => {
 
           {/* FIX: Replaced `AnimatePresence` with `FM.AnimatePresence` to use the namespaced import. */}
           <FM.AnimatePresence>
+            {showError && (
+              <FM.motion.div
+                className="bg-red-100 dark:bg-red-900/50 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg relative mb-6"
+                role="alert"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <strong className="font-bold">Error!</strong>
+                <span className="block sm:inline"> Could not send appointment request. Please check your connection and try again.</span>
+              </FM.motion.div>
+            )}
             {showSuccess && (
               // FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import.
               <FM.motion.div

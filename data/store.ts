@@ -131,8 +131,10 @@ const getFromStore = <T,>(key: string, initialData: T): T => {
         }
     } catch (error) {
         console.error(`Error reading from localStorage key “${key}”:`, error);
-        // Also return a deep copy in case of an error to prevent mutation.
-        return JSON.parse(JSON.stringify(initialData));
+        // FIX: The original code re-threw an error by trying to stringify a
+        // potentially circular structure again. Fallback to the initialData
+        // reference directly to prevent a crash.
+        return initialData;
     }
 };
 
@@ -176,7 +178,7 @@ export const getAppointments = async (): Promise<Appointment[]> => {
         return appointments;
     } catch (error) {
         console.error("Error fetching appointments from Firestore: ", error);
-        return [];
+        throw error;
     }
 };
 
@@ -189,6 +191,7 @@ export const addAppointment = async (appointment: Omit<Appointment, 'id' | 'stat
         await addDoc(appointmentsCollection, appointmentData);
     } catch (error) {
         console.error("Error adding appointment to Firestore: ", error);
+        throw error;
     }
 };
 
@@ -198,6 +201,7 @@ export const deleteAppointment = async (id: string): Promise<void> => {
         await deleteDoc(appointmentDoc);
     } catch (error) {
         console.error("Error deleting appointment from Firestore: ", error);
+        throw error;
     }
 };
 

@@ -5,12 +5,20 @@ import TrashIcon from '../../components/icons/TrashIcon';
 const AdminAppointments: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchAppointments = async () => {
     setLoading(true);
-    const appts = await getAppointments();
-    setAppointments(appts);
-    setLoading(false);
+    setError(null);
+    try {
+        const appts = await getAppointments();
+        setAppointments(appts);
+    } catch (err) {
+        setError('Could not connect to the database. Please check your internet connection and try again.');
+        console.error(err);
+    } finally {
+        setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -19,8 +27,13 @@ const AdminAppointments: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this appointment request?')) {
-      await deleteAppointment(id);
-      fetchAppointments();
+        try {
+            await deleteAppointment(id);
+            fetchAppointments();
+        } catch (err) {
+            alert('Failed to delete appointment. Please check your internet connection and try again.');
+            console.error(err);
+        }
     }
   };
 
@@ -42,15 +55,22 @@ const AdminAppointments: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {loading ? (
+              {loading && (
                 <tr>
                   <td colSpan={7} className="text-center py-10 text-gray-500 dark:text-gray-400">Loading appointments...</td>
                 </tr>
-              ) : appointments.length === 0 ? (
+              )}
+              {!loading && error && (
+                 <tr>
+                  <td colSpan={7} className="text-center py-10 text-red-500 dark:text-red-400 px-6">{error}</td>
+                </tr>
+              )}
+              {!loading && !error && appointments.length === 0 && (
                 <tr>
                   <td colSpan={7} className="text-center py-10 text-gray-500 dark:text-gray-400">No appointment requests yet.</td>
                 </tr>
-              ) : (
+              )}
+              {!loading && !error && (
                 appointments.map((appt) => (
                   <tr key={appt.id} className="bg-white dark:bg-brand-card border-b dark:border-brand-border hover:bg-gray-50 dark:hover:bg-brand-border/30">
                     <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{appt.fullName}</td>
