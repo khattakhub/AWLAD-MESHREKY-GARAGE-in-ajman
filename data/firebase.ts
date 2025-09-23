@@ -1,8 +1,6 @@
 // Import the functions you need from the SDKs you need
-// FIX: Switched to namespace imports for `firebase/app` and `firebase/analytics` to resolve module export errors.
-// This is likely due to a project configuration or dependency issue causing problems with named exports from these specific modules.
-import * as firebaseApp from "firebase/app";
-import * as firebaseAnalytics from "firebase/analytics";
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
@@ -18,8 +16,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = firebaseApp.initializeApp(firebaseConfig);
-const analytics = firebaseAnalytics.getAnalytics(app);
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 const db = getFirestore(app);
 
 // Export for potential use in other parts of the app
