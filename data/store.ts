@@ -7,7 +7,7 @@ import {
 } from '../constants';
 import { MOCK_APPOINTMENTS, MOCK_SUBSCRIBERS } from '../pages/admin/mockData';
 import { db } from './firebase';
-import { collection, getDocs, addDoc, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, addDoc, deleteDoc, doc, query, orderBy, updateDoc } from 'firebase/firestore';
 
 // Types
 export type Service = {
@@ -201,6 +201,16 @@ export const deleteAppointment = async (id: string): Promise<void> => {
         await deleteDoc(appointmentDoc);
     } catch (error) {
         console.error("Error deleting appointment from Firestore: ", error);
+        throw error;
+    }
+};
+
+export const updateAppointmentStatus = async (id: string, status: Appointment['status']): Promise<void> => {
+    try {
+        const appointmentDoc = doc(db, 'appointments', id);
+        await updateDoc(appointmentDoc, { status });
+    } catch (error) {
+        console.error("Error updating appointment status in Firestore: ", error);
         throw error;
     }
 };
