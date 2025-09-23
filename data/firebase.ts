@@ -15,7 +15,7 @@ const firebaseConfig = {
   measurementId: "G-FF0F0K07N9"
 };
 
-// Initialize Firebase
+// Initialize Firebase using the modular V9 SDK
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
