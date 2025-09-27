@@ -1,37 +1,23 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { getSubscribers, deleteSubscriber, Subscriber } from '../../data/store';
 
 const AdminSubscribers: React.FC = () => {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchSubscribers = async () => {
-    setLoading(true);
-    try {
-        const subs = await getSubscribers();
-        setSubscribers(subs);
-    } catch (error) {
-        console.error("Failed to fetch subscribers:", error);
-        alert('Could not fetch subscribers. Please check your connection.');
-    } finally {
-        setLoading(false);
-    }
+  
+  const refreshSubscribers = () => {
+    setSubscribers(getSubscribers());
   };
 
   useEffect(() => {
-    fetchSubscribers();
+    refreshSubscribers();
   }, []);
 
-  const handleRemove = async (id: string) => {
+  const handleRemove = (id: string) => {
     if (window.confirm('Are you sure you want to remove this subscriber?')) {
-      try {
-        await deleteSubscriber(id);
-        fetchSubscribers(); // Refresh the list
-      } catch (error) {
-        console.error("Failed to delete subscriber:", error);
-        alert('Could not delete subscriber. Please check your connection.');
-      }
+      deleteSubscriber(id);
+      refreshSubscribers();
     }
   };
   
@@ -49,11 +35,7 @@ const AdminSubscribers: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan={3} className="text-center py-10 text-gray-500 dark:text-gray-400">Loading subscribers...</td>
-                </tr>
-              ) : subscribers.length === 0 ? (
+              {subscribers.length === 0 ? (
                 <tr>
                   <td colSpan={3} className="text-center py-10 text-gray-500 dark:text-gray-400">No subscribers yet.</td>
                 </tr>

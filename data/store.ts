@@ -1,24 +1,48 @@
 
 
+
+/*
+NOTE FOR DEVELOPER:
+The application has been configured to use the browser's localStorage for storing appointments and subscribers.
+This ensures the app is fully functional for demonstration purposes without requiring a live Firebase backend configuration.
+The original Firebase Firestore functions have been commented out below.
+
+To switch back to Firebase:
+1. Ensure your `data/firebase.ts` file has the correct configuration for your Firebase project.
+2. Make sure you have created a Firestore database in your Firebase project.
+3. Set up the necessary Firestore security rules to allow reading and writing to the 'appointments' and 'subscribers' collections. 
+   A simple rule for development is:
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       match /{document=**} {
+         allow read, write: if true;
+       }
+     }
+   }
+4. Comment out the localStorage functions below and uncomment the Firebase functions.
+5. Update the components that use these functions to handle the asynchronous nature of Firebase calls (e.g., using async/await, .then(), and managing loading states).
+*/
+
 import { 
     SERVICES as INITIAL_SERVICES_RAW, 
     TESTIMONIALS as INITIAL_TESTIMONIALS,
     POLICIES as INITIAL_POLICIES,
     SOCIAL_LINKS as INITIAL_SOCIAL_LINKS
 } from '../constants';
-import { db } from './firebase';
-import { 
-    collection, 
-    getDocs, 
-    addDoc, 
-    deleteDoc, 
-    doc, 
-    updateDoc,
-    query,
-    orderBy,
-    where,
-    Timestamp
-} from 'firebase/firestore';
+// import { db } from './firebase';
+// import { 
+//     collection, 
+//     getDocs, 
+//     addDoc, 
+//     deleteDoc, 
+//     doc, 
+//     updateDoc,
+//     query,
+//     orderBy,
+//     where,
+//     Timestamp
+// } from 'firebase/firestore';
 
 
 // Types
@@ -162,6 +186,19 @@ const INITIAL_BLOG_POSTS: BlogPost[] = [
     }
 ];
 
+// Initial Local Data for Appointments and Subscribers
+const INITIAL_APPOINTMENTS: Appointment[] = [
+  { id: '1', fullName: 'Ahmed Al-Mansoori', phoneNumber: '+971 50 123 4567', service: 'Engine Diagnostics & Repair', date: '2024-08-10', time: '10:00', message: 'Car is making a strange rattling noise.', status: 'Pending' },
+  { id: '2', fullName: 'Fatima Al-Kaabi', phoneNumber: '+971 55 987 6543', service: 'Lube & Oil Change', date: '2024-08-11', time: '14:30', message: 'Standard oil change for a 2022 Nissan Patrol.', status: 'Confirmed' },
+  { id: '3', fullName: 'Yusuf Khan', phoneNumber: '+971 52 555 1234', service: 'Professional Detailing', date: '2024-08-12', time: '09:00', message: 'Full interior and exterior detailing with ceramic coating.', status: 'Completed' },
+];
+
+const INITIAL_SUBSCRIBERS: Subscriber[] = [
+  { id: '1', email: 'ahmed.m@example.com', date: '2024-07-20' },
+  { id: '2', email: 'fatima.k@example.com', date: '2024-07-21' },
+];
+
+
 // Generic store functions
 const getFromStore = <T,>(key: string, initialData: T): T => {
     try {
@@ -169,19 +206,12 @@ const getFromStore = <T,>(key: string, initialData: T): T => {
         if (item) {
             return JSON.parse(item);
         } else {
-            // FIX: Create a deep copy of the initial data before storing and returning it.
-            // This prevents a critical bug where modifying the initial data in one part of the app
-            // (e.g., editing a blog post) would mutate the original constant, causing
-            // unintended side effects across the entire application.
             const deepCopy = JSON.parse(JSON.stringify(initialData));
             window.localStorage.setItem(key, JSON.stringify(deepCopy));
             return deepCopy;
         }
     } catch (error) {
         console.error(`Error reading from localStorage key “${key}”:`, error);
-        // FIX: The original code re-threw an error by trying to stringify a
-        // potentially circular structure again. Fallback to the initialData
-        // reference directly to prevent a crash.
         return initialData;
     }
 };
@@ -208,7 +238,70 @@ export const saveServices = (services: Service[]): void => saveToStore('services
 // Testimonials (read-only from constants for now)
 export const getTestimonials = (): Testimonial[] => INITIAL_TESTIMONIALS;
 
-// Appointments (Firebase Implementation)
+// --- LocalStorage Implementation for Appointments ---
+export const getAppointments = (): Appointment[] => {
+    const appointments = getFromStore('appointments', INITIAL_APPOINTMENTS);
+    // Sort them since localStorage doesn't guarantee order
+    return appointments.sort((a, b) => {
+        const dateComparison = b.date.localeCompare(a.date);
+        if (dateComparison !== 0) return dateComparison;
+        return b.time.localeCompare(a.time);
+    });
+};
+
+export const addAppointment = (appointment: Omit<Appointment, 'id' | 'status'>): void => {
+    const appointments = getAppointments();
+    const newAppointment: Appointment = {
+        ...appointment,
+        id: new Date().getTime().toString(), // Simple unique ID
+        status: 'Pending'
+    };
+    saveToStore('appointments', [newAppointment, ...appointments]);
+};
+
+export const deleteAppointment = (id: string): void => {
+    const appointments = getAppointments();
+    const updatedAppointments = appointments.filter(appt => appt.id !== id);
+    saveToStore('appointments', updatedAppointments);
+};
+
+export const updateAppointmentStatus = (id: string, status: Appointment['status']): void => {
+    const appointments = getAppointments();
+    const updatedAppointments = appointments.map(appt => 
+        appt.id === id ? { ...appt, status } : appt
+    );
+    saveToStore('appointments', updatedAppointments);
+};
+
+
+// --- LocalStorage Implementation for Subscribers ---
+export const getSubscribers = (): Subscriber[] => {
+    return getFromStore('subscribers', INITIAL_SUBSCRIBERS);
+};
+
+export const addSubscriber = (subscriber: { email: string }): void => {
+    const subscribers = getSubscribers();
+    // Prevent duplicates
+    if (subscribers.some(s => s.email.toLowerCase() === subscriber.email.toLowerCase())) {
+        console.log('Subscriber email already exists.');
+        return;
+    }
+    const newSubscriber: Subscriber = {
+        id: new Date().getTime().toString(),
+        email: subscriber.email,
+        date: new Date().toISOString().split('T')[0]
+    };
+    saveToStore('subscribers', [...subscribers, newSubscriber]);
+};
+
+export const deleteSubscriber = (id: string): void => {
+    const subscribers = getSubscribers();
+    const updatedSubscribers = subscribers.filter(sub => sub.id !== id);
+    saveToStore('subscribers', updatedSubscribers);
+};
+
+// --- Commented-out Firebase Implementation ---
+/*
 const appointmentsCollectionRef = collection(db, 'appointments');
 
 export const getAppointments = async (): Promise<Appointment[]> => {
@@ -239,8 +332,6 @@ export const updateAppointmentStatus = async (id: string, status: Appointment['s
     await updateDoc(appointmentDoc, { status });
 };
 
-
-// Subscribers (Firebase Implementation)
 const subscribersCollectionRef = collection(db, 'subscribers');
 
 export const getSubscribers = async (): Promise<Subscriber[]> => {
@@ -258,7 +349,6 @@ export const getSubscribers = async (): Promise<Subscriber[]> => {
 };
 
 export const addSubscriber = async (subscriber: { email: string }): Promise<void> => {
-    // Prevent duplicates
     const q = query(subscribersCollectionRef, where("email", "==", subscriber.email));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
@@ -275,6 +365,7 @@ export const deleteSubscriber = async (id: string): Promise<void> => {
     const subscriberDoc = doc(db, 'subscribers', id);
     await deleteDoc(subscriberDoc);
 };
+*/
 
 
 // Policies

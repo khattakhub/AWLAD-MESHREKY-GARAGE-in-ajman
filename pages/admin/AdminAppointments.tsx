@@ -4,50 +4,25 @@ import TrashIcon from '../../components/icons/TrashIcon';
 
 const AdminAppointments: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  const fetchAppointments = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-        const appts = await getAppointments();
-        setAppointments(appts);
-    } catch (err) {
-        setError('Could not connect to the database. Please check your internet connection and try again.');
-        console.error(err);
-    } finally {
-        setLoading(false);
-    }
+  const refreshAppointments = () => {
+    setAppointments(getAppointments());
   };
 
   useEffect(() => {
-    fetchAppointments();
+    refreshAppointments();
   }, []);
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this appointment request?')) {
-        try {
-            await deleteAppointment(id);
-            fetchAppointments();
-        } catch (err) {
-            alert('Failed to delete appointment. Please check your internet connection and try again.');
-            console.error(err);
-        }
+  const handleDelete = (id: string, fullName: string) => {
+    if (window.confirm(`Are you sure you want to delete the appointment for ${fullName}?`)) {
+        deleteAppointment(id);
+        refreshAppointments();
     }
   };
 
-  const handleStatusChange = async (id: string, newStatus: Appointment['status']) => {
-      try {
-          await updateAppointmentStatus(id, newStatus);
-          // Update local state for instant UI feedback
-          setAppointments(prev => 
-              prev.map(appt => appt.id === id ? { ...appt, status: newStatus } : appt)
-          );
-      } catch (err) {
-          alert('Failed to update status. Please check your internet connection and try again.');
-          console.error(err);
-      }
+  const handleStatusChange = (id: string, newStatus: Appointment['status']) => {
+      updateAppointmentStatus(id, newStatus);
+      refreshAppointments(); // Refresh to reflect sorted order if needed
   };
 
   const getStatusClasses = (status: Appointment['status']) => {
@@ -83,22 +58,11 @@ const AdminAppointments: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {loading && (
-                <tr>
-                  <td colSpan={7} className="text-center py-10 text-gray-500 dark:text-gray-400">Loading appointments...</td>
-                </tr>
-              )}
-              {!loading && error && (
-                 <tr>
-                  <td colSpan={7} className="text-center py-10 text-red-500 dark:text-red-400 px-6">{error}</td>
-                </tr>
-              )}
-              {!loading && !error && appointments.length === 0 && (
+              {appointments.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="text-center py-10 text-gray-500 dark:text-gray-400">No appointment requests yet.</td>
                 </tr>
-              )}
-              {!loading && !error && (
+              ) : (
                 appointments.map((appt) => (
                   <tr key={appt.id} className="bg-white dark:bg-brand-card border-b dark:border-brand-border hover:bg-gray-50 dark:hover:bg-brand-border/30">
                     <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{appt.fullName}</td>
@@ -119,7 +83,7 @@ const AdminAppointments: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 max-w-xs truncate" title={appt.message}>{appt.message}</td>
                     <td className="px-6 py-4 text-right">
-                      <button onClick={() => handleDelete(appt.id)} className="text-red-500 hover:text-red-700 p-2">
+                      <button onClick={() => handleDelete(appt.id, appt.fullName)} className="text-red-500 hover:text-red-700 p-2" aria-label={`Delete appointment for ${appt.fullName}`}>
                         <TrashIcon className="w-4 h-4" />
                       </button>
                     </td>

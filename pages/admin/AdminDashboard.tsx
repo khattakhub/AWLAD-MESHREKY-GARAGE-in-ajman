@@ -1,5 +1,6 @@
 
 
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAppointments, getSubscribers, getServices, Appointment } from '../../data/store';
@@ -26,31 +27,19 @@ const AdminDashboard: React.FC = () => {
         services: 0,
     });
     const [recentAppointments, setRecentAppointments] = useState<Appointment[]>([]);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchDashboardData = async () => {
-            setLoading(true);
-            try {
-                const [appointmentsData, subscribersData] = await Promise.all([
-                    getAppointments(),
-                    getSubscribers()
-                ]);
+        // Since we are using localStorage, data fetching is synchronous.
+        const appointmentsData = getAppointments();
+        const subscribersData = getSubscribers();
+        const servicesData = getServices();
 
-                setStats({
-                    appointments: appointmentsData.length,
-                    subscribers: subscribersData.length,
-                    services: getServices().length, // This is still sync from localStorage
-                });
-                setRecentAppointments(appointmentsData.slice(0, 5));
-            } catch (error) {
-                console.error("Failed to fetch dashboard data:", error);
-                // Optionally set an error state here to show in the UI
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchDashboardData();
+        setStats({
+            appointments: appointmentsData.length,
+            subscribers: subscribersData.length,
+            services: servicesData.length,
+        });
+        setRecentAppointments(appointmentsData.slice(0, 5));
     }, []);
 
     return (
@@ -71,9 +60,7 @@ const AdminDashboard: React.FC = () => {
                     </Link>
                  </div>
                  <div className="p-6">
-                    {loading ? (
-                        <div className="text-center text-gray-500 dark:text-gray-400">Loading...</div>
-                    ) : recentAppointments.length === 0 ? (
+                    {recentAppointments.length === 0 ? (
                         <div className="text-center text-gray-500 dark:text-gray-400">No appointment requests yet.</div>
                     ) : (
                         <ul className="space-y-2">
@@ -101,7 +88,7 @@ const AdminDashboard: React.FC = () => {
                  <p className="text-gray-600 dark:text-gray-300">
                     This is your control panel. You can view appointment requests, see your newsletter subscribers, manage blog posts, and manage the services listed on your website.
                     <br/><br/>
-                    Appointment data is managed using Firebase Firestore. Other data is saved in your browser's local storage. Use the navigation on the left to get started.
+                    All data is currently being saved in your browser's local storage for demonstration. Use the navigation on the left to get started.
                  </p>
             </div>
         </div>

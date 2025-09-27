@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import FacebookIcon from './icons/FacebookIcon';
@@ -14,17 +15,20 @@ const Footer: React.FC = () => {
   const [isSubscribing, setIsSubscribing] = useState(false);
   const socialLinks = getSocialLinks();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes('@') || isSubscribing) return;
     
     setIsSubscribing(true);
-    await addSubscriber({ email });
+    addSubscriber({ email });
 
-    setIsSubscribing(false);
-    setEmail('');
-    setSubscribed(true);
-    setTimeout(() => setSubscribed(false), 3000);
+    // Simulate submission time
+    setTimeout(() => {
+      setIsSubscribing(false);
+      setEmail('');
+      setSubscribed(true);
+      setTimeout(() => setSubscribed(false), 3000);
+    }, 500);
   };
 
   return (

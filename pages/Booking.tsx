@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getServices, addAppointment } from '../data/store';
@@ -39,7 +40,7 @@ const Booking: React.FC = () => {
     setMessage('');
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName || !phoneNumber || !service || !date || !time) {
       alert('Please fill out all required fields.');
@@ -49,28 +50,30 @@ const Booking: React.FC = () => {
     setIsSubmitting(true);
     setShowError(false);
     
-    try {
-        await addAppointment({
-            fullName,
-            phoneNumber,
-            email,
-            service,
-            date,
-            time,
-            message,
-        });
-        
-        resetForm();
-        setShowSuccess(true);
-        window.scrollTo(0, 0);
-        setTimeout(() => setShowSuccess(false), 5000);
-    } catch(err) {
-        setShowError(true);
-        setTimeout(() => setShowError(false), 5000);
-        console.error(err);
-    } finally {
+    // Using localStorage, this operation is synchronous and won't fail
+    // like a network request.
+    addAppointment({
+        fullName,
+        phoneNumber,
+        email,
+        service,
+        date,
+        time,
+        message,
+    });
+    
+    resetForm();
+    setShowSuccess(true);
+    window.scrollTo(0, 0);
+
+    // Give user feedback for submission time
+    setTimeout(() => {
+      setShowSuccess(false);
+    }, 5000);
+
+    setTimeout(() => {
         setIsSubmitting(false);
-    }
+    }, 500);
   };
 
   return (
