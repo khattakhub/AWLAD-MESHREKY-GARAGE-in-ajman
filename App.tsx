@@ -24,6 +24,10 @@ import AdminAppointments from './pages/admin/AdminAppointments';
 import AdminSubscribers from './pages/admin/AdminSubscribers';
 import AdminServices from './pages/admin/AdminServices';
 import AdminSettings from './pages/admin/AdminSettings';
+import AdminBlog from './pages/admin/AdminBlog';
+import AdminMessages from './pages/admin/AdminMessages';
+import BlogPostPage from './pages/BlogPostPage';
+import Blog from './pages/Blog';
 
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
@@ -77,6 +81,8 @@ const AppContent: React.FC = () => {
                             <Route path="/tools/car-resale-value-estimator" element={<PageWrapper><CarResaleValueEstimator /></PageWrapper>} />
                             <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
                             <Route path="/booking" element={<PageWrapper><Booking /></PageWrapper>} />
+                            <Route path="/blog" element={<PageWrapper><Blog /></PageWrapper>} />
+                            <Route path="/blog/:slug" element={<PageWrapper><BlogPostPage /></PageWrapper>} />
                             <Route path="/terms" element={<PageWrapper><Terms /></PageWrapper>} />
                             <Route path="/privacy" element={<PageWrapper><Privacy /></PageWrapper>} />
                             <Route path="/refund" element={<PageWrapper><Refund /></PageWrapper>} />
@@ -87,8 +93,10 @@ const AppContent: React.FC = () => {
                                 <Route index element={<Navigate to="/admin/dashboard" replace />} />
                                 <Route path="dashboard" element={<AdminDashboard />} />
                                 <Route path="appointments" element={<AdminAppointments />} />
+                                <Route path="messages" element={<AdminMessages />} />
                                 <Route path="subscribers" element={<AdminSubscribers />} />
                                 <Route path="services" element={<AdminServices />} />
+                                <Route path="blog" element={<AdminBlog />} />
                                 <Route path="settings" element={<AdminSettings />} />
                             </Route>
                         </Routes>

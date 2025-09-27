@@ -15,20 +15,22 @@ const Footer: React.FC = () => {
   const [isSubscribing, setIsSubscribing] = useState(false);
   const socialLinks = getSocialLinks();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes('@') || isSubscribing) return;
     
     setIsSubscribing(true);
-    addSubscriber({ email });
-
-    // Simulate submission time
-    setTimeout(() => {
-      setIsSubscribing(false);
-      setEmail('');
-      setSubscribed(true);
-      setTimeout(() => setSubscribed(false), 3000);
-    }, 500);
+    try {
+        await addSubscriber({ email });
+        setEmail('');
+        setSubscribed(true);
+        setTimeout(() => setSubscribed(false), 3000);
+    } catch (error) {
+        console.error("Failed to subscribe:", error);
+        alert("Subscription failed. Please try again later.");
+    } finally {
+        setIsSubscribing(false);
+    }
   };
 
   return (

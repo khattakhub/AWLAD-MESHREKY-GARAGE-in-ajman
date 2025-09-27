@@ -1,6 +1,5 @@
 
 
-
 /*
 NOTE FOR DEVELOPER:
 The application has been configured to use the browser's localStorage for storing appointments and subscribers.
@@ -40,7 +39,8 @@ import {
     updateDoc,
     query,
     orderBy,
-    Timestamp
+    Timestamp,
+    where
 } from 'firebase/firestore';
 
 
@@ -72,6 +72,15 @@ export type Appointment = {
 export type Subscriber = {
     id: string;
     email: string;
+    date: string;
+};
+
+export type Message = {
+    id: string;
+    fullName: string;
+    email: string;
+    phone: string;
+    message: string;
     date: string;
 };
 
@@ -185,21 +194,6 @@ const INITIAL_BLOG_POSTS: BlogPost[] = [
     }
 ];
 
-// Initial Local Data for Appointments and Subscribers
-/*
-const INITIAL_APPOINTMENTS: Appointment[] = [
-  { id: '1', fullName: 'Ahmed Al-Mansoori', phoneNumber: '+971 50 123 4567', service: 'Engine Diagnostics & Repair', date: '2024-08-10', time: '10:00', message: 'Car is making a strange rattling noise.', status: 'Pending' },
-  { id: '2', fullName: 'Fatima Al-Kaabi', phoneNumber: '+971 55 987 6543', service: 'Lube & Oil Change', date: '2024-08-11', time: '14:30', message: 'Standard oil change for a 2022 Nissan Patrol.', status: 'Confirmed' },
-  { id: '3', fullName: 'Yusuf Khan', phoneNumber: '+971 52 555 1234', service: 'Professional Detailing', date: '2024-08-12', time: '09:00', message: 'Full interior and exterior detailing with ceramic coating.', status: 'Completed' },
-];
-*/
-
-const INITIAL_SUBSCRIBERS: Subscriber[] = [
-  { id: '1', email: 'ahmed.m@example.com', date: '2024-07-20' },
-  { id: '2', email: 'fatima.k@example.com', date: '2024-07-21' },
-];
-
-
 // Generic store functions
 const getFromStore = <T,>(key: string, initialData: T): T => {
     try {
@@ -239,76 +233,12 @@ export const saveServices = (services: Service[]): void => saveToStore('services
 // Testimonials (read-only from constants for now)
 export const getTestimonials = (): Testimonial[] => INITIAL_TESTIMONIALS;
 
-// --- LocalStorage Implementation for Appointments ---
-/*
-export const getAppointments = (): Appointment[] => {
-    const appointments = getFromStore('appointments', INITIAL_APPOINTMENTS);
-    // Sort them since localStorage doesn't guarantee order
-    return appointments.sort((a, b) => {
-        const dateComparison = b.date.localeCompare(a.date);
-        if (dateComparison !== 0) return dateComparison;
-        return b.time.localeCompare(a.time);
-    });
-};
-
-export const addAppointment = (appointment: Omit<Appointment, 'id' | 'status'>): void => {
-    const appointments = getAppointments();
-    const newAppointment: Appointment = {
-        ...appointment,
-        id: new Date().getTime().toString(), // Simple unique ID
-        status: 'Pending'
-    };
-    saveToStore('appointments', [newAppointment, ...appointments]);
-};
-
-export const deleteAppointment = (id: string): void => {
-    const appointments = getAppointments();
-    const updatedAppointments = appointments.filter(appt => appt.id !== id);
-    saveToStore('appointments', updatedAppointments);
-};
-
-export const updateAppointmentStatus = (id: string, status: Appointment['status']): void => {
-    const appointments = getAppointments();
-    const updatedAppointments = appointments.map(appt => 
-        appt.id === id ? { ...appt, status } : appt
-    );
-    saveToStore('appointments', updatedAppointments);
-};
-*/
-
-
-// --- LocalStorage Implementation for Subscribers ---
-export const getSubscribers = (): Subscriber[] => {
-    return getFromStore('subscribers', INITIAL_SUBSCRIBERS);
-};
-
-export const addSubscriber = (subscriber: { email: string }): void => {
-    const subscribers = getSubscribers();
-    // Prevent duplicates
-    if (subscribers.some(s => s.email.toLowerCase() === subscriber.email.toLowerCase())) {
-        console.log('Subscriber email already exists.');
-        return;
-    }
-    const newSubscriber: Subscriber = {
-        id: new Date().getTime().toString(),
-        email: subscriber.email,
-        date: new Date().toISOString().split('T')[0]
-    };
-    saveToStore('subscribers', [...subscribers, newSubscriber]);
-};
-
-export const deleteSubscriber = (id: string): void => {
-    const subscribers = getSubscribers();
-    const updatedSubscribers = subscribers.filter(sub => sub.id !== id);
-    saveToStore('subscribers', updatedSubscribers);
-};
-
 // --- Firebase Implementation for Appointments ---
 
 export const appointmentsCollectionRef = collection(db, 'appointments');
 
 export const getAppointments = async (): Promise<Appointment[]> => {
-    const q = query(appointmentsCollectionRef, orderBy('date', 'desc'), orderBy('time', 'desc'));
+    const q = query(appointmentsCollectionRef, orderBy('createdAt', 'desc'));
     const querySnapshot = await getDocs(q);
     const appointments = querySnapshot.docs.map(doc => ({
         id: doc.id,
@@ -334,8 +264,10 @@ export const updateAppointmentStatus = async (id: string, status: Appointment['s
     const appointmentDoc = doc(db, 'appointments', id);
     await updateDoc(appointmentDoc, { status });
 };
-/*
-const subscribersCollectionRef = collection(db, 'subscribers');
+
+
+// --- Firebase Implementation for Subscribers ---
+export const subscribersCollectionRef = collection(db, 'subscribers');
 
 export const getSubscribers = async (): Promise<Subscriber[]> => {
     const q = query(subscribersCollectionRef, orderBy('createdAt', 'desc'));
@@ -352,14 +284,16 @@ export const getSubscribers = async (): Promise<Subscriber[]> => {
 };
 
 export const addSubscriber = async (subscriber: { email: string }): Promise<void> => {
-    const q = query(subscribersCollectionRef, where("email", "==", subscriber.email));
+    // Check for duplicates
+    const q = query(subscribersCollectionRef, where("email", "==", subscriber.email.toLowerCase()));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
         console.log('Subscriber email already exists.');
+        // Optionally throw an error or handle it as a success
         return;
     }
     await addDoc(subscribersCollectionRef, {
-        email: subscriber.email,
+        email: subscriber.email.toLowerCase(),
         createdAt: Timestamp.now()
     });
 };
@@ -368,8 +302,21 @@ export const deleteSubscriber = async (id: string): Promise<void> => {
     const subscriberDoc = doc(db, 'subscribers', id);
     await deleteDoc(subscriberDoc);
 };
-*/
 
+// --- Firebase Implementation for Messages ---
+export const messagesCollectionRef = collection(db, 'messages');
+
+export const addMessage = async (message: Omit<Message, 'id' | 'date'>): Promise<void> => {
+    await addDoc(messagesCollectionRef, {
+        ...message,
+        createdAt: Timestamp.now()
+    });
+};
+
+export const deleteMessage = async (id: string): Promise<void> => {
+    const messageDoc = doc(db, 'messages', id);
+    await deleteDoc(messageDoc);
+};
 
 // Policies
 export const getPolicies = (): Policies => getFromStore('policies', INITIAL_POLICIES);

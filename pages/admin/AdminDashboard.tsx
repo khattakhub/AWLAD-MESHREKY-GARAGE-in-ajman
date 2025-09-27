@@ -1,7 +1,4 @@
 
-
-
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAppointments, getSubscribers, getServices, Appointment } from '../../data/store';
@@ -33,7 +30,8 @@ const AdminDashboard: React.FC = () => {
         const fetchData = async () => {
             try {
                 const appointmentsData = await getAppointments();
-                const subscribersData = getSubscribers();
+                // FIX: Awaited the asynchronous `getSubscribers` function call to correctly resolve the promise.
+                const subscribersData = await getSubscribers();
                 const servicesData = getServices();
 
                 setStats({
