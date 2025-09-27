@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom';
 import HomeIcon from './icons/HomeIcon';
 import WrenchIcon from './icons/WrenchIcon';
 import CalculatorIcon from './icons/CalculatorIcon';
-import DocumentIcon from './icons/DocumentIcon';
 import CalendarIcon from './icons/CalendarIcon';
 
 // FIX: Updated the 'icon' prop type to be more specific, allowing 'className' to be passed during cloning.
@@ -30,7 +29,6 @@ const MobileBottomNav: React.FC = () => {
             <NavItem to="/" icon={<HomeIcon />} label="Home" />
             <NavItem to="/services" icon={<WrenchIcon />} label="Services" />
             <NavItem to="/tools" icon={<CalculatorIcon />} label="Tools" />
-            <NavItem to="/blog" icon={<DocumentIcon />} label="Blog" />
             <NavItem to="/booking" icon={<CalendarIcon />} label="Book Now" />
         </nav>
     );

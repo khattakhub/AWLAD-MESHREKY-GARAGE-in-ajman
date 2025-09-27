@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import TestimonialCard from '../components/TestimonialCard';
@@ -100,11 +101,7 @@ const Home: React.FC = () => {
                 subtitle={whyChooseUsData.subtitle}
                 isGray={true}
             >
-                <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 text-left items-center">
-                    {/* FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import. */}
-                    <FM.motion.div variants={cardVariants}>
-                        <img src={whyChooseUsData.imageUrl} alt="Mechanic working on a car" className="rounded-lg shadow-lg w-full h-auto object-cover"/>
-                    </FM.motion.div>
+                <div className="max-w-4xl mx-auto text-left">
                     {/* FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import. */}
                     <FM.motion.div variants={cardContainerVariants} className="space-y-8">
                         {whyChooseUsData.features.map((feature, index) => (

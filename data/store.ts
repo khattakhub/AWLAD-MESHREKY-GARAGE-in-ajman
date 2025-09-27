@@ -88,7 +88,6 @@ export type WhyChooseUsFeature = {
 export type WhyChooseUsData = {
   title: string;
   subtitle: string;
-  imageUrl: string;
   features: WhyChooseUsFeature[];
 };
 
@@ -106,7 +105,6 @@ const INITIAL_HERO_DATA: HeroData = {
 const INITIAL_WHY_CHOOSE_US_DATA: WhyChooseUsData = {
     title: "Why Choose Awlad Meshreky",
     subtitle: "We are committed to providing the highest level of service and quality workmanship for your vehicle.",
-    imageUrl: "https://picsum.photos/600/400?grayscale&random=20",
     features: [
         {
             title: "Certified & Experienced Technicians",

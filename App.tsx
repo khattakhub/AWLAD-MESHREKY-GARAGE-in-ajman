@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Header from './components/Header';
@@ -9,8 +10,6 @@ import Tools from './pages/Tools';
 import CarLoanCalculator from './pages/CarLoanCalculator';
 import Contact from './pages/Contact';
 import Booking from './pages/Booking';
-import Blog from './pages/Blog';
-import BlogPostPage from './pages/BlogPostPage';
 import FuelCostEstimator from './pages/FuelCostEstimator';
 import CarResaleValueEstimator from './pages/CarResaleValueEstimator';
 import { ThemeProvider } from './ThemeContext';
@@ -24,7 +23,6 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminAppointments from './pages/admin/AdminAppointments';
 import AdminSubscribers from './pages/admin/AdminSubscribers';
 import AdminServices from './pages/admin/AdminServices';
-import AdminBlog from './pages/admin/AdminBlog';
 import AdminSettings from './pages/admin/AdminSettings';
 
 import Terms from './pages/Terms';
@@ -32,6 +30,8 @@ import Privacy from './pages/Privacy';
 import Refund from './pages/Refund';
 import Loader from './components/Loader';
 import MobileBottomNav from './components/MobileBottomNav';
+import BlogPostPage from './pages/BlogPostPage';
+import Blog from './pages/Blog';
 
 
 const ScrollToTop: React.FC = () => {
@@ -77,8 +77,6 @@ const AppContent: React.FC = () => {
                             <Route path="/tools/car-loan-calculator" element={<PageWrapper><CarLoanCalculator /></PageWrapper>} />
                             <Route path="/tools/fuel-cost-estimator" element={<PageWrapper><FuelCostEstimator /></PageWrapper>} />
                             <Route path="/tools/car-resale-value-estimator" element={<PageWrapper><CarResaleValueEstimator /></PageWrapper>} />
-                            <Route path="/blog" element={<PageWrapper><Blog /></PageWrapper>} />
-                            <Route path="/blog/:slug" element={<PageWrapper><BlogPostPage /></PageWrapper>} />
                             <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
                             <Route path="/booking" element={<PageWrapper><Booking /></PageWrapper>} />
                             <Route path="/terms" element={<PageWrapper><Terms /></PageWrapper>} />
@@ -93,7 +91,6 @@ const AppContent: React.FC = () => {
                                 <Route path="appointments" element={<AdminAppointments />} />
                                 <Route path="subscribers" element={<AdminSubscribers />} />
                                 <Route path="services" element={<AdminServices />} />
-                                <Route path="blog" element={<AdminBlog />} />
                                 <Route path="settings" element={<AdminSettings />} />
                             </Route>
                         </Routes>

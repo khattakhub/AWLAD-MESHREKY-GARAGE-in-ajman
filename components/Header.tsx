@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import MoonIcon from './icons/MoonIcon';
@@ -36,7 +37,6 @@ const Header: React.FC = () => {
     <>
       <NavLink to="/services" className={mobile ? mobileNavLinkClasses : navLinkClasses}>Services</NavLink>
       <NavLink to="/tools" className={mobile ? mobileNavLinkClasses : navLinkClasses}>Tools</NavLink>
-      <NavLink to="/blog" className={mobile ? mobileNavLinkClasses : navLinkClasses}>Blog</NavLink>
       <NavLink to="/contact" className={mobile ? mobileNavLinkClasses : navLinkClasses}>Contact</NavLink>
       <NavLink to="/admin" className={mobile ? mobileNavLinkClasses : navLinkClasses}>Admin</NavLink>
     </>

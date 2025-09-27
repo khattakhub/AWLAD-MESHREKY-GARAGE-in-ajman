@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { 
     getSocialLinks, saveSocialLinks, 
@@ -34,19 +35,6 @@ const AdminSettings: React.FC = () => {
 
   const handleWhyChooseUsChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setWhyChooseUsData({ ...whyChooseUsData, [e.target.name]: e.target.value });
-  };
-
-  const handleWhyChooseUsImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            if (typeof reader.result === 'string') {
-                setWhyChooseUsData({ ...whyChooseUsData, imageUrl: reader.result });
-            }
-        };
-        reader.readAsDataURL(file);
-    }
   };
 
   const handleFeatureChange = (index: number, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -156,11 +144,6 @@ const AdminSettings: React.FC = () => {
              <div>
               <label htmlFor="subtitle" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Section Subtitle</label>
               <input type="text" name="subtitle" id="why-subtitle" value={whyChooseUsData.subtitle} onChange={handleWhyChooseUsChange} className="w-full bg-white dark:bg-brand-dark border border-gray-300 dark:border-brand-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue" />
-            </div>
-            <div>
-              <label htmlFor="whyChooseUsImage" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Image</label>
-              <input type="file" id="whyChooseUsImage" accept="image/*" onChange={handleWhyChooseUsImageChange} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-brand-blue/10 file:text-brand-blue hover:file:bg-brand-blue/20 dark:file:bg-brand-blue/20 dark:file:text-white" />
-              {whyChooseUsData.imageUrl && <img src={whyChooseUsData.imageUrl} alt="Preview" className="mt-2 w-48 h-auto object-cover rounded-md border dark:border-brand-border" />}
             </div>
             {whyChooseUsData.features.map((feature, index) => (
                 <div key={index} className="p-4 border dark:border-brand-border rounded-md space-y-2">

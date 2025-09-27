@@ -5,7 +5,6 @@ import CalendarIcon from '../icons/CalendarIcon';
 import UsersIcon from '../icons/UsersIcon';
 import WrenchIcon from '../icons/WrenchIcon';
 import LogoutIcon from '../icons/LogoutIcon';
-import DocumentIcon from '../icons/DocumentIcon';
 import SettingsIcon from '../icons/SettingsIcon';
 
 interface AdminSidebarProps {
@@ -56,10 +55,6 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
           <NavLinkWrapper to="/admin/subscribers">
             <UsersIcon className="w-5 h-5 mr-3" />
             <span className="font-medium">Subscribers</span>
-          </NavLinkWrapper>
-          <NavLinkWrapper to="/admin/blog">
-            <DocumentIcon className="w-5 h-5 mr-3" />
-            <span className="font-medium">Manage Blog</span>
           </NavLinkWrapper>
           <NavLinkWrapper to="/admin/services">
             <WrenchIcon className="w-5 h-5 mr-3" />

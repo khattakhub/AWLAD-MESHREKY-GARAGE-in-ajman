@@ -1,11 +1,11 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getAppointments, getSubscribers, getServices, getBlogPosts, Appointment } from '../../data/store';
+import { getAppointments, getSubscribers, getServices, Appointment } from '../../data/store';
 import CalendarIcon from '../../components/icons/CalendarIcon';
 import UsersIcon from '../../components/icons/UsersIcon';
 import WrenchIcon from '../../components/icons/WrenchIcon';
-import DocumentIcon from '../../components/icons/DocumentIcon';
 
 const StatCard: React.FC<{ title: string; value: number; icon: React.ReactNode }> = ({ title, value, icon }) => (
     <div className="bg-white dark:bg-brand-card border dark:border-brand-border rounded-lg p-6 flex items-center">
@@ -24,7 +24,6 @@ const AdminDashboard: React.FC = () => {
         appointments: 0,
         subscribers: 0,
         services: 0,
-        blogPosts: 0,
     });
     const [recentAppointments, setRecentAppointments] = useState<Appointment[]>([]);
     const [loading, setLoading] = useState(true);
@@ -38,7 +37,6 @@ const AdminDashboard: React.FC = () => {
                     appointments: appointmentsData.length,
                     subscribers: getSubscribers().length,
                     services: getServices().length,
-                    blogPosts: getBlogPosts().length,
                 });
                 setRecentAppointments(appointmentsData.slice(0, 5));
             } catch (error) {
@@ -58,7 +56,6 @@ const AdminDashboard: React.FC = () => {
                 <StatCard title="Total Appointments" value={stats.appointments} icon={<CalendarIcon className="w-6 h-6" />} />
                 <StatCard title="Email Subscribers" value={stats.subscribers} icon={<UsersIcon className="w-6 h-6" />} />
                 <StatCard title="Total Services Offered" value={stats.services} icon={<WrenchIcon className="w-6 h-6" />} />
-                <StatCard title="Published Blog Posts" value={stats.blogPosts} icon={<DocumentIcon className="w-6 h-6" />} />
             </div>
 
             {/* Recent Appointments Section */}
