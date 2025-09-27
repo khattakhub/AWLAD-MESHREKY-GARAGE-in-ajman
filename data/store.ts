@@ -85,13 +85,12 @@ export type WhyChooseUsData = {
 
 // FIX: Added BlogPost type definition.
 export type BlogPost = {
-  slug: string;
-  title: string;
-  excerpt: string;
-  image: string;
-  content: string; // HTML content
+    slug: string;
+    title: string;
+    excerpt: string;
+    image: string;
+    content: string;
 };
-
 
 // Initial Data for Home Page
 const INITIAL_HERO_DATA: HeroData = {
@@ -125,61 +124,43 @@ const INITIAL_WHY_CHOOSE_US_DATA: WhyChooseUsData = {
 // FIX: Added initial data for blog posts.
 const INITIAL_BLOG_POSTS: BlogPost[] = [
     {
-        slug: 'understanding-your-cars-check-engine-light',
-        title: "Understanding Your Car's Check Engine Light",
-        excerpt: "Don't panic! The check-engine light can mean many things. We break down the most common causes and what you should do when it illuminates your dashboard.",
-        image: 'https://placehold.co/600x400/3b82f6/white?text=Engine',
-        content: `
-            <h2>What is the Check Engine Light?</h2>
-            <p>The check engine light, officially known as the malfunction indicator lamp (MIL), is a signal from your car's engine computer that something is wrong. It could be a minor issue, like a loose gas cap, or something more serious requiring immediate attention.</p>
-            <h3>Common Causes:</h3>
-            <ul>
-                <li><strong>Loose Gas Cap:</strong> The simplest fix! A loose cap can break the fuel system's vapor seal.</li>
-                <li><strong>Faulty Oxygen Sensor:</strong> This sensor monitors unburned oxygen from the exhaust and can affect fuel economy.</li>
-                <li><strong>Failing Catalytic Converter:</strong> A critical part of your exhaust system that converts harmful gases.</li>
-                <li><strong>Spark Plug Issues:</strong> Worn-out spark plugs or wires can cause misfires.</li>
-            </ul>
-            <p>If your check engine light comes on, it's best to have it checked by a professional technician. At Awlad Meshreky, we use state-of-the-art diagnostic tools to pinpoint the exact problem and get you back on the road safely.</p>
-        `
+        slug: '5-signs-your-car-needs-a-brake-check',
+        title: '5 Signs Your Car Needs a Brake Check',
+        excerpt: 'Your brake system is crucial for safety. Learn to recognize the warning signs that indicate it\'s time for a professional inspection.',
+        image: 'https://plus.unsplash.com/premium_photo-1682145732148-28c24734c341?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        content: `<p>Your vehicle's braking system is arguably its most important safety feature. Ignoring warning signs can lead to costly repairs and, more importantly, compromise your safety on the road. Here are five common indicators that your car needs a professional brake check.</p>
+        <h3>1. Squealing or Grinding Noises</h3>
+        <p>A high-pitched squeal when you apply the brakes is often the first sign of wear. This sound comes from a small metal indicator built into the brake pads. If you hear a grinding noise, it's a more serious issue, suggesting the pads are completely worn and the metal caliper is grinding against the rotor. This can cause significant damage and requires immediate attention.</p>
+        <h3>2. Spongy or Soft Brake Pedal</h3>
+        <p>If your brake pedal feels softer than usual or sinks towards the floor with little resistance, it could signal air or moisture in the braking system or a problem with the master cylinder. This significantly reduces braking effectiveness and is a major safety hazard.</p>
+        <h3>3. Car Pulling to One Side</h3>
+        <p>When you brake, does your vehicle pull to the left or right? This could be due to a stuck brake caliper or uneven wear on the brake pads. It's essential to have this checked to ensure stable and predictable braking.</p>`
     },
     {
-        slug: 'the-importance-of-regular-oil-changes',
-        title: "The Importance of Regular Oil Changes",
-        excerpt: "Engine oil is the lifeblood of your vehicle. Learn why sticking to a regular oil change schedule is the single most important thing you can do for your car's health.",
-        image: 'https://placehold.co/600x400/3b82f6/white?text=Oil+Change',
-        content: `
-            <h2>Why Change Your Oil?</h2>
-            <p>Regular oil changes are crucial for keeping your engine running smoothly. Engine oil lubricates moving parts, reduces friction, cleans away engine deposits, and helps cool the engine.</p>
-            <h3>Benefits of Regular Oil Changes:</h3>
-            <ul>
-                <li><strong>Improved Engine Performance:</strong> Clean oil allows your engine to run more efficiently.</li>
-                <li><strong>Better Fuel Economy:</strong> A well-lubricated engine has less resistance, which can improve your mileage.</li>
-                <li><strong>Longer Engine Life:</strong> Prevents the buildup of sludge and dirt that can cause significant damage over time.</li>
-            </ul>
-            <p>In the harsh UAE climate, it's even more important to use high-quality synthetic oil and change it according to your manufacturer's recommendations. Visit us for a premium lube service to protect your investment.</p>
-        `
+        slug: 'the-importance-of-regular-oil-changes-in-the-uae',
+        title: 'The Importance of Regular Oil Changes in the UAE Climate',
+        excerpt: 'Engine oil is the lifeblood of your vehicle, especially in extreme heat. Discover why a regular oil change schedule is crucial for your car in the UAE.',
+        image: 'https://images.unsplash.com/photo-1628102490520-7330364a6135?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        content: `<h2>Why is Engine Oil So Important?</h2>
+        <p>Engine oil serves several critical functions: it lubricates moving parts to reduce friction, absorbs heat to prevent overheating, and cleans the engine by carrying away dirt and debris. In the extreme temperatures of the UAE, engine oil breaks down much faster. Neglecting oil changes here can quickly lead to decreased performance, lower fuel economy, and catastrophic engine failure.</p>
+        <h3>When to Change Your Oil</h3>
+        <p>While modern cars and synthetic oils allow for longer intervals, the harsh climate in the UAE means you should be more vigilant. We recommend consulting your owner's manual but also considering an oil change every 5,000 to 7,500 kilometers to ensure optimal engine protection. At Awlad Meshreky, we use only manufacturer-approved fully synthetic oils designed to withstand high temperatures.</p>`
     },
     {
-        slug: 'top-5-tips-for-maintaining-your-ac-in-the-uae',
-        title: "Top 5 Tips for Maintaining Your A/C in the UAE",
-        excerpt: "A working A/C isn't a luxury in the UAE—it's a necessity. Follow these simple tips to ensure your car's air conditioning system is ready to beat the heat.",
-        image: 'https://placehold.co/600x400/3b82f6/white?text=A/C',
-        content: `
-            <h2>Beat the Heat!</h2>
-            <p>Your car's A/C system works hard in the UAE's climate. Regular maintenance is key to avoiding a costly and uncomfortable breakdown.</p>
-            <h3>Maintenance Tips:</h3>
-            <ol>
-                <li><strong>Run it Regularly:</strong> Even in cooler months, run your A/C for a few minutes each week to keep the compressor lubricated.</li>
-                <li><strong>Check the Cabin Air Filter:</strong> A clogged filter restricts airflow. It should be replaced annually.</li>
-                <li><strong>Listen for Strange Noises:</strong> A rattling or banging sound could indicate a failing compressor.</li>
-                <li><strong>Notice Weak Airflow:</strong> This could be a sign of a refrigerant leak, a failing blower motor, or a blockage.</li>
-                <li><strong>Get a Professional Check-up:</strong> An annual A/C service can detect leaks and ensure your refrigerant levels are correct.</li>
-            </ol>
-            <p>Don't wait for your A/C to fail. Schedule a service with our specialists to stay cool and comfortable all year round.</p>
-        `
+        slug: 'beat-the-heat-a-c-maintenance-tips',
+        title: 'Beat the Heat: Essential A/C Maintenance Tips for Your Car',
+        excerpt: 'A functioning car A/C is a necessity, not a luxury, in the UAE. Follow these tips to keep your system running cold all summer long.',
+        image: 'https://images.unsplash.com/photo-1542128962-405459411957?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        content: `<h2>Don't Get Caught in the Heat</h2>
+        <p>Your car's air conditioning system works hard to keep you cool. To avoid a sweaty and uncomfortable drive, regular maintenance is key. Here’s what you can do:</p>
+        <h3>1. Run the A/C Regularly</h3>
+        <p>Even in cooler months, run your A/C for at least 10 minutes once a week. This helps maintain gas pressure and keeps the compressor's parts lubricated.</p>
+        <h3>2. Check for Leaks</h3>
+        <p>If you notice your A/C isn't as cold as it used to be, you might have a refrigerant leak. Our specialists at Awlad Meshreky use electronic leak detection to find and fix the problem efficiently.</p>
+        <h3>3. Replace the Cabin Air Filter</h3>
+        <p>A clogged cabin air filter can restrict airflow and cause a bad odor in your car. We recommend replacing it every 15,000-20,000 kilometers for fresh, clean air.</p>`
     }
 ];
-
 
 // Generic store functions
 const getFromStore = <T,>(key: string, initialData: T): T => {
@@ -312,7 +293,7 @@ export const saveHeroData = (data: HeroData): void => saveToStore('heroData', da
 export const getWhyChooseUsData = (): WhyChooseUsData => getFromStore('whyChooseUsData', INITIAL_WHY_CHOOSE_US_DATA);
 export const saveWhyChooseUsData = (data: WhyChooseUsData): void => saveToStore('whyChooseUsData', data);
 
-// FIX: Added functions for getting and saving blog posts.
+// FIX: Added functions to get and save blog posts.
 // Blog Posts
 export const getBlogPosts = (): BlogPost[] => getFromStore('blogPosts', INITIAL_BLOG_POSTS);
 export const saveBlogPosts = (posts: BlogPost[]): void => saveToStore('blogPosts', posts);
