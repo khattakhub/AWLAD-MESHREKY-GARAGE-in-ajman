@@ -17,7 +17,7 @@ import WhatsappButton from './components/WhatsappButton';
 // FIX: Switched to a namespace import for framer-motion to resolve type errors with motion props.
 import * as FM from 'framer-motion';
 
-import AdminLogin from './pages/admin/AdminLogin';
+import { AdminLogin } from './pages/admin/AdminLogin';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminAppointments from './pages/admin/AdminAppointments';

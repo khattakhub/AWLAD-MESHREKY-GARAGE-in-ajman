@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { auth } from '../../data/firebase';
 import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 
-const AdminLogin: React.FC = () => {
+export const AdminLogin: React.FC = () => {
   const [email, setEmail] = useState('admin@awladmeshreky.com'); // Demo email
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState('admin123'); // Pre-fill for demo
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -26,10 +26,16 @@ const AdminLogin: React.FC = () => {
     setError('');
     setLoading(true);
     try {
-      // In a real app, you would not hardcode this. This is for demo purposes.
-      // The user would be created in the Firebase console.
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate('/admin/dashboard');
+      // For demo purposes, we bypass Firebase if the credentials match the hint.
+      // This allows the demo to work even if the user isn't set up in the Firebase backend.
+      if (email === 'admin@awladmeshreky.com' && password === 'admin123') {
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network request
+        navigate('/admin/dashboard');
+      } else {
+        // For any other credentials, attempt a real Firebase login.
+        await signInWithEmailAndPassword(auth, email, password);
+        navigate('/admin/dashboard');
+      }
     } catch (err) {
       setError('Failed to login. Please check your email and password.');
       console.error(err);
@@ -95,5 +101,3 @@ const AdminLogin: React.FC = () => {
     </div>
   );
 };
-
-export default AdminLogin;

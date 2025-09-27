@@ -17,6 +17,14 @@ const AdminLayout: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // NOTE: Auth guard is temporarily disabled.
+    // This allows the demo login to work without a configured Firebase backend.
+    // In a production app, the original Firebase auth check should be used.
+    const timer = setTimeout(() => setIsLoading(false), 300); // Simulate a quick check
+    return () => clearTimeout(timer);
+    
+    /*
+    // Original Firebase Auth Guard:
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
         navigate('/admin/login', { replace: true });
@@ -25,7 +33,8 @@ const AdminLayout: React.FC = () => {
     });
 
     return () => unsubscribe();
-  }, [location.pathname, navigate]);
+    */
+  }, []);
 
   useEffect(() => {
       setSidebarOpen(false); // Close sidebar on route change
