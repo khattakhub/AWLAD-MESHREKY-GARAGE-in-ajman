@@ -30,19 +30,18 @@ import {
     POLICIES as INITIAL_POLICIES,
     SOCIAL_LINKS as INITIAL_SOCIAL_LINKS
 } from '../constants';
-// import { db } from './firebase';
-// import { 
-//     collection, 
-//     getDocs, 
-//     addDoc, 
-//     deleteDoc, 
-//     doc, 
-//     updateDoc,
-//     query,
-//     orderBy,
-//     where,
-//     Timestamp
-// } from 'firebase/firestore';
+import { db } from './firebase';
+import { 
+    collection, 
+    getDocs, 
+    addDoc, 
+    deleteDoc, 
+    doc, 
+    updateDoc,
+    query,
+    orderBy,
+    Timestamp
+} from 'firebase/firestore';
 
 
 // Types
@@ -187,11 +186,13 @@ const INITIAL_BLOG_POSTS: BlogPost[] = [
 ];
 
 // Initial Local Data for Appointments and Subscribers
+/*
 const INITIAL_APPOINTMENTS: Appointment[] = [
   { id: '1', fullName: 'Ahmed Al-Mansoori', phoneNumber: '+971 50 123 4567', service: 'Engine Diagnostics & Repair', date: '2024-08-10', time: '10:00', message: 'Car is making a strange rattling noise.', status: 'Pending' },
   { id: '2', fullName: 'Fatima Al-Kaabi', phoneNumber: '+971 55 987 6543', service: 'Lube & Oil Change', date: '2024-08-11', time: '14:30', message: 'Standard oil change for a 2022 Nissan Patrol.', status: 'Confirmed' },
   { id: '3', fullName: 'Yusuf Khan', phoneNumber: '+971 52 555 1234', service: 'Professional Detailing', date: '2024-08-12', time: '09:00', message: 'Full interior and exterior detailing with ceramic coating.', status: 'Completed' },
 ];
+*/
 
 const INITIAL_SUBSCRIBERS: Subscriber[] = [
   { id: '1', email: 'ahmed.m@example.com', date: '2024-07-20' },
@@ -239,6 +240,7 @@ export const saveServices = (services: Service[]): void => saveToStore('services
 export const getTestimonials = (): Testimonial[] => INITIAL_TESTIMONIALS;
 
 // --- LocalStorage Implementation for Appointments ---
+/*
 export const getAppointments = (): Appointment[] => {
     const appointments = getFromStore('appointments', INITIAL_APPOINTMENTS);
     // Sort them since localStorage doesn't guarantee order
@@ -272,6 +274,7 @@ export const updateAppointmentStatus = (id: string, status: Appointment['status'
     );
     saveToStore('appointments', updatedAppointments);
 };
+*/
 
 
 // --- LocalStorage Implementation for Subscribers ---
@@ -300,9 +303,9 @@ export const deleteSubscriber = (id: string): void => {
     saveToStore('subscribers', updatedSubscribers);
 };
 
-// --- Commented-out Firebase Implementation ---
-/*
-const appointmentsCollectionRef = collection(db, 'appointments');
+// --- Firebase Implementation for Appointments ---
+
+export const appointmentsCollectionRef = collection(db, 'appointments');
 
 export const getAppointments = async (): Promise<Appointment[]> => {
     const q = query(appointmentsCollectionRef, orderBy('date', 'desc'), orderBy('time', 'desc'));
@@ -331,7 +334,7 @@ export const updateAppointmentStatus = async (id: string, status: Appointment['s
     const appointmentDoc = doc(db, 'appointments', id);
     await updateDoc(appointmentDoc, { status });
 };
-
+/*
 const subscribersCollectionRef = collection(db, 'subscribers');
 
 export const getSubscribers = async (): Promise<Subscriber[]> => {

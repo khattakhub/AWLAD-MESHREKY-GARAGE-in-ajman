@@ -1,6 +1,7 @@
 
 
 
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAppointments, getSubscribers, getServices, Appointment } from '../../data/store';
@@ -29,17 +30,23 @@ const AdminDashboard: React.FC = () => {
     const [recentAppointments, setRecentAppointments] = useState<Appointment[]>([]);
 
     useEffect(() => {
-        // Since we are using localStorage, data fetching is synchronous.
-        const appointmentsData = getAppointments();
-        const subscribersData = getSubscribers();
-        const servicesData = getServices();
+        const fetchData = async () => {
+            try {
+                const appointmentsData = await getAppointments();
+                const subscribersData = getSubscribers();
+                const servicesData = getServices();
 
-        setStats({
-            appointments: appointmentsData.length,
-            subscribers: subscribersData.length,
-            services: servicesData.length,
-        });
-        setRecentAppointments(appointmentsData.slice(0, 5));
+                setStats({
+                    appointments: appointmentsData.length,
+                    subscribers: subscribersData.length,
+                    services: servicesData.length,
+                });
+                setRecentAppointments(appointmentsData.slice(0, 5));
+            } catch (error) {
+                console.error("Failed to fetch dashboard data:", error);
+            }
+        };
+        fetchData();
     }, []);
 
     return (
