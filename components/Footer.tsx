@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import FacebookIcon from './icons/FacebookIcon';
@@ -10,16 +11,17 @@ import { getSocialLinks, addSubscriber } from '../data/store';
 const Footer: React.FC = () => {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [isSubscribing, setIsSubscribing] = useState(false);
   const socialLinks = getSocialLinks();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !email.includes('@')) return;
+    if (!email || !email.includes('@') || isSubscribing) return;
     
-    // In a real app, this would call an API.
-    // For this demo, we'll simulate it and save to localStorage.
-    addSubscriber({ email });
+    setIsSubscribing(true);
+    await addSubscriber({ email });
 
+    setIsSubscribing(false);
     setEmail('');
     setSubscribed(true);
     setTimeout(() => setSubscribed(false), 3000);
@@ -73,9 +75,9 @@ const Footer: React.FC = () => {
               <button
                 type="submit"
                 className="bg-brand-blue hover:bg-brand-blue-hover text-white font-semibold px-4 rounded-r-md text-sm transition disabled:opacity-50"
-                disabled={subscribed}
+                disabled={subscribed || isSubscribing}
               >
-                {subscribed ? 'Thanks!' : 'Subscribe'}
+                {isSubscribing ? '...' : (subscribed ? 'Thanks!' : 'Subscribe')}
               </button>
             </form>
           </div>

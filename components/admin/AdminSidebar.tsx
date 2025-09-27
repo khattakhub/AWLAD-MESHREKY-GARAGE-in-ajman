@@ -1,3 +1,5 @@
+
+
 import React from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
 import DashboardIcon from '../icons/DashboardIcon';
@@ -6,6 +8,8 @@ import UsersIcon from '../icons/UsersIcon';
 import WrenchIcon from '../icons/WrenchIcon';
 import LogoutIcon from '../icons/LogoutIcon';
 import SettingsIcon from '../icons/SettingsIcon';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../data/firebase';
 
 interface AdminSidebarProps {
   onLinkClick?: () => void;
@@ -14,10 +18,15 @@ interface AdminSidebarProps {
 const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    sessionStorage.removeItem('isAdminAuthenticated');
-    navigate('/admin/login');
-    if(onLinkClick) onLinkClick();
+  const handleLogout = async () => {
+    if (onLinkClick) onLinkClick();
+    try {
+      await signOut(auth);
+      navigate('/admin/login');
+    } catch (error) {
+      console.error("Failed to sign out:", error);
+      alert('Failed to sign out. Please try again.');
+    }
   };
   
   const NavLinkWrapper: React.FC<{ to: string, children: React.ReactNode }> = ({ to, children }) => {

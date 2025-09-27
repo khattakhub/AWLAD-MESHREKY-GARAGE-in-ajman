@@ -1,6 +1,7 @@
+
+
 import { 
     SERVICES as INITIAL_SERVICES_RAW, 
-    BLOG_POSTS as INITIAL_BLOG_POSTS, 
     TESTIMONIALS as INITIAL_TESTIMONIALS,
     POLICIES as INITIAL_POLICIES,
     SOCIAL_LINKS as INITIAL_SOCIAL_LINKS
@@ -15,6 +16,7 @@ import {
     updateDoc,
     query,
     orderBy,
+    where,
     Timestamp
 } from 'firebase/firestore';
 
@@ -24,14 +26,6 @@ export type Service = {
   iconName: string;
   title: string;
   description: string;
-};
-
-export type BlogPost = {
-  slug: string;
-  title: string;
-  excerpt: string;
-  image: string;
-  content: string;
 };
 
 export type Testimonial = {
@@ -53,7 +47,7 @@ export type Appointment = {
 };
 
 export type Subscriber = {
-    id: number;
+    id: string;
     email: string;
     date: string;
 };
@@ -89,6 +83,15 @@ export type WhyChooseUsData = {
   features: WhyChooseUsFeature[];
 };
 
+// FIX: Added BlogPost type definition.
+export type BlogPost = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  image: string;
+  content: string; // HTML content
+};
+
 
 // Initial Data for Home Page
 const INITIAL_HERO_DATA: HeroData = {
@@ -118,6 +121,64 @@ const INITIAL_WHY_CHOOSE_US_DATA: WhyChooseUsData = {
         }
     ]
 };
+
+// FIX: Added initial data for blog posts.
+const INITIAL_BLOG_POSTS: BlogPost[] = [
+    {
+        slug: 'understanding-your-cars-check-engine-light',
+        title: "Understanding Your Car's Check Engine Light",
+        excerpt: "Don't panic! The check-engine light can mean many things. We break down the most common causes and what you should do when it illuminates your dashboard.",
+        image: 'https://placehold.co/600x400/3b82f6/white?text=Engine',
+        content: `
+            <h2>What is the Check Engine Light?</h2>
+            <p>The check engine light, officially known as the malfunction indicator lamp (MIL), is a signal from your car's engine computer that something is wrong. It could be a minor issue, like a loose gas cap, or something more serious requiring immediate attention.</p>
+            <h3>Common Causes:</h3>
+            <ul>
+                <li><strong>Loose Gas Cap:</strong> The simplest fix! A loose cap can break the fuel system's vapor seal.</li>
+                <li><strong>Faulty Oxygen Sensor:</strong> This sensor monitors unburned oxygen from the exhaust and can affect fuel economy.</li>
+                <li><strong>Failing Catalytic Converter:</strong> A critical part of your exhaust system that converts harmful gases.</li>
+                <li><strong>Spark Plug Issues:</strong> Worn-out spark plugs or wires can cause misfires.</li>
+            </ul>
+            <p>If your check engine light comes on, it's best to have it checked by a professional technician. At Awlad Meshreky, we use state-of-the-art diagnostic tools to pinpoint the exact problem and get you back on the road safely.</p>
+        `
+    },
+    {
+        slug: 'the-importance-of-regular-oil-changes',
+        title: "The Importance of Regular Oil Changes",
+        excerpt: "Engine oil is the lifeblood of your vehicle. Learn why sticking to a regular oil change schedule is the single most important thing you can do for your car's health.",
+        image: 'https://placehold.co/600x400/3b82f6/white?text=Oil+Change',
+        content: `
+            <h2>Why Change Your Oil?</h2>
+            <p>Regular oil changes are crucial for keeping your engine running smoothly. Engine oil lubricates moving parts, reduces friction, cleans away engine deposits, and helps cool the engine.</p>
+            <h3>Benefits of Regular Oil Changes:</h3>
+            <ul>
+                <li><strong>Improved Engine Performance:</strong> Clean oil allows your engine to run more efficiently.</li>
+                <li><strong>Better Fuel Economy:</strong> A well-lubricated engine has less resistance, which can improve your mileage.</li>
+                <li><strong>Longer Engine Life:</strong> Prevents the buildup of sludge and dirt that can cause significant damage over time.</li>
+            </ul>
+            <p>In the harsh UAE climate, it's even more important to use high-quality synthetic oil and change it according to your manufacturer's recommendations. Visit us for a premium lube service to protect your investment.</p>
+        `
+    },
+    {
+        slug: 'top-5-tips-for-maintaining-your-ac-in-the-uae',
+        title: "Top 5 Tips for Maintaining Your A/C in the UAE",
+        excerpt: "A working A/C isn't a luxury in the UAE—it's a necessity. Follow these simple tips to ensure your car's air conditioning system is ready to beat the heat.",
+        image: 'https://placehold.co/600x400/3b82f6/white?text=A/C',
+        content: `
+            <h2>Beat the Heat!</h2>
+            <p>Your car's A/C system works hard in the UAE's climate. Regular maintenance is key to avoiding a costly and uncomfortable breakdown.</p>
+            <h3>Maintenance Tips:</h3>
+            <ol>
+                <li><strong>Run it Regularly:</strong> Even in cooler months, run your A/C for a few minutes each week to keep the compressor lubricated.</li>
+                <li><strong>Check the Cabin Air Filter:</strong> A clogged filter restricts airflow. It should be replaced annually.</li>
+                <li><strong>Listen for Strange Noises:</strong> A rattling or banging sound could indicate a failing compressor.</li>
+                <li><strong>Notice Weak Airflow:</strong> This could be a sign of a refrigerant leak, a failing blower motor, or a blockage.</li>
+                <li><strong>Get a Professional Check-up:</strong> An annual A/C service can detect leaks and ensure your refrigerant levels are correct.</li>
+            </ol>
+            <p>Don't wait for your A/C to fail. Schedule a service with our specialists to stay cool and comfortable all year round.</p>
+        `
+    }
+];
 
 
 // Generic store functions
@@ -163,10 +224,6 @@ const INITIAL_SERVICES: Service[] = INITIAL_SERVICES_RAW.map(s => ({
 export const getServices = (): Service[] => getFromStore('services', INITIAL_SERVICES);
 export const saveServices = (services: Service[]): void => saveToStore('services', services);
 
-// Blog Posts
-export const getBlogPosts = (): BlogPost[] => getFromStore('blogPosts', INITIAL_BLOG_POSTS);
-export const saveBlogPosts = (posts: BlogPost[]): void => saveToStore('blogPosts', posts);
-
 // Testimonials (read-only from constants for now)
 export const getTestimonials = (): Testimonial[] => INITIAL_TESTIMONIALS;
 
@@ -202,26 +259,42 @@ export const updateAppointmentStatus = async (id: string, status: Appointment['s
 };
 
 
-// Subscribers
-export const getSubscribers = (): Subscriber[] => getFromStore('subscribers', []);
-export const addSubscriber = (subscriber: Omit<Subscriber, 'id' | 'date'>): void => {
-    const subscribers = getSubscribers();
+// Subscribers (Firebase Implementation)
+const subscribersCollectionRef = collection(db, 'subscribers');
+
+export const getSubscribers = async (): Promise<Subscriber[]> => {
+    const q = query(subscribersCollectionRef, orderBy('createdAt', 'desc'));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(docSnap => {
+        const data = docSnap.data();
+        const createdAt = data.createdAt as Timestamp;
+        return {
+            id: docSnap.id,
+            email: data.email,
+            date: createdAt.toDate().toISOString().split('T')[0]
+        };
+    });
+};
+
+export const addSubscriber = async (subscriber: { email: string }): Promise<void> => {
     // Prevent duplicates
-    if (subscribers.some(s => s.email === subscriber.email)) {
-        console.log('Subscriber already exists');
+    const q = query(subscribersCollectionRef, where("email", "==", subscriber.email));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+        console.log('Subscriber email already exists.');
         return;
     }
-    const newSubscriber: Subscriber = {
-        ...subscriber,
-        id: subscribers.length > 0 ? Math.max(...subscribers.map(s => s.id)) + 1 : 1,
-        date: new Date().toISOString().split('T')[0]
-    };
-    saveToStore('subscribers', [newSubscriber, ...subscribers]);
+    await addDoc(subscribersCollectionRef, {
+        email: subscriber.email,
+        createdAt: Timestamp.now()
+    });
 };
-export const deleteSubscriber = (id: number): void => {
-    const subscribers = getSubscribers();
-    saveToStore('subscribers', subscribers.filter(s => s.id !== id));
+
+export const deleteSubscriber = async (id: string): Promise<void> => {
+    const subscriberDoc = doc(db, 'subscribers', id);
+    await deleteDoc(subscriberDoc);
 };
+
 
 // Policies
 export const getPolicies = (): Policies => getFromStore('policies', INITIAL_POLICIES);
@@ -238,3 +311,8 @@ export const saveHeroData = (data: HeroData): void => saveToStore('heroData', da
 // Home Page - Why Choose Us
 export const getWhyChooseUsData = (): WhyChooseUsData => getFromStore('whyChooseUsData', INITIAL_WHY_CHOOSE_US_DATA);
 export const saveWhyChooseUsData = (data: WhyChooseUsData): void => saveToStore('whyChooseUsData', data);
+
+// FIX: Added functions for getting and saving blog posts.
+// Blog Posts
+export const getBlogPosts = (): BlogPost[] => getFromStore('blogPosts', INITIAL_BLOG_POSTS);
+export const saveBlogPosts = (posts: BlogPost[]): void => saveToStore('blogPosts', posts);

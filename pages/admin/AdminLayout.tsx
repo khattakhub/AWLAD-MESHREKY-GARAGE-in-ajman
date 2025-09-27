@@ -1,26 +1,39 @@
 
+
 import React, { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import MenuIcon from '../../components/icons/MenuIcon';
 // FIX: Switched to a namespace import for framer-motion to resolve type errors with motion props.
 import * as FM from 'framer-motion';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../data/firebase';
+import Loader from '../../components/Loader';
 
 const AdminLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const isAuthenticated = sessionStorage.getItem('isAdminAuthenticated');
-    if (isAuthenticated !== 'true') {
-      navigate('/admin/login', { replace: true });
-    }
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        navigate('/admin/login', { replace: true });
+      }
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
   }, [location.pathname, navigate]);
 
   useEffect(() => {
       setSidebarOpen(false); // Close sidebar on route change
   }, [location.pathname]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-brand-dark text-gray-800 dark:text-gray-200">

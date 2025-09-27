@@ -30,8 +30,6 @@ import Privacy from './pages/Privacy';
 import Refund from './pages/Refund';
 import Loader from './components/Loader';
 import MobileBottomNav from './components/MobileBottomNav';
-import BlogPostPage from './pages/BlogPostPage';
-import Blog from './pages/Blog';
 
 
 const ScrollToTop: React.FC = () => {

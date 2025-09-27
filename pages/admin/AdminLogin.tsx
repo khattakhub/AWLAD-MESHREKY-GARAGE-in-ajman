@@ -1,20 +1,40 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
-const ADMIN_PASSWORD = 'admin123'; // Demo password
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { auth } from '../../data/firebase';
+import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 
 const AdminLogin: React.FC = () => {
+  const [email, setEmail] = useState('admin@awladmeshreky.com'); // Demo email
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  // If user is already logged in, redirect to dashboard
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigate('/admin/dashboard', { replace: true });
+      }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      sessionStorage.setItem('isAdminAuthenticated', 'true');
+    setError('');
+    setLoading(true);
+    try {
+      // In a real app, you would not hardcode this. This is for demo purposes.
+      // The user would be created in the Firebase console.
+      await signInWithEmailAndPassword(auth, email, password);
       navigate('/admin/dashboard');
-    } else {
-      setError('Incorrect password. Please try again.');
+    } catch (err) {
+      setError('Failed to login. Please check your email and password.');
+      console.error(err);
+    } finally {
+        setLoading(false);
     }
   };
 
@@ -23,16 +43,31 @@ const AdminLogin: React.FC = () => {
       <div className="w-full max-w-md p-8 space-y-8 bg-white dark:bg-brand-card rounded-lg shadow-lg border dark:border-brand-border">
         <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Admin Login</h1>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Enter password to access the dashboard</p>
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Enter credentials to access the dashboard</p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
-          <div className="rounded-md shadow-sm -space-y-px">
+          <div className="rounded-md shadow-sm space-y-4">
+            <div>
+              <label htmlFor="email-address-admin" className="sr-only">Email address</label>
+              <input
+                id="email-address-admin"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 dark:border-brand-border placeholder-gray-500 text-gray-900 dark:text-white dark:bg-brand-dark focus:outline-none focus:ring-brand-blue focus:border-brand-blue focus:z-10 sm:text-sm"
+                placeholder="Email address"
+              />
+            </div>
             <div>
               <label htmlFor="password-admin" className="sr-only">Password</label>
               <input
                 id="password-admin"
                 name="password"
                 type="password"
+                autoComplete="current-password"
                 required
                 value={password}
                 onChange={(e) => {
@@ -48,10 +83,12 @@ const AdminLogin: React.FC = () => {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-brand-blue hover:bg-brand-blue-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-blue transition-colors"
+              disabled={loading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-brand-blue hover:bg-brand-blue-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-blue transition-colors disabled:opacity-50"
             >
-              Sign in
+              {loading ? 'Signing in...' : 'Sign in'}
             </button>
+             <p className="text-center text-xs text-gray-500 mt-4">For demo: email <strong>admin@awladmeshreky.com</strong> / password <strong>admin123</strong></p>
           </div>
         </form>
       </div>

@@ -32,11 +32,15 @@ const AdminDashboard: React.FC = () => {
         const fetchDashboardData = async () => {
             setLoading(true);
             try {
-                const appointmentsData = await getAppointments();
+                const [appointmentsData, subscribersData] = await Promise.all([
+                    getAppointments(),
+                    getSubscribers()
+                ]);
+
                 setStats({
                     appointments: appointmentsData.length,
-                    subscribers: getSubscribers().length,
-                    services: getServices().length,
+                    subscribers: subscribersData.length,
+                    services: getServices().length, // This is still sync from localStorage
                 });
                 setRecentAppointments(appointmentsData.slice(0, 5));
             } catch (error) {
