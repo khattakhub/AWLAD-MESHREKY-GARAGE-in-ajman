@@ -115,8 +115,6 @@ Common causes for the check engine light include a faulty oxygen sensor, a loose
 export const SOCIAL_LINKS = {
   facebook: 'https://facebook.com/awladmeshreky',
   instagram: 'https://instagram.com/awladmeshreky',
-  linkedin: 'https://linkedin.com/company/awladmeshreky',
-  twitter: 'https://twitter.com/awladmeshreky',
 };
 
 export const POLICIES = {

@@ -67,8 +67,6 @@ export type Policies = {
 export type SocialLinks = {
     facebook: string;
     instagram: string;
-    linkedin: string;
-    twitter: string;
 };
 
 export type HeroData = {

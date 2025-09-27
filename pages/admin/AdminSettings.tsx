@@ -181,14 +181,6 @@ const AdminSettings: React.FC = () => {
             <label htmlFor="instagram" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Instagram URL</label>
             <input type="url" name="instagram" id="instagram" value={socialLinks.instagram} onChange={handleSocialChange} className="w-full bg-white dark:bg-brand-dark border border-gray-300 dark:border-brand-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue" />
           </div>
-          <div>
-            <label htmlFor="linkedin" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">LinkedIn URL</label>
-            <input type="url" name="linkedin" id="linkedin" value={socialLinks.linkedin} onChange={handleSocialChange} className="w-full bg-white dark:bg-brand-dark border border-gray-300 dark:border-brand-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue" />
-          </div>
-          <div>
-            <label htmlFor="twitter" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Twitter URL</label>
-            <input type="url" name="twitter" id="twitter" value={socialLinks.twitter} onChange={handleSocialChange} className="w-full bg-white dark:bg-brand-dark border border-gray-300 dark:border-brand-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue" />
-          </div>
           <div className="flex justify-end items-center gap-4">
             {/* FIX: Replaced `AnimatePresence` with `FM.AnimatePresence` to use the namespaced import. */}
             <FM.AnimatePresence>
