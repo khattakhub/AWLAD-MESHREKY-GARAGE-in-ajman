@@ -1,32 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import { getAppointments, deleteAppointment, Appointment, updateAppointmentStatus } from '../../data/store';
+import { deleteAppointment, Appointment, updateAppointmentStatus } from '../../data/store';
 import TrashIcon from '../../components/icons/TrashIcon';
+import { db } from '../../data/firebase';
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 
 const AdminAppointments: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  const fetchAppointments = async () => {
-    setIsLoading(true);
-    try {
-        const appointmentsData = await getAppointments();
-        setAppointments(appointmentsData);
-    } catch (error) {
-        console.error("Error fetching appointments:", error);
-    } finally {
-        setIsLoading(false);
-    }
-  };
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchAppointments();
+    setIsLoading(true);
+    setError(null);
+    const appointmentsCollectionRef = collection(db, 'appointments');
+    const q = query(appointmentsCollectionRef, orderBy('createdAt', 'desc'));
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const appointmentsData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as Appointment));
+      setAppointments(appointmentsData);
+      setIsLoading(false);
+    }, (err) => {
+      console.error("Error fetching appointments:", err);
+      setError("Failed to load appointments. The app might be offline or experiencing connection issues.");
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const handleDelete = async (id: string, fullName: string) => {
     if (window.confirm(`Are you sure you want to delete the appointment for ${fullName}?`)) {
         try {
             await deleteAppointment(id);
-            setAppointments(prev => prev.filter(appt => appt.id !== id));
         } catch (error) {
             console.error("Error deleting appointment:", error);
             alert("Failed to delete appointment. Please try again.");
@@ -37,11 +45,6 @@ const AdminAppointments: React.FC = () => {
   const handleStatusChange = async (id: string, newStatus: Appointment['status']) => {
       try {
         await updateAppointmentStatus(id, newStatus);
-        setAppointments(prev => 
-            prev.map(appt => 
-                appt.id === id ? { ...appt, status: newStatus } : appt
-            )
-        );
       } catch (error) {
         console.error("Error updating status:", error);
         alert("Failed to update status. Please try again.");
@@ -84,6 +87,10 @@ const AdminAppointments: React.FC = () => {
               {isLoading ? (
                 <tr>
                   <td colSpan={7} className="text-center py-10 text-gray-500 dark:text-gray-400">Loading appointments...</td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td colSpan={7} className="text-center py-10 text-red-600 dark:text-red-400">{error}</td>
                 </tr>
               ) : appointments.length === 0 ? (
                 <tr>

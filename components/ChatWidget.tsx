@@ -67,31 +67,16 @@ const ChatWidget: React.FC = () => {
     useEffect(() => {
         if (!chatId) return;
 
-        const chatDocRef = doc(db, 'chats', chatId);
-        const ensureChatDoc = async () => {
-            try {
-                const docSnap = await getDoc(chatDocRef);
-                if (!docSnap.exists()) {
-                    await setDoc(chatDocRef, { 
-                        createdAt: serverTimestamp(),
-                        lastMessage: 'Chat initiated.',
-                        isReadByAdmin: false,
-                    });
-                }
-            } catch (err) {
-                console.error("Error ensuring chat document:", err);
-                setError("Could not initialize chat. You may be offline.");
-            }
-        };
-        ensureChatDoc();
-
+        // NOTE: The chat document in Firestore is now created implicitly when the user sends their first message.
+        // This change avoids an error when a new user opens the chat widget while offline, because it
+        // removes the need to read the document (`getDoc`) before it might exist in the local cache.
         const messagesCollectionRef = collection(db, 'chats', chatId, 'messages');
         const q = query(messagesCollectionRef, orderBy('createdAt'));
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const msgs = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Message));
             setMessages(msgs);
-            setError(null);
+            setError(null); // Clear error on successful data fetch
         }, (err) => {
             console.error("Error fetching chat messages:", err);
             setError("Connection lost. Please check your network.");

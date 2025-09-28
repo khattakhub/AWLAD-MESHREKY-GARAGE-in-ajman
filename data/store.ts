@@ -27,7 +27,8 @@ import {
     Timestamp,
     where,
     query,
-    orderBy
+    orderBy,
+    updateDoc
 } from 'firebase/firestore';
 
 
@@ -146,7 +147,7 @@ const INITIAL_BLOG_POSTS: BlogPost[] = [
         slug: '5-signs-your-car-needs-a-brake-check',
         title: '5 Signs Your Car Needs a Brake Check',
         excerpt: 'Your brake system is crucial for safety. Learn to recognize the warning signs that indicate it\'s time for a professional inspection.',
-        image: 'https://plus.unsplash.com/premium_photo-1682145732148-28c24734c341?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        image: 'https://plus.unsplash.com/premium_photo-1682145732148-28c24734c341?q=80&w=2070&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         content: `<p>Your vehicle's braking system is arguably its most important safety feature. Ignoring warning signs can lead to costly repairs and, more importantly, compromise your safety on the road. Here are five common indicators that your car needs a professional brake check.</p>
         <h3>1. Squealing or Grinding Noises</h3>
         <p>A high-pitched squeal when you apply the brakes is often the first sign of wear. This sound comes from a small metal indicator built into the brake pads. If you hear a grinding noise, it's a more serious issue, suggesting the pads are completely worn and the metal caliper is grinding against the rotor. This can cause significant damage and requires immediate attention.</p>
@@ -159,7 +160,7 @@ const INITIAL_BLOG_POSTS: BlogPost[] = [
         slug: 'the-importance-of-regular-oil-changes-in-the-uae',
         title: 'The Importance of Regular Oil Changes in the UAE Climate',
         excerpt: 'Engine oil is the lifeblood of your vehicle, especially in extreme heat. Discover why a regular oil change schedule is crucial for your car in the UAE.',
-        image: 'https://images.unsplash.com/photo-1628102490520-7330364a6135?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        image: 'https://images.unsplash.com/photo-1628102490520-7330364a6135?q=80&w=2070&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         content: `<h2>Why is Engine Oil So Important?</h2>
         <p>Engine oil serves several critical functions: it lubricates moving parts to reduce friction, absorbs heat to prevent overheating, and cleans the engine by carrying away dirt and debris. In the extreme temperatures of the UAE, engine oil breaks down much faster. Neglecting oil changes here can quickly lead to decreased performance, lower fuel economy, and catastrophic engine failure.</p>
         <h3>When to Change Your Oil</h3>
@@ -169,7 +170,7 @@ const INITIAL_BLOG_POSTS: BlogPost[] = [
         slug: 'beat-the-heat-a-c-maintenance-tips',
         title: 'Beat the Heat: Essential A/C Maintenance Tips for Your Car',
         excerpt: 'A functioning car A/C is a necessity, not a luxury, in the UAE. Follow these tips to keep your system running cold all summer long.',
-        image: 'https://images.unsplash.com/photo-1542128962-405459411957?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        image: 'https://images.unsplash.com/photo-1542128962-405459411957?q=80&w=1974&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         content: `<h2>Don't Get Caught in the Heat</h2>
         <p>Your car's air conditioning system works hard to keep you cool. To avoid a sweaty and uncomfortable drive, regular maintenance is key. Here’s what you can do:</p>
         <h3>1. Run the A/C Regularly</h3>
@@ -220,7 +221,8 @@ export const saveServices = (services: Service[]): void => saveToStore('services
 // Testimonials (read-only from constants for now)
 export const getTestimonials = (): Testimonial[] => INITIAL_TESTIMONIALS;
 
-// --- LocalStorage Implementation for Appointments ---
+// --- LocalStorage Implementation for Appointments (Commented out for Firebase) ---
+/*
 export const getAppointments = async (): Promise<Appointment[]> => {
     const appointments = getFromStore<Appointment[]>('appointments', []);
     return appointments.sort((a, b) => {
@@ -254,6 +256,7 @@ export const updateAppointmentStatus = async (id: string, status: Appointment['s
         saveToStore('appointments', appointments);
     }
 };
+*/
 
 // --- LocalStorage Implementation for Subscribers (Commented Out) ---
 /*
@@ -309,7 +312,7 @@ export const deleteMessage = async (id: string): Promise<void> => {
 */
 
 
-/* --- Firebase Implementation for Appointments (Commented Out) ---
+// --- Firebase Implementation for Appointments ---
 
 export const appointmentsCollectionRef = collection(db, 'appointments');
 
@@ -340,7 +343,7 @@ export const updateAppointmentStatus = async (id: string, status: Appointment['s
     const appointmentDoc = doc(db, 'appointments', id);
     await updateDoc(appointmentDoc, { status });
 };
-*/
+
 
 
 // --- Firebase Implementation for Subscribers ---

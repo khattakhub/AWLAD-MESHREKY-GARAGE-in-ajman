@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAppointments, getSubscribers, getServices, Appointment } from '../../data/store';
@@ -51,7 +52,7 @@ const AdminDashboard: React.FC = () => {
                 setRecentAppointments(appointmentsData.slice(0, 5));
             } catch (error) {
                 console.error("Failed to fetch dashboard data:", error);
-                setError("Could not load appointment or service data from local storage.");
+                setError("Could not load dashboard data. The app might be offline or having connection issues.");
             }
         };
         fetchData();
