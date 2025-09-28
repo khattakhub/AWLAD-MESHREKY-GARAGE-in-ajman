@@ -1,5 +1,6 @@
 
 
+
 import React from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
 import DashboardIcon from '../icons/DashboardIcon';
@@ -12,6 +13,7 @@ import DocumentIcon from '../icons/DocumentIcon';
 import EnvelopeIcon from '../icons/EnvelopeIcon';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../data/firebase';
+import ChatBubbleIcon from '../icons/ChatBubbleIcon';
 
 interface AdminSidebarProps {
   onLinkClick?: () => void;
@@ -66,6 +68,10 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
           <NavLinkWrapper to="/admin/messages">
             <EnvelopeIcon className="w-5 h-5 mr-3" />
             <span className="font-medium">Messages</span>
+          </NavLinkWrapper>
+           <NavLinkWrapper to="/admin/chat">
+            <ChatBubbleIcon className="w-5 h-5 mr-3" />
+            <span className="font-medium">Live Chat</span>
           </NavLinkWrapper>
           <NavLinkWrapper to="/admin/subscribers">
             <UsersIcon className="w-5 h-5 mr-3" />

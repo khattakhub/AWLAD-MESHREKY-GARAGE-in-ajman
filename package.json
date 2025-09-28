@@ -13,7 +13,8 @@
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.8.2",
     "framer-motion": "^11.3.11",
-    "firebase": "^12.3.0"
+    "firebase": "^12.3.0",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

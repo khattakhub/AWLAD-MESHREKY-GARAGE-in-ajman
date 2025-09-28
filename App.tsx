@@ -1,5 +1,6 @@
 
 
+
 import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Header from './components/Header';
@@ -34,6 +35,8 @@ import Privacy from './pages/Privacy';
 import Refund from './pages/Refund';
 import Loader from './components/Loader';
 import MobileBottomNav from './components/MobileBottomNav';
+import AdminChat from './pages/admin/AdminChat';
+import ChatWidget from './components/ChatWidget';
 
 
 const ScrollToTop: React.FC = () => {
@@ -94,6 +97,7 @@ const AppContent: React.FC = () => {
                                 <Route path="dashboard" element={<AdminDashboard />} />
                                 <Route path="appointments" element={<AdminAppointments />} />
                                 <Route path="messages" element={<AdminMessages />} />
+                                <Route path="chat" element={<AdminChat />} />
                                 <Route path="subscribers" element={<AdminSubscribers />} />
                                 <Route path="services" element={<AdminServices />} />
                                 <Route path="blog" element={<AdminBlog />} />
@@ -103,6 +107,7 @@ const AppContent: React.FC = () => {
                     </FM.AnimatePresence>
                 </main>
                 {!isAdminRoute && location.pathname === '/' && <Footer />}
+                {!isAdminRoute && <ChatWidget />}
                 {!isAdminRoute && <WhatsappButton />}
                 {!isAdminRoute && <MobileBottomNav />}
             </div>
