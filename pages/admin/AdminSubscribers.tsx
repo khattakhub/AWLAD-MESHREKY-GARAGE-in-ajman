@@ -1,34 +1,26 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { deleteSubscriber, Subscriber, subscribersCollectionRef } from '../../data/store';
-import { onSnapshot, query, orderBy, Timestamp } from 'firebase/firestore';
+import { getSubscribers, deleteSubscriber, Subscriber } from '../../data/store';
 
 const AdminSubscribers: React.FC = () => {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const q = query(subscribersCollectionRef, orderBy('createdAt', 'desc'));
-    
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const subscribersData = querySnapshot.docs.map(doc => {
-            const data = doc.data();
-            const createdAt = data.createdAt as Timestamp;
-            return {
-                id: doc.id,
-                email: data.email,
-                date: createdAt.toDate().toISOString().split('T')[0]
-            };
-        });
+  const fetchSubscribers = async () => {
+    setIsLoading(true);
+    try {
+        const subscribersData = await getSubscribers();
         setSubscribers(subscribersData);
-        setIsLoading(false);
-    }, (error) => {
+    } catch (error) {
         console.error("Error fetching subscribers:", error);
+    } finally {
         setIsLoading(false);
-    });
+    }
+  };
 
-    return () => unsubscribe();
+  useEffect(() => {
+    fetchSubscribers();
   }, []);
 
 
@@ -36,7 +28,7 @@ const AdminSubscribers: React.FC = () => {
     if (window.confirm('Are you sure you want to remove this subscriber?')) {
         try {
             await deleteSubscriber(id);
-            // No need to manually update state, onSnapshot will do it.
+            setSubscribers(prev => prev.filter(sub => sub.id !== id));
         } catch (error) {
             console.error("Failed to delete subscriber:", error);
             alert("Failed to remove subscriber. Please try again.");

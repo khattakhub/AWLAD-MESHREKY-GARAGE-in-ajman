@@ -1,43 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { deleteMessage, Message, messagesCollectionRef } from '../../data/store';
-import { onSnapshot, query, orderBy, Timestamp } from 'firebase/firestore';
+import { getMessages, deleteMessage, Message } from '../../data/store';
 import TrashIcon from '../../components/icons/TrashIcon';
 
 const AdminMessages: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const q = query(messagesCollectionRef, orderBy('createdAt', 'desc'));
-    
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const messagesData = querySnapshot.docs.map(doc => {
-            const data = doc.data();
-            const createdAt = data.createdAt as Timestamp;
-            return {
-                id: doc.id,
-                fullName: data.fullName,
-                email: data.email,
-                phone: data.phone,
-                message: data.message,
-                date: createdAt.toDate().toLocaleString()
-            } as Message;
-        });
+  const fetchMessages = async () => {
+    setIsLoading(true);
+    try {
+        const messagesData = await getMessages();
         setMessages(messagesData);
-        setIsLoading(false);
-    }, (error) => {
+    } catch (error) {
         console.error("Error fetching messages:", error);
+    } finally {
         setIsLoading(false);
-    });
+    }
+  };
 
-    return () => unsubscribe();
+  useEffect(() => {
+    fetchMessages();
   }, []);
 
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this message?')) {
+  const handleDelete = async (id: string, fullName: string) => {
+    if (window.confirm(`Are you sure you want to delete the message from ${fullName}?`)) {
         try {
             await deleteMessage(id);
+            setMessages(prev => prev.filter(msg => msg.id !== id));
         } catch (error) {
             console.error("Failed to delete message:", error);
             alert("Failed to delete message. Please try again.");
@@ -82,7 +72,7 @@ const AdminMessages: React.FC = () => {
                         <p className="line-clamp-3" title={msg.message}>{msg.message}</p>
                     </td>
                     <td className="px-6 py-4 text-right">
-                       <button onClick={() => handleDelete(msg.id)} className="text-red-500 hover:text-red-700 p-2" aria-label={`Delete message from ${msg.fullName}`}>
+                       <button onClick={() => handleDelete(msg.id, msg.fullName)} className="text-red-500 hover:text-red-700 p-2" aria-label={`Delete message from ${msg.fullName}`}>
                          <TrashIcon className="w-4 h-4" />
                        </button>
                     </td>

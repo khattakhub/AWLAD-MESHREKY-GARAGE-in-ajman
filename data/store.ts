@@ -2,25 +2,16 @@
 
 /*
 NOTE FOR DEVELOPER:
-The application has been configured to use the browser's localStorage for storing appointments and subscribers.
+The application is currently configured to use the browser's localStorage for storing data like appointments, messages, and subscribers.
 This ensures the app is fully functional for demonstration purposes without requiring a live Firebase backend configuration.
-The original Firebase Firestore functions have been commented out below.
+The Firebase Firestore functions have been commented out below.
 
-To switch back to Firebase:
+To switch to Firebase:
 1. Ensure your `data/firebase.ts` file has the correct configuration for your Firebase project.
 2. Make sure you have created a Firestore database in your Firebase project.
-3. Set up the necessary Firestore security rules to allow reading and writing to the 'appointments' and 'subscribers' collections. 
-   A simple rule for development is:
-   rules_version = '2';
-   service cloud.firestore {
-     match /databases/{database}/documents {
-       match /{document=**} {
-         allow read, write: if true;
-       }
-     }
-   }
+3. Set up the necessary Firestore security rules to allow reading and writing to the collections.
 4. Comment out the localStorage functions below and uncomment the Firebase functions.
-5. Update the components that use these functions to handle the asynchronous nature of Firebase calls (e.g., using async/await, .then(), and managing loading states).
+5. Update the admin pages (`AdminAppointments`, `AdminMessages`, `AdminSubscribers`) to use `onSnapshot` for real-time data instead of one-time fetches.
 */
 
 import { 
@@ -233,7 +224,92 @@ export const saveServices = (services: Service[]): void => saveToStore('services
 // Testimonials (read-only from constants for now)
 export const getTestimonials = (): Testimonial[] => INITIAL_TESTIMONIALS;
 
-// --- Firebase Implementation for Appointments ---
+// --- LocalStorage Implementation for Appointments ---
+export const getAppointments = async (): Promise<Appointment[]> => {
+    const appointments = getFromStore<Appointment[]>('appointments', []);
+    return appointments.sort((a, b) => {
+        const dateComparison = b.date.localeCompare(a.date);
+        if (dateComparison !== 0) return dateComparison;
+        return b.time.localeCompare(a.time);
+    });
+};
+
+export const addAppointment = async (appointment: Omit<Appointment, 'id' | 'status'>): Promise<void> => {
+    const appointments = await getAppointments();
+    const newAppointment: Appointment = {
+        ...appointment,
+        id: new Date().getTime().toString(),
+        status: 'Pending',
+    };
+    saveToStore('appointments', [newAppointment, ...appointments]);
+};
+
+export const deleteAppointment = async (id: string): Promise<void> => {
+    let appointments = await getAppointments();
+    appointments = appointments.filter(appt => appt.id !== id);
+    saveToStore('appointments', appointments);
+};
+
+export const updateAppointmentStatus = async (id: string, status: Appointment['status']): Promise<void> => {
+    let appointments = await getAppointments();
+    const index = appointments.findIndex(appt => appt.id === id);
+    if (index !== -1) {
+        appointments[index].status = status;
+        saveToStore('appointments', appointments);
+    }
+};
+
+// --- LocalStorage Implementation for Subscribers ---
+export const getSubscribers = async (): Promise<Subscriber[]> => {
+    const subscribers = getFromStore<Subscriber[]>('subscribers', []);
+    return subscribers.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+};
+
+export const addSubscriber = async (subscriber: { email: string }): Promise<void> => {
+    const subscribers = await getSubscribers();
+    const emailLower = subscriber.email.toLowerCase();
+    if (subscribers.some(s => s.email.toLowerCase() === emailLower)) {
+        console.log('Subscriber email already exists.');
+        return;
+    }
+    const newSubscriber: Subscriber = {
+        id: new Date().getTime().toString(),
+        email: subscriber.email,
+        date: new Date().toISOString().split('T')[0],
+    };
+    saveToStore('subscribers', [newSubscriber, ...subscribers]);
+};
+
+export const deleteSubscriber = async (id: string): Promise<void> => {
+    let subscribers = await getSubscribers();
+    subscribers = subscribers.filter(sub => sub.id !== id);
+    saveToStore('subscribers', subscribers);
+};
+
+// --- LocalStorage Implementation for Messages ---
+export const getMessages = async (): Promise<Message[]> => {
+    const messages = getFromStore<Message[]>('messages', []);
+    return messages.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+};
+
+export const addMessage = async (message: Omit<Message, 'id' | 'date'>): Promise<void> => {
+    const messages = await getMessages();
+    const newMessage: Message = {
+        ...message,
+        id: new Date().getTime().toString(),
+        date: new Date().toLocaleString(),
+    };
+    saveToStore('messages', [newMessage, ...messages]);
+};
+
+export const deleteMessage = async (id: string): Promise<void> => {
+    let messages = await getMessages();
+    messages = messages.filter(msg => msg.id !== id);
+    saveToStore('messages', messages);
+};
+
+
+/* --- Firebase Implementation for Appointments (Commented Out) ---
 
 export const appointmentsCollectionRef = collection(db, 'appointments');
 
@@ -264,9 +340,10 @@ export const updateAppointmentStatus = async (id: string, status: Appointment['s
     const appointmentDoc = doc(db, 'appointments', id);
     await updateDoc(appointmentDoc, { status });
 };
+*/
 
 
-// --- Firebase Implementation for Subscribers ---
+/* --- Firebase Implementation for Subscribers (Commented Out) ---
 export const subscribersCollectionRef = collection(db, 'subscribers');
 
 export const getSubscribers = async (): Promise<Subscriber[]> => {
@@ -302,8 +379,9 @@ export const deleteSubscriber = async (id: string): Promise<void> => {
     const subscriberDoc = doc(db, 'subscribers', id);
     await deleteDoc(subscriberDoc);
 };
+*/
 
-// --- Firebase Implementation for Messages ---
+/* --- Firebase Implementation for Messages (Commented Out) ---
 export const messagesCollectionRef = collection(db, 'messages');
 
 export const addMessage = async (message: Omit<Message, 'id' | 'date'>): Promise<void> => {
@@ -317,6 +395,7 @@ export const deleteMessage = async (id: string): Promise<void> => {
     const messageDoc = doc(db, 'messages', id);
     await deleteDoc(messageDoc);
 };
+*/
 
 // Policies
 export const getPolicies = (): Policies => getFromStore('policies', INITIAL_POLICIES);

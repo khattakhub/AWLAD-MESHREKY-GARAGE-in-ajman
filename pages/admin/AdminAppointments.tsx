@@ -1,34 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { appointmentsCollectionRef, deleteAppointment, Appointment, updateAppointmentStatus } from '../../data/store';
-import { onSnapshot, query, orderBy } from 'firebase/firestore';
+import { getAppointments, deleteAppointment, Appointment, updateAppointmentStatus } from '../../data/store';
 import TrashIcon from '../../components/icons/TrashIcon';
 
 const AdminAppointments: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const q = query(appointmentsCollectionRef, orderBy('date', 'desc'), orderBy('time', 'desc'));
-
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const appointmentsData = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        } as Appointment));
+  const fetchAppointments = async () => {
+    setIsLoading(true);
+    try {
+        const appointmentsData = await getAppointments();
         setAppointments(appointmentsData);
-        setIsLoading(false);
-    }, (error) => {
+    } catch (error) {
         console.error("Error fetching appointments:", error);
+    } finally {
         setIsLoading(false);
-    });
+    }
+  };
 
-    return () => unsubscribe();
+  useEffect(() => {
+    fetchAppointments();
   }, []);
 
   const handleDelete = async (id: string, fullName: string) => {
     if (window.confirm(`Are you sure you want to delete the appointment for ${fullName}?`)) {
         try {
             await deleteAppointment(id);
+            setAppointments(prev => prev.filter(appt => appt.id !== id));
         } catch (error) {
             console.error("Error deleting appointment:", error);
             alert("Failed to delete appointment. Please try again.");
@@ -39,6 +37,11 @@ const AdminAppointments: React.FC = () => {
   const handleStatusChange = async (id: string, newStatus: Appointment['status']) => {
       try {
         await updateAppointmentStatus(id, newStatus);
+        setAppointments(prev => 
+            prev.map(appt => 
+                appt.id === id ? { ...appt, status: newStatus } : appt
+            )
+        );
       } catch (error) {
         console.error("Error updating status:", error);
         alert("Failed to update status. Please try again.");
