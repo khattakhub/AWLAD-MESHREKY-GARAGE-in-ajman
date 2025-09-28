@@ -5,8 +5,8 @@ import { auth } from '../../data/firebase';
 import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 
 export const AdminLogin: React.FC = () => {
-  const [email, setEmail] = useState('admin@awladmeshreky.com'); // Demo email
-  const [password, setPassword] = useState('admin123'); // Pre-fill for demo
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -26,16 +26,8 @@ export const AdminLogin: React.FC = () => {
     setError('');
     setLoading(true);
     try {
-      // For demo purposes, we bypass Firebase if the credentials match the hint.
-      // This allows the demo to work even if the user isn't set up in the Firebase backend.
-      if (email === 'admin@awladmeshreky.com' && password === 'admin123') {
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network request
-        navigate('/admin/dashboard');
-      } else {
-        // For any other credentials, attempt a real Firebase login.
-        await signInWithEmailAndPassword(auth, email, password);
-        navigate('/admin/dashboard');
-      }
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate('/admin/dashboard');
     } catch (err) {
       setError('Failed to login. Please check your email and password.');
       console.error(err);
@@ -94,7 +86,6 @@ export const AdminLogin: React.FC = () => {
             >
               {loading ? 'Signing in...' : 'Sign in'}
             </button>
-             <p className="text-center text-xs text-gray-500 mt-4">For demo: email <strong>admin@awladmeshreky.com</strong> / password <strong>admin123</strong></p>
           </div>
         </form>
       </div>
