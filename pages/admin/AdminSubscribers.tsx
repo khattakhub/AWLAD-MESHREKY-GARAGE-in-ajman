@@ -1,26 +1,38 @@
 
 
+
 import React, { useState, useEffect } from 'react';
-import { getSubscribers, deleteSubscriber, Subscriber } from '../../data/store';
+import { deleteSubscriber, Subscriber } from '../../data/store';
+import { db } from '../../data/firebase';
+import { collection, onSnapshot, query, orderBy, Timestamp } from 'firebase/firestore';
 
 const AdminSubscribers: React.FC = () => {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchSubscribers = async () => {
-    setIsLoading(true);
-    try {
-        const subscribersData = await getSubscribers();
-        setSubscribers(subscribersData);
-    } catch (error) {
-        console.error("Error fetching subscribers:", error);
-    } finally {
-        setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchSubscribers();
+    setIsLoading(true);
+    const subscribersCollectionRef = collection(db, 'subscribers');
+    const q = query(subscribersCollectionRef, orderBy('createdAt', 'desc'));
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const subscribersData = querySnapshot.docs.map(doc => {
+            const data = doc.data();
+            const createdAt = data.createdAt as Timestamp;
+            return {
+                id: doc.id,
+                email: data.email,
+                date: createdAt.toDate().toISOString().split('T')[0]
+            };
+        });
+        setSubscribers(subscribersData);
+        setIsLoading(false);
+    }, (error) => {
+        console.error("Error fetching subscribers:", error);
+        setIsLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
 
@@ -28,7 +40,7 @@ const AdminSubscribers: React.FC = () => {
     if (window.confirm('Are you sure you want to remove this subscriber?')) {
         try {
             await deleteSubscriber(id);
-            setSubscribers(prev => prev.filter(sub => sub.id !== id));
+            // No need to manually update state, onSnapshot will do it
         } catch (error) {
             console.error("Failed to delete subscriber:", error);
             alert("Failed to remove subscriber. Please try again.");

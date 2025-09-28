@@ -1,17 +1,14 @@
 
 
+
 /*
 NOTE FOR DEVELOPER:
-The application is currently configured to use the browser's localStorage for storing data like appointments, messages, and subscribers.
-This ensures the app is fully functional for demonstration purposes without requiring a live Firebase backend configuration.
-The Firebase Firestore functions have been commented out below.
+The application now uses a hybrid data storage approach for demonstration.
+- Appointments, Services, Blog Posts, and Site Settings use the browser's localStorage.
+- Subscribers and Contact Messages use a live Firebase Firestore backend.
 
-To switch to Firebase:
-1. Ensure your `data/firebase.ts` file has the correct configuration for your Firebase project.
-2. Make sure you have created a Firestore database in your Firebase project.
-3. Set up the necessary Firestore security rules to allow reading and writing to the collections.
-4. Comment out the localStorage functions below and uncomment the Firebase functions.
-5. Update the admin pages (`AdminAppointments`, `AdminMessages`, `AdminSubscribers`) to use `onSnapshot` for real-time data instead of one-time fetches.
+This allows demonstration of both local-only and real-time backend functionality.
+To switch appointments to Firebase, follow the instructions in the commented-out code blocks below.
 */
 
 import { 
@@ -27,11 +24,10 @@ import {
     addDoc, 
     deleteDoc, 
     doc, 
-    updateDoc,
-    query,
-    orderBy,
     Timestamp,
-    where
+    where,
+    query,
+    orderBy
 } from 'firebase/firestore';
 
 
@@ -259,7 +255,8 @@ export const updateAppointmentStatus = async (id: string, status: Appointment['s
     }
 };
 
-// --- LocalStorage Implementation for Subscribers ---
+// --- LocalStorage Implementation for Subscribers (Commented Out) ---
+/*
 export const getSubscribers = async (): Promise<Subscriber[]> => {
     const subscribers = getFromStore<Subscriber[]>('subscribers', []);
     return subscribers.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -285,8 +282,10 @@ export const deleteSubscriber = async (id: string): Promise<void> => {
     subscribers = subscribers.filter(sub => sub.id !== id);
     saveToStore('subscribers', subscribers);
 };
+*/
 
-// --- LocalStorage Implementation for Messages ---
+// --- LocalStorage Implementation for Messages (Commented Out) ---
+/*
 export const getMessages = async (): Promise<Message[]> => {
     const messages = getFromStore<Message[]>('messages', []);
     return messages.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -307,6 +306,7 @@ export const deleteMessage = async (id: string): Promise<void> => {
     messages = messages.filter(msg => msg.id !== id);
     saveToStore('messages', messages);
 };
+*/
 
 
 /* --- Firebase Implementation for Appointments (Commented Out) ---
@@ -343,21 +343,23 @@ export const updateAppointmentStatus = async (id: string, status: Appointment['s
 */
 
 
-/* --- Firebase Implementation for Subscribers (Commented Out) ---
+// --- Firebase Implementation for Subscribers ---
 export const subscribersCollectionRef = collection(db, 'subscribers');
 
+// FIX: Added getSubscribers function to fetch data from Firebase.
 export const getSubscribers = async (): Promise<Subscriber[]> => {
     const q = query(subscribersCollectionRef, orderBy('createdAt', 'desc'));
     const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(docSnap => {
-        const data = docSnap.data();
+    const subscribersData = querySnapshot.docs.map(doc => {
+        const data = doc.data();
         const createdAt = data.createdAt as Timestamp;
         return {
-            id: docSnap.id,
+            id: doc.id,
             email: data.email,
             date: createdAt.toDate().toISOString().split('T')[0]
         };
     });
+    return subscribersData;
 };
 
 export const addSubscriber = async (subscriber: { email: string }): Promise<void> => {
@@ -379,9 +381,8 @@ export const deleteSubscriber = async (id: string): Promise<void> => {
     const subscriberDoc = doc(db, 'subscribers', id);
     await deleteDoc(subscriberDoc);
 };
-*/
 
-/* --- Firebase Implementation for Messages (Commented Out) ---
+// --- Firebase Implementation for Messages ---
 export const messagesCollectionRef = collection(db, 'messages');
 
 export const addMessage = async (message: Omit<Message, 'id' | 'date'>): Promise<void> => {
@@ -395,7 +396,7 @@ export const deleteMessage = async (id: string): Promise<void> => {
     const messageDoc = doc(db, 'messages', id);
     await deleteDoc(messageDoc);
 };
-*/
+
 
 // Policies
 export const getPolicies = (): Policies => getFromStore('policies', INITIAL_POLICIES);

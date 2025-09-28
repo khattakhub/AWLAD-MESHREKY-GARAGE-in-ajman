@@ -1,25 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { getMessages, deleteMessage, Message } from '../../data/store';
+import { deleteMessage, Message } from '../../data/store';
 import TrashIcon from '../../components/icons/TrashIcon';
+import { db } from '../../data/firebase';
+import { collection, onSnapshot, query, orderBy, Timestamp } from 'firebase/firestore';
 
 const AdminMessages: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchMessages = async () => {
-    setIsLoading(true);
-    try {
-        const messagesData = await getMessages();
-        setMessages(messagesData);
-    } catch (error) {
-        console.error("Error fetching messages:", error);
-    } finally {
-        setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchMessages();
+    setIsLoading(true);
+    const messagesCollectionRef = collection(db, 'messages');
+    const q = query(messagesCollectionRef, orderBy('createdAt', 'desc'));
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const messagesData = querySnapshot.docs.map(doc => {
+            const data = doc.data();
+            const createdAt = data.createdAt as Timestamp;
+            return {
+                id: doc.id,
+                fullName: data.fullName,
+                email: data.email,
+                phone: data.phone,
+                message: data.message,
+                date: createdAt.toDate().toLocaleString() // Using toLocaleString for date and time
+            };
+        });
+        setMessages(messagesData);
+        setIsLoading(false);
+    }, (error) => {
+        console.error("Error fetching messages:", error);
+        setIsLoading(false);
+    });
+    
+    return () => unsubscribe();
   }, []);
 
 
@@ -27,7 +41,7 @@ const AdminMessages: React.FC = () => {
     if (window.confirm(`Are you sure you want to delete the message from ${fullName}?`)) {
         try {
             await deleteMessage(id);
-            setMessages(prev => prev.filter(msg => msg.id !== id));
+            // No need to manually update state, onSnapshot will do it
         } catch (error) {
             console.error("Failed to delete message:", error);
             alert("Failed to delete message. Please try again.");
