@@ -9,9 +9,11 @@ import { collection, onSnapshot, query, orderBy, Timestamp } from 'firebase/fire
 const AdminSubscribers: React.FC = () => {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setIsLoading(true);
+    setError(null);
     const subscribersCollectionRef = collection(db, 'subscribers');
     const q = query(subscribersCollectionRef, orderBy('createdAt', 'desc'));
 
@@ -27,8 +29,9 @@ const AdminSubscribers: React.FC = () => {
         });
         setSubscribers(subscribersData);
         setIsLoading(false);
-    }, (error) => {
-        console.error("Error fetching subscribers:", error);
+    }, (err) => {
+        console.error("Error fetching subscribers:", err);
+        setError("Failed to load subscribers. The app might be offline or experiencing connection issues.");
         setIsLoading(false);
     });
 
@@ -65,6 +68,10 @@ const AdminSubscribers: React.FC = () => {
               {isLoading ? (
                 <tr>
                   <td colSpan={3} className="text-center py-10 text-gray-500 dark:text-gray-400">Loading subscribers...</td>
+                </tr>
+              ) : error ? (
+                <tr>
+                    <td colSpan={3} className="text-center py-10 text-red-600 dark:text-red-400">{error}</td>
                 </tr>
               ) : subscribers.length === 0 ? (
                 <tr>

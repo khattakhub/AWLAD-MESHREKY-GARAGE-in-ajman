@@ -7,9 +7,11 @@ import { collection, onSnapshot, query, orderBy, Timestamp } from 'firebase/fire
 const AdminMessages: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setIsLoading(true);
+    setError(null);
     const messagesCollectionRef = collection(db, 'messages');
     const q = query(messagesCollectionRef, orderBy('createdAt', 'desc'));
 
@@ -28,8 +30,9 @@ const AdminMessages: React.FC = () => {
         });
         setMessages(messagesData);
         setIsLoading(false);
-    }, (error) => {
-        console.error("Error fetching messages:", error);
+    }, (err) => {
+        console.error("Error fetching messages:", err);
+        setError("Failed to load messages. The app might be offline or experiencing connection issues.");
         setIsLoading(false);
     });
     
@@ -68,6 +71,10 @@ const AdminMessages: React.FC = () => {
               {isLoading ? (
                 <tr>
                   <td colSpan={5} className="text-center py-10 text-gray-500 dark:text-gray-400">Loading messages...</td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td colSpan={5} className="text-center py-10 text-red-600 dark:text-red-400">{error}</td>
                 </tr>
               ) : messages.length === 0 ? (
                 <tr>

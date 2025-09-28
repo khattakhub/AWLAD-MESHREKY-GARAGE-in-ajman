@@ -38,6 +38,7 @@ const ChatWidget: React.FC = () => {
     const [chatId, setChatId] = useState<string | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const [newMessage, setNewMessage] = useState('');
+    const [error, setError] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const isMobile = useIsMobile();
 
@@ -68,13 +69,18 @@ const ChatWidget: React.FC = () => {
 
         const chatDocRef = doc(db, 'chats', chatId);
         const ensureChatDoc = async () => {
-            const docSnap = await getDoc(chatDocRef);
-            if (!docSnap.exists()) {
-                await setDoc(chatDocRef, { 
-                    createdAt: serverTimestamp(),
-                    lastMessage: 'Chat initiated.',
-                    isReadByAdmin: false,
-                });
+            try {
+                const docSnap = await getDoc(chatDocRef);
+                if (!docSnap.exists()) {
+                    await setDoc(chatDocRef, { 
+                        createdAt: serverTimestamp(),
+                        lastMessage: 'Chat initiated.',
+                        isReadByAdmin: false,
+                    });
+                }
+            } catch (err) {
+                console.error("Error ensuring chat document:", err);
+                setError("Could not initialize chat. You may be offline.");
             }
         };
         ensureChatDoc();
@@ -85,6 +91,10 @@ const ChatWidget: React.FC = () => {
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const msgs = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Message));
             setMessages(msgs);
+            setError(null);
+        }, (err) => {
+            console.error("Error fetching chat messages:", err);
+            setError("Connection lost. Please check your network.");
         });
 
         return () => unsubscribe();
@@ -152,16 +162,22 @@ const ChatWidget: React.FC = () => {
                         </div>
                         {/* Messages */}
                         <div className="flex-grow p-4 overflow-y-auto">
-                            <div className="space-y-4">
-                                {messages.map(msg => (
-                                    <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                        <div className={`max-w-[80%] rounded-lg px-3 py-2 ${msg.sender === 'user' ? 'bg-brand-blue text-white' : 'bg-gray-200 dark:bg-brand-border text-gray-800 dark:text-gray-200'}`}>
-                                            <p className="text-sm">{msg.text}</p>
+                            {error ? (
+                                <div className="flex items-center justify-center h-full text-center text-red-500 dark:text-red-400 text-sm">
+                                    <p>{error}</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    {messages.map(msg => (
+                                        <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                            <div className={`max-w-[80%] rounded-lg px-3 py-2 ${msg.sender === 'user' ? 'bg-brand-blue text-white' : 'bg-gray-200 dark:bg-brand-border text-gray-800 dark:text-gray-200'}`}>
+                                                <p className="text-sm">{msg.text}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
-                                <div ref={messagesEndRef} />
-                            </div>
+                                    ))}
+                                    <div ref={messagesEndRef} />
+                                </div>
+                            )}
                         </div>
                         {/* Input */}
                         <div className="p-4 border-t dark:border-brand-border flex-shrink-0 bg-white dark:bg-brand-card">
@@ -170,10 +186,11 @@ const ChatWidget: React.FC = () => {
                                     type="text"
                                     value={newMessage}
                                     onChange={(e) => setNewMessage(e.target.value)}
-                                    placeholder="Type a message..."
-                                    className="flex-grow bg-gray-100 dark:bg-brand-dark border border-gray-300 dark:border-brand-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue"
+                                    placeholder={error ? "Cannot send messages" : "Type a message..."}
+                                    className="flex-grow bg-gray-100 dark:bg-brand-dark border border-gray-300 dark:border-brand-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue disabled:opacity-50"
+                                    disabled={!!error}
                                 />
-                                <button type="submit" className="bg-brand-blue hover:bg-brand-blue-hover text-white font-semibold px-4 py-2 rounded-lg transition text-sm">Send</button>
+                                <button type="submit" className="bg-brand-blue hover:bg-brand-blue-hover text-white font-semibold px-4 py-2 rounded-lg transition text-sm disabled:opacity-50" disabled={!!error}>Send</button>
                             </form>
                         </div>
                     </FM.motion.div>

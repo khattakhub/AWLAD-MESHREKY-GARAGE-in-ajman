@@ -6,42 +6,52 @@ import CalendarIcon from '../../components/icons/CalendarIcon';
 import UsersIcon from '../../components/icons/UsersIcon';
 import WrenchIcon from '../../components/icons/WrenchIcon';
 
-const StatCard: React.FC<{ title: string; value: number; icon: React.ReactNode }> = ({ title, value, icon }) => (
+const StatCard: React.FC<{ title: string; value: number | string; icon: React.ReactNode }> = ({ title, value, icon }) => (
     <div className="bg-white dark:bg-brand-card border dark:border-brand-border rounded-lg p-6 flex items-center">
         <div className="p-3 rounded-full bg-brand-blue/10 text-brand-blue mr-4">
             {icon}
         </div>
         <div>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{title}</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">{value}</p>
+            <p className={`text-2xl font-bold ${value === 'Error' ? 'text-red-500' : 'text-gray-900 dark:text-white'}`}>{value}</p>
         </div>
     </div>
 );
 
 const AdminDashboard: React.FC = () => {
     const [stats, setStats] = useState({
-        appointments: 0,
-        subscribers: 0,
+        appointments: 0 as number,
+        subscribers: 0 as number | 'Error',
         services: 0,
     });
     const [recentAppointments, setRecentAppointments] = useState<Appointment[]>([]);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const appointmentsData = await getAppointments();
-                // FIX: Awaited the asynchronous `getSubscribers` function call to correctly resolve the promise.
-                const subscribersData = await getSubscribers();
                 const servicesData = getServices();
+                let subscribersCount: number | 'Error';
+
+                try {
+                    const subscribersData = await getSubscribers();
+                    subscribersCount = subscribersData.length;
+                } catch (subError) {
+                    console.error("Failed to fetch subscribers:", subError);
+                    subscribersCount = 'Error';
+                    setError("Could not load subscriber data. The app may be offline.");
+                }
 
                 setStats({
                     appointments: appointmentsData.length,
-                    subscribers: subscribersData.length,
+                    subscribers: subscribersCount,
                     services: servicesData.length,
                 });
                 setRecentAppointments(appointmentsData.slice(0, 5));
             } catch (error) {
                 console.error("Failed to fetch dashboard data:", error);
+                setError("Could not load appointment or service data from local storage.");
             }
         };
         fetchData();
@@ -50,6 +60,11 @@ const AdminDashboard: React.FC = () => {
     return (
         <div>
             <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">Dashboard</h1>
+            {error && (
+                <div className="bg-red-100 dark:bg-red-900/50 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg relative mb-6" role="alert">
+                    {error}
+                </div>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatCard title="Total Appointments" value={stats.appointments} icon={<CalendarIcon className="w-6 h-6" />} />
                 <StatCard title="Email Subscribers" value={stats.subscribers} icon={<UsersIcon className="w-6 h-6" />} />

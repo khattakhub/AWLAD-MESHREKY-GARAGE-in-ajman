@@ -20,15 +20,20 @@ interface Message {
 const ChatConversation: React.FC<{ chatId: string }> = ({ chatId }) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [newMessage, setNewMessage] = useState('');
+    const [error, setError] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        setError(null);
         const messagesCollectionRef = collection(db, 'chats', chatId, 'messages');
         const q = query(messagesCollectionRef, orderBy('createdAt'));
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const msgs = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Message));
             setMessages(msgs);
+        }, (err) => {
+            console.error(`Error fetching messages for chat ${chatId}:`, err);
+            setError("Could not load messages for this conversation.");
         });
 
         return () => unsubscribe();
@@ -61,16 +66,22 @@ const ChatConversation: React.FC<{ chatId: string }> = ({ chatId }) => {
     return (
         <div className="flex flex-col h-full">
             <div className="flex-grow p-4 overflow-y-auto bg-gray-50 dark:bg-brand-dark rounded-t-lg">
-                <div className="space-y-4">
-                    {messages.map(msg => (
-                        <div key={msg.id} className={`flex ${msg.sender === 'admin' ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-[80%] rounded-lg px-3 py-2 ${msg.sender === 'admin' ? 'bg-brand-blue text-white' : 'bg-white dark:bg-brand-border text-gray-800 dark:text-gray-200 shadow-sm'}`}>
-                                <p className="text-sm">{msg.text}</p>
+                {error ? (
+                    <div className="flex items-center justify-center h-full text-red-500">
+                        {error}
+                    </div>
+                ) : (
+                    <div className="space-y-4">
+                        {messages.map(msg => (
+                            <div key={msg.id} className={`flex ${msg.sender === 'admin' ? 'justify-end' : 'justify-start'}`}>
+                                <div className={`max-w-[80%] rounded-lg px-3 py-2 ${msg.sender === 'admin' ? 'bg-brand-blue text-white' : 'bg-white dark:bg-brand-border text-gray-800 dark:text-gray-200 shadow-sm'}`}>
+                                    <p className="text-sm">{msg.text}</p>
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                    <div ref={messagesEndRef} />
-                </div>
+                        ))}
+                        <div ref={messagesEndRef} />
+                    </div>
+                )}
             </div>
             <div className="p-4 border-t dark:border-brand-border bg-gray-50 dark:bg-brand-dark rounded-b-lg">
                 <form onSubmit={handleSendMessage} className="flex gap-2">
@@ -93,6 +104,7 @@ const AdminChat: React.FC = () => {
     const [sessions, setSessions] = useState<ChatSession[]>([]);
     const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const chatsCollectionRef = collection(db, 'chats');
@@ -104,9 +116,11 @@ const AdminChat: React.FC = () => {
                 ...doc.data(),
             } as ChatSession));
             setSessions(chatSessions);
+            setError(null);
             setIsLoading(false);
-        }, (error) => {
-            console.error("Error fetching chat sessions:", error);
+        }, (err) => {
+            console.error("Error fetching chat sessions:", err);
+            setError("Failed to load chat sessions. The app might be offline.");
             setIsLoading(false);
         });
         
@@ -129,6 +143,8 @@ const AdminChat: React.FC = () => {
                     <div className="overflow-y-auto">
                         {isLoading ? (
                             <p className="p-4 text-gray-500">Loading chats...</p>
+                        ) : error ? (
+                            <p className="p-4 text-red-500">{error}</p>
                         ) : sessions.length === 0 ? (
                             <p className="p-4 text-gray-500">No active chats.</p>
                         ) : (

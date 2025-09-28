@@ -38,7 +38,7 @@ const WhatsappButton: React.FC = () => {
         href="https://wa.me/971508361799"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-24 md:bottom-6 right-6 bg-whatsapp-green text-white rounded-full shadow-lg z-50 flex items-center justify-center w-16 h-16 cursor-grab active:cursor-grabbing pointer-events-auto"
+        className="fixed bottom-24 md:bottom-10 right-10 bg-whatsapp-green text-white rounded-full shadow-lg z-50 flex items-center justify-center w-16 h-16 cursor-grab active:cursor-grabbing pointer-events-auto"
         aria-label="Chat on WhatsApp (draggable)"
         drag
         dragConstraints={constraintsRef}
