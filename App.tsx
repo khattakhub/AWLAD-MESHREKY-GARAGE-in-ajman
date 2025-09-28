@@ -1,6 +1,7 @@
 
 
 
+
 import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Header from './components/Header';
@@ -37,6 +38,7 @@ import Loader from './components/Loader';
 import MobileBottomNav from './components/MobileBottomNav';
 import AdminChat from './pages/admin/AdminChat';
 import ChatWidget from './components/ChatWidget';
+import { ChatProvider } from './ChatContext';
 
 
 const ScrollToTop: React.FC = () => {
@@ -127,21 +129,23 @@ const App: React.FC = () => {
   return (
     <ThemeProvider>
       <HashRouter>
-        {/* FIX: Replaced `AnimatePresence` with `FM.AnimatePresence` to use the namespaced import. */}
-        <FM.AnimatePresence>
-          {isLoading && (
-            // FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import.
-            <FM.motion.div
-              key="loader"
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Loader />
-            </FM.motion.div>
-          )}
-        </FM.AnimatePresence>
-        {!isLoading && <AppContent />}
+        <ChatProvider>
+          {/* FIX: Replaced `AnimatePresence` with `FM.AnimatePresence` to use the namespaced import. */}
+          <FM.AnimatePresence>
+            {isLoading && (
+              // FIX: Replaced `motion.div` with `FM.motion.div` to use the namespaced import.
+              <FM.motion.div
+                key="loader"
+                initial={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Loader />
+              </FM.motion.div>
+            )}
+          </FM.AnimatePresence>
+          {!isLoading && <AppContent />}
+        </ChatProvider>
       </HashRouter>
     </ThemeProvider>
   );
